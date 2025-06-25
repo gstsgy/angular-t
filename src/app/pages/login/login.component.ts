@@ -53,6 +53,8 @@ export class LoginComponent {
     }
 
     ngOnInit(){
+
+        
         //this.checked = this.store.get('checked') || false;
     }
 }

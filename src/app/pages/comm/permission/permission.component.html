@@ -1,0 +1,14 @@
+<nz-select [(ngModel)]="currentRoleId"  nzAllowClear
+nzShowSearch [nzOptions]="rolesModel" nzPlaceHolder="选择角色" class="role-select"
+(ngModelChange)="onRoleChange()"
+>
+   
+</nz-select>
+<button nz-button nzType="primary" style="margin-left: 35px" (click)="save()">保存</button>
+<nz-tree
+      #nzTreeComponent
+      [nzData]="menusNode"
+      [nzCheckedKeys]="defaultCheckedKeys"
+      nzCheckable
+      class="tree"
+    ></nz-tree>

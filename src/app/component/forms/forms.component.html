@@ -1,0 +1,75 @@
+<form nz-form [formGroup]="validateForm" class="ant-advanced-search-form">
+    <div nz-row [nzGutter]="12">
+        @for (control of formCol; track control) {
+            @if (control.isShow) {
+                <div nz-col [nzSpan]="4">
+                    <nz-form-item (keyup.enter)="enterEvent()">
+                        <nz-form-label nzLabelWrap nzLabelAlign="right" [nzFor]="control.code" [nzRequired]="!!control.required"> {{ control.label }}</nz-form-label>
+                        <nz-form-control [nzErrorTip]="getErrorTip(control.label)">
+                            @if (control.type === 'input') {
+                                <input width="120px" nz-input [formControlName]="control.code"
+                                       [placeholder]="getPlaceholder(control.label)"/>
+                            } @else if (control.type === 'password') {
+                                <input type="password" nz-input [formControlName]="control.code"
+                                       [placeholder]="getPlaceholder(control.label)"/>
+                            } @else if (control.type === 'number') {
+                                <input type="number" nz-input [formControlName]="control.code"
+                                       [placeholder]="getPlaceholder(control.label)"/>
+                            } @else if (control.type === 'switch') {
+                                <nz-switch [formControlName]="control.code"></nz-switch>
+                            }@else if (control.type === 'select') {
+                                <nz-select
+                                        [formControlName]="control.code"
+                                        nzAllowClear
+                                        nzShowSearch
+                                        [nzPlaceHolder]="getPlaceholder(control.label)"
+                                        [nzOptions]="control.options??[]"
+                                ></nz-select>
+                            }
+                            @else if (control.type === 'radio') {
+                                <nz-radio-group [formControlName]="control.code" >
+                                    @for (op of control.options;track op){
+                                        <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
+                                    }
+                                </nz-radio-group>
+                            }
+                            @else if (control.type === 'date') {
+                                <nz-date-picker [formControlName]="control.code" ></nz-date-picker>
+                            }
+                            @else if (control.type === 'datetime') {
+                                <nz-date-picker
+                                        nzShowTime
+                                        nzFormat="yyyy-MM-dd HH:mm:ss"
+                                        [formControlName]="control.code"
+                                ></nz-date-picker>
+                            }
+                            @else if (control.type === 'time') {
+                                <nz-time-picker  [formControlName]="control.code" >
+
+                                </nz-time-picker>
+                            }
+                            @else if (control.type === 'treeSelect') {
+                                <nz-tree-select
+                                        style="width: 250px"
+
+                                        [nzNodes]="control.options??[]"
+                                        nzShowSearch
+                                        [nzPlaceHolder]="getPlaceholder(control.label)"
+                                        [formControlName]="control.code"
+                                ></nz-tree-select>
+                            }
+                            @else if(control.type==='diy'){
+                                <ng-container
+                                    *ngTemplateOutlet="getFormCode(control.code)!; context: { $implicit: control, rowData: control }"
+                                  ></ng-container>
+                            }
+                           
+
+
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            }
+        }
+    </div>
+</form>

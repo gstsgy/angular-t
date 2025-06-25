@@ -1,0 +1,213 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
+</app-forms>
+<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
+ [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="editForm(form,$event)" >
+ <ng-template appSmartTemplate="_editForm" let-row>
+    <a nz-button nzType="link" (click)="openModel('表单',col,row)">编辑表单</a>
+      </ng-template>
+      <ng-template appSmartTemplate="_editGrid" let-row>
+        <a nz-button nzType="link" (click)="openModel('表格',col,row)">编辑表格</a>
+      </ng-template>
+      <ng-template appSmartTemplate="_delete" let-row>
+        <a nz-button nzType="link" (click)="delete(row)" nzDanger>删除</a>
+      </ng-template>
+</app-grids>
+
+
+
+<ng-template #col>
+    <div nz-flex nzGap="middle" nzWrap="wrap" class="btn">
+        <button nz-button nzType="primary" (click)="addRow()"><span nz-icon nzType="plus"></span>新增</button>
+        <button nz-button nzType="primary" (click)="save()"><span nz-icon nzType="save"></span>保存</button>
+    </div>
+
+
+    <nz-table #basicTable [nzData]="cols" nzBordered
+              [nzShowPagination]="false">
+        <thead>
+        <tr>
+
+            <th>序号</th>
+<!--            <th>编号</th>-->
+            <th>编码</th>
+            <th>名称</th>
+            <th>类型</th>
+            <th>数据源</th>
+            <th>是否显示</th>
+            <th>是否禁用</th>
+            <th>是否必填</th>
+            <th>默认值</th>
+            <th>删除</th>
+        </tr>
+        </thead>
+        <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+            @for (item of cols; track item; let idx = $index) {
+                <tr>
+                    <td cdkDrag>{{ idx + 1 }}</td>
+<!--                    <td>{{ item.id }}</td>-->
+                    <td>
+                        <input type="text" nz-input placeholder="请输入编码" [(ngModel)]="item.code"/>
+
+                    </td>
+                    <td>
+                        <input type="text" nz-input placeholder="请输入编码" [(ngModel)]="item.label"/>
+
+                    </td>
+                    <td>
+<!--                        <input type="text" nz-input placeholder="请输入编码" [(ngModel)]="item.type"/>-->
+                        <nz-select style="width: 120px" [(ngModel)]="item.type">
+                            <nz-option nzValue="input" nzLabel="文本框"></nz-option>
+                            <nz-option nzValue="number" nzLabel="数字框"></nz-option>
+                            <nz-option nzValue="password" nzLabel="密码框"></nz-option>
+                            <nz-option nzValue="switch" nzLabel="开关"></nz-option>
+                            <nz-option nzValue="select" nzLabel="下拉列表"></nz-option>
+                            <nz-option nzValue="radio" nzLabel="单选框"></nz-option>
+                            <nz-option nzValue="date" nzLabel="日期选择框"></nz-option>
+                            <nz-option nzValue="time" nzLabel="时间选择框"></nz-option>
+                            <nz-option nzValue="datetime" nzLabel="日期时间选择框"></nz-option>
+                            <nz-option nzValue="treeSelect" nzLabel="树选择框"></nz-option>
+                            <nz-option nzValue="diy" nzLabel="自定义组件"></nz-option>
+                        </nz-select>
+                    </td>
+                    <td (dblclick)="openModelByDataSource(datasource,item)">
+                        <input type="text" nz-input placeholder="请输入字典model" [(ngModel)]="item.optionModel"/>
+
+                    </td>
+                    <td>
+                        <nz-switch [(ngModel)]="item.isShow"></nz-switch>
+                    </td>
+
+                    <td>
+                        <nz-switch [(ngModel)]="item.disable"></nz-switch>
+                    </td>
+                    <td>
+                        <nz-switch [(ngModel)]="item.required"></nz-switch>
+                    </td>
+                    <td>
+                        <nz-select
+                        nzShowSearch
+                        [nzServerSearch]="true"
+                        [(ngModel)]="item.defaultValue"
+                        style="width: 120px"
+                        nzAllowClear
+                        [nzOptions]="defaultValueOptions"
+                        (nzOnSearch)="onDefaultSearch($event)">
+                        @for (option of defaultValueOptions; track option.value) {
+                            <nz-option
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                        }
+                        <!-- @if(defaultValue){
+                            <nz-option
+                            [nzLabel]="defaultValue"
+                            [nzValue]="defaultValue">
+                        </nz-option>
+                        } -->
+                        
+                        </nz-select>
+                    </td>
+                    <td><a nz-button nzType="link" nzDanger (click)="deleteItem(idx)">删除</a></td>
+                </tr>
+            }
+
+        </tbody>
+    </nz-table>
+</ng-template>
+
+<ng-template #form>
+    <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">编号</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [ngModel]="formItem.id" name="id" disabled />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">名称</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="formItem.name" name="name"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">服务器url</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="formItem.serverUrl" name="serverUrl" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">路由</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="formItem.path" name="path" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">开启多选</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-switch [(ngModel)]="formItem.isSelected" name="isSelected" ></nz-switch>
+
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>
+
+<!-- <ng-template #btns>
+    <nz-checkbox-group [(ngModel)]="btnsModel" ></nz-checkbox-group>
+</ng-template> -->
+
+<ng-template #datasource>
+    <nz-tabset [nzSelectedIndex]="['dict','static','api'].indexOf(dataSource.type)" (nzSelectedIndexChange)="selectDataSourceRow($event)">
+        <nz-tab nzTitle="数据字典">
+           字典模块值 <input nz-input placeholder="请输入字典模块值" [(ngModel)]="dataSource.code" type="text" />
+        </nz-tab>
+        <nz-tab nzTitle="固定数据源">
+            <button nz-button nzType="link" (click)="addDataSourceRow()">增行</button>
+            <nz-table #editRowTable nzBordered [nzData]="dataSource.dataSource" nzTableLayout="fixed">
+                <thead>
+                  <tr>
+                    <th nzWidth="30%">数据值</th>
+                    <th nzWidth="50%">显示值</th>
+                    <th nzWidth="20%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (data of dataSource.dataSource; track data; let i = $index) {
+                    <tr>
+                        <td><input type="text" nz-input [(ngModel)]="dataSource.dataSource[i].value" /></td>
+                        <td><input type="text" nz-input [(ngModel)]="dataSource.dataSource[i].label" /></td>
+                        <td><a (click)="deleteDataSourceRow(i)">删除</a></td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+        </nz-tab>
+        <nz-tab nzTitle="自定义数据源"> <form nz-form>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="5">url</nz-form-label>
+                <nz-form-control  [nzSpan]="12" >
+                    <input nz-input [(ngModel)]="dataSource.url" name="url"  />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="5">方法</nz-form-label>
+                <nz-form-control  [nzSpan]="12" >
+                    <!-- <input nz-input [(ngModel)]="dataSource.method" name="name"  /> -->
+                    <nz-select [(ngModel)]="dataSource.method" name="name" >
+                        <nz-option nzValue="get" nzLabel="get"></nz-option>
+                        <nz-option nzValue="post" nzLabel="post"></nz-option>
+                        <nz-option nzValue="put" nzLabel="put"></nz-option>
+                        <nz-option nzValue="delete" nzLabel="delete"></nz-option>
+                      </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="5">参数</nz-form-label>
+                <nz-form-control  [nzSpan]="12" >
+                    <textarea  [(ngModel)]="dataSource.params" name="params" nz-input rows="2"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </form></nz-tab>
+      </nz-tabset>
+</ng-template>

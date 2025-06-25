@@ -1,0 +1,10 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms  [form-cols]="formCols" [form-validate]="validateForm">
+</app-forms>
+<!--<app-grids [data]="data" [form-grids]="formGrids" [search-query] ="searchQuery"></app-grids>-->
+@if(!isInit){
+    <div class="container">
+        <nz-spin style="margin-top: 20%;" nzSimple  nzSize="large"></nz-spin>
+      </div> 
+}

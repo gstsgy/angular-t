@@ -1,0 +1,7 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms  [form-cols]="formCols" [form-validate]="validateForm">
+</app-forms>
+
+<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
+ [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="gotoSetForm($event)" ></app-grids>

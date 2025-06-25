@@ -1,0 +1,90 @@
+<nz-table #basicTable [nzData]="data" nzBordered
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzTotal]="searchQuery.total"
+          [nzPageSize]="searchQuery.pageSize"
+          [nzPageIndex]="searchQuery.pageIndex"
+          (nzQueryParams)="nzQueryParams($event)"
+          nzTableLayout="fixed"
+          [nzPageSizeOptions]="pageSizeOptions"
+          (nzPageSizeChange)="nzPageSizeChange($event)"
+
+          [nzVirtualItemSize]="55"
+          [nzVirtualForTrackBy]="trackByIndex"
+          [nzScroll]="nzScrollConfig"
+>
+    <thead>
+    <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
+        @if (isSelected){
+            <th
+                    [nzChecked]="isSelectAll"
+                    [nzIndeterminate]="indeterminate"
+                    (nzCheckedChange)="onAllChecked($event)"
+                    
+            >
+        </th>
+        }
+        @for (control of formGrid; track control) {
+           @if (control.isShow) {
+            <th cdkDrag  class="cdk-drag" [nzWidth]="control.width || 'auto'"
+            nz-resizable
+            nzBounds="window"
+            nzPreview
+            (nzResizeEnd)="onResizeW($event, control.code)"
+        >
+       
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                {{ control.label }}
+               
+                <span cdkDragHandle class="drag-handle">☰</span>
+
+            </div>
+            <nz-resize-handle nzDirection="right">
+                <div class="resize-trigger"></div>
+            </nz-resize-handle>
+            
+        </th>
+           }
+           
+        }
+    </tr>
+    </thead>
+    <tbody >
+        <ng-template nz-virtual-scroll let-item let-idx="index">
+            <tr>
+                @if (isSelected){
+                    <td
+                            [nzChecked]="setOfCheckedId.has(idx)"
+                            (nzCheckedChange)="onItemChecked(idx, $event)"
+                    ></td>
+                }
+                @for (control of formGrid; track control) {
+                    @if (control.isShow) {
+                        @if (control.code === '_Index') {
+                            <td (dblclick)="edit(item,control)" >{{ (searchQuery.pageNum-1)*searchQuery.pageSize   +idx + 1 }}</td>
+                        } @else {
+
+                            @if (control.type === 'diy') {
+                                <td  [nzEllipsis]="true"   >
+                                    <!-- {{ formation(control, item[control.code]) }} -->
+                                    <ng-container
+                                    *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"
+                                  ></ng-container>
+                                </td>
+                                
+                            }
+                            @else {
+                                <td (dblclick)="edit(item,control)" [nzEllipsis]="true"  [title]="formation(control, item[control.code])" >
+                                    {{ formation(control, item[control.code]) }}</td>
+                            }
+
+                            
+                        }
+                    }
+                   
+
+                }
+            </tr>
+        </ng-template>
+    </tbody>
+</nz-table>

@@ -1,0 +1,43 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
+</app-forms>
+<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
+ [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="gotoSetForm($event)" ></app-grids>
+
+<ng-template #user>
+    <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">id</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.id" name="id" disabled  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">名称</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.name" name="code"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">描述</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.desc" name="nickName"  />
+            </nz-form-control>
+        </nz-form-item>
+
+
+       
+        
+      
+       
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">设置用户</nz-form-label>
+            <button nz-button nzType="link" (click)="editBtn(btns1)">点击</button>
+        </nz-form-item>
+
+    </form>
+</ng-template>
+<ng-template #btns1>
+    <nz-checkbox-group [(ngModel)]="usersModel" ></nz-checkbox-group>
+</ng-template>

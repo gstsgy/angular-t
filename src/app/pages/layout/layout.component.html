@@ -1,0 +1,37 @@
+<nz-layout>
+    <nz-header>
+      <div class="logo"></div>
+        <div class="title">万物生低代码平台</div>
+      <div nz-dropdown [nzDropdownMenu]="menu" class="user-info"><span nz-icon nzType="user" nzTheme="outline"></span> {{userService.nickName}}</div>
+      <!-- <a >
+        Hover me
+        <span nz-icon nzType="down"></span>
+      </a> -->
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+         
+          <li nz-menu-item (click)="logOut()"> 
+            <span nz-icon nzType="logout" nzTheme="outline"></span>
+            退出系统</li>
+        </ul>
+      </nz-dropdown-menu>
+    </nz-header>
+    <nz-layout>
+      <nz-sider nzWidth="200px"  nzTheme="light" >
+        <ul nz-menu nzMode="inline" class="sider-menu">
+          <li *ngFor="let item of myApi.menus" nz-submenu  [nzIcon]="item.icon" [nzTitle]="item.name">
+            <ul>
+              <li *ngFor="let it of item.children" nz-menu-item (click)="go(it)">{{it.name}}</li>
+            </ul>
+          </li>
+        </ul>
+      </nz-sider>
+      <nz-layout >
+          <app-tabs #tabs  (moveMenu)="moveMenu($event)"></app-tabs>
+        <nz-content class="inner-layout">
+           
+            <router-outlet></router-outlet>
+        </nz-content>
+      </nz-layout>
+    </nz-layout>
+  </nz-layout>

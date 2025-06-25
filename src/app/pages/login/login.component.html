@@ -1,0 +1,47 @@
+<div class="main-body">
+    <div class="color"></div>
+    <div class="color"></div>
+    <div class="color"></div>
+    <div class="box">
+        <div class="circle" style="--x:0"></div>
+            <div class="circle" style="--x:1"></div>
+            <div class="circle" style="--x:2"></div>
+            <div class="circle" style="--x:3"></div>
+            <div class="circle" style="--x:4"></div>
+            <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+                <div class="login-title">万物生低代码平台
+                </div>
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="请输入用户名!">
+                        <nz-input-group nzPrefixIcon="user">
+                            <input  type="text" nz-input formControlName="code" placeholder="输入用户名" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item >
+                    <nz-form-control nzErrorTip="请输入密码!">
+                        <nz-input-group nzPrefixIcon="lock">
+                            <input  type="password" nz-input formControlName="passwd" placeholder="输入密码" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+                <div nz-row class="login-form-margin">
+                    <div nz-col [nzSpan]="12">
+                       <label nz-checkbox formControlName="checked">
+                           <span>记住我</span>
+                        </label>
+ <!--                   </div>
+                    <div nz-col [nzSpan]="12">
+<!--                        <a class="login-form-forgot">忘记密码</a>-->
+                    </div>
+                </div>
+                <button nz-button class="login-form-button login-form-margin" nzSize="large" [nzType]="'primary'">登录</button>
+<!--                Or-->
+<!--                <a>注册!</a>-->
+            </form>
+    </div>
+</div>
+
+
+
+

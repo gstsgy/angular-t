@@ -1,0 +1,30 @@
+<div class="body">
+    <div class="tab-scroll-button left" onclick="scrollTabs(-100)">
+        <span nz-icon nzType="left" nzTheme="outline"></span>
+    </div>
+<!--    <div class="left-right" >-->
+<!--        <span class="left-right-img" nz-icon nzType="left" (click)="left()"></span>-->
+<!--    </div>-->
+    <div class="tabs-container">
+    @for(item of myApi.tabs;track item;let i =$index){
+        <div class="tab-item" [ngClass]="{'active':item.active}" (contextmenu)="contextMenu(item.active,$event, menu)" (click)="active(item)" >
+            <span class="body-item-text" >{{item.name}}</span>
+            <span class="body-item-close" nz-icon nzType="close" (click)="close(i,item,$event)"></span>
+        </div>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu class="custom-dropdown-menu">
+                <li nz-menu-item  class="custom-dropdown-item" (click)="closeAll()" >关闭所有</li>
+                <li nz-menu-item  class="custom-dropdown-item" (click)="closeLeft()">关闭左边</li>
+                <li nz-menu-item  class="custom-dropdown-item" (click)="closeRight()">关闭右边</li>
+                <li nz-menu-item  class="custom-dropdown-item" (click)="reloadCurrentPage(i,item)">刷新页面</li>
+            </ul>
+        </nz-dropdown-menu>
+    }
+    </div>
+<!--    <div class="left-right" >-->
+<!--        <span class="left-right-img" nz-icon nzType="right" (click)="left()"></span>-->
+<!--    </div>-->
+    <div class="tab-scroll-button right" onclick="scrollTabs(100)">
+        <span nz-icon nzType="right" nzTheme="outline"></span>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
+</app-forms>
+<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
+ [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="gotoSetForm($event)" ></app-grids>
+
+<ng-template #user>
+    <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">用户Id</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.id" name="id" disabled  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">用户名</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.code" name="code"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">昵称</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.nickName" name="nickName"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">邮箱</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.email" name="email"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">性别</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-select
+                        [(ngModel)]="userItem.gender"
+                        name="gender"
+                        nzAllowClear
+                        nzShowSearch
+                        nzPlaceHolder="选择性别"
+                        [nzOptions]="operatorGenders"
+                ></nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">生日</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-date-picker [(ngModel)]="userItem.birthday" nzFormat="yyyy-MM-dd" name="birthday"></nz-date-picker>
+<!--                <input nz-input [(ngModel)]="userItem.birthday" name="birthday"  />-->
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">职位</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="userItem.position" name="position"  />
+            </nz-form-control>
+        </nz-form-item>
+       
+        
+      
+       
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">设置角色</nz-form-label>
+            <button nz-button nzType="link" (click)="editBtn(btns1)">点击</button>
+        </nz-form-item>
+
+    </form>
+</ng-template>
+<ng-template #btns1>
+    <nz-checkbox-group [(ngModel)]="rolesModel" ></nz-checkbox-group>
+</ng-template>

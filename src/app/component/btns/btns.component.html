@@ -1,0 +1,13 @@
+<div nz-flex nzGap="small" nzWrap="wrap" class="btn">
+    @for (control of bts; track control){
+        @if(control.code!=='_x'){
+            <button  nz-button [nzType]="control.type" (click)="btnClick(control.code)" [disabled]="control.disable" >
+                @if(control.icon){
+                    <span nz-icon [nzType]="control.icon"></span>
+                }
+                {{control.name}}
+            </button>
+        }
+
+    }
+</div>

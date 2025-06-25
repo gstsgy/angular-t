@@ -1,0 +1,96 @@
+<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
+
+<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
+</app-forms>
+<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
+ [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="gotoSetForm($event)" ></app-grids>
+
+<ng-template #menu>
+    <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单编号</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.id" name="id" disabled  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单名称</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.name" name="name"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单类型</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-select
+                        [(ngModel)]="menuItem.type"
+                        name="type"
+                        nzAllowClear
+                        nzShowSearch
+                        nzPlaceHolder="选择类型"
+                        (ngModelChange)="getMenuTree()"
+                        [nzOptions]="typeOptions"
+                ></nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单父级</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-tree-select
+
+                        [nzNodes]="menuTrees"
+                        nzShowSearch
+                        nzPlaceHolder="Please select"
+                        [(ngModel)]="menuItem.parentId"
+                        name="parentId"
+                ></nz-tree-select>
+<!--                <input nz-input [(ngModel)]="menuItem.parentId" name="parentId"  />-->
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单图标</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.ico" name="ico"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单路由</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.path" name="path"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单路径</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.posi" name="posi"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">菜单顺序</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <input nz-input [(ngModel)]="menuItem.seq" name="seq"  />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">是否页面</nz-form-label>
+            <nz-form-control  [nzSpan]="12" >
+                <nz-select
+                        [(ngModel)]="menuItem.isLeaf"
+                        name="isLeaf"
+                        nzAllowClear
+                        nzShowSearch
+                        nzPlaceHolder="选择类型"
+                        [nzOptions]="boolOptions"
+                ></nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="5">按钮管理</nz-form-label>
+            <button nz-button nzType="link" (click)="editBtn(btns1)">点击</button>
+        </nz-form-item>
+
+    </form>
+</ng-template>
+<ng-template #btns1>
+    <nz-checkbox-group [(ngModel)]="btnsModel" ></nz-checkbox-group>
+</ng-template>

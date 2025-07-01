@@ -17,13 +17,23 @@ import {
     TemplateRef
 } from '@angular/core';
 import {
-    NzTableModule, NzTableQueryParams, NzTableComponent, NzCustomColumn
+    NzTableModule, NzTableQueryParams, NzTableComponent
 } from "ng-zorro-antd/table";
 import {FormsModel} from "@model/forms";
+import { FormsModule } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, DragDropModule} from '@angular/cdk/drag-drop';
 import {NzResizableModule, NzResizeEvent} from 'ng-zorro-antd/resizable';
 import { CommonModule } from '@angular/common';
 import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
+
+import {NzInputModule} from 'ng-zorro-antd/input';
+import {NzSwitchModule} from 'ng-zorro-antd/switch';
+import {NzSelectComponent} from "ng-zorro-antd/select";
+import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
+import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
+import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
+import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
+
 @Component({
     selector: 'app-grids',
     standalone: true,
@@ -31,7 +41,16 @@ import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
         NzTableModule,
         DragDropModule,
         NzResizableModule,
-        CommonModule
+        CommonModule,
+        NzInputModule,
+        NzSwitchModule,
+        NzSelectComponent,
+        NzRadioComponent,
+        NzRadioGroupComponent,
+        NzDatePickerComponent,
+        NzTimePickerComponent,
+        NzTreeSelectModule,
+        FormsModule
     ],
     templateUrl: './grids.component.html',
     styleUrl: './grids.component.less',
@@ -44,6 +63,9 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     @Input('isSelected')
     isSelected = false;
+
+    @Input('editable')
+    editable = false;
 
     @Input('search-query')
     searchQuery: any = {
@@ -219,5 +241,8 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         if (ele) {
             ele.width = `${width}px`;
         }
+    }
+    getPlaceholder(name:string|null):string{
+        return `请输入${name} `;
     }
 }

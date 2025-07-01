@@ -10,6 +10,7 @@ interface FormsModel {
     required: boolean | null,
     isShow: boolean,
     disabled?: boolean | null,
+    editable?: boolean | null,
     options?: Array<any>,
     optionModel?: string | null,
     width?: string | null,

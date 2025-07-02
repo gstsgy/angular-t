@@ -35,6 +35,7 @@ export default class BaseForm {
     }
 
     async parse() {
+        await this.beforeInitialization();
         await this.myApi.get('form/info', {formId: this.formId}).then(res => {
             if (res.code === 200) {
                 this.serverUrl = res.data.serverUrl;
@@ -114,6 +115,11 @@ export default class BaseForm {
         })
     }
     afterInitialization() {
+
+    }
+
+
+    async beforeInitialization() {
 
     }
 

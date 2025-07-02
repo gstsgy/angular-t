@@ -133,6 +133,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             this.setOfCheckedId.clear();
             this.cd.detectChanges();
             (this.nzTableComponent as any).cdkVirtualScrollViewport?.checkViewportSize();
+            this.updateHeight();
         }
     }
 
@@ -236,7 +237,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
 
     onResizeW({width}: NzResizeEvent, col: string): void {
-        console.log(width, col)
+       // console.log(width, col)
         const ele = this.formGrid.find(it => it.code === col);
         if (ele) {
             ele.width = `${width}px`;

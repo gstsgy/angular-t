@@ -21,10 +21,16 @@ import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
 import { BtnsComponent } from '@app/component/btns/btns.component';
 import { FormsComponent } from '@app/component/forms/forms.component';
 import { GridsComponent } from '@app/component/grids/grids.component';
+import { FormRegisterColComponent } from '../form-register-col/form-register-col.component';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { CommonModule } from '@angular/common';
+
 @Component({
     selector: 'app-form-register',
     standalone: true,
     imports: [ BtnsComponent,
+        NzDrawerModule,
+        CommonModule,
         FormsComponent,
         GridsComponent,ReactiveFormsModule, NzButtonModule, NzFormModule,
         NzIconModule, NzInputModule, NzTableModule, NzModalModule,
@@ -56,7 +62,12 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
         {label: '当前时间', value: '_DateTimeNow'},
     ];
 
-    constructor(public override myApi: MyApiService, public override route: ActivatedRoute,  private modal: NzModalService) {
+    importData={
+        tableName:'',
+        tableNames:[] as any[]
+    }
+
+    constructor(public override myApi: MyApiService, public override route: ActivatedRoute,  private modal: NzModalService,private drawerService: NzDrawerService) {
         super(myApi, route);
     }
 
@@ -65,11 +76,12 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
         //     this.validateForm.addControl(item.code, this.fb.control(''));
         // })
 
-        // this.myApi.get('btn/btns', {pageNum: 1, pageSize: 500}).then(res => {
-        //     if (res.code === 200) {
-        //         this.btnsModel = res.data.records.map((it: { name: any; id: any; })=>({label: it.name, value: it.id}));
-        //     }
-        // });
+        this.myApi.get('form/tables').then(res => {
+            if (res.code === 200) {
+                this.importData.tableNames=res.data;
+                console.log(res.data)
+            }
+        });
     }
     override btnClick(code: string) {
         if (code === 'add') {
@@ -85,7 +97,32 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
 
    
-
+    import(){
+        if(!this.importData.tableName){
+            this.myApi.error("请选择表名");
+            return;
+        }
+        this.myApi.confirm(`是否确认带出表${this.importData.tableName}的字段}`,()=>{
+            this.myApi.get(`form/table-columns?tableName=${this.importData.tableName}`).then(res => {
+                if (res.code === 200) {
+                    console.log(res.data)
+                    const filterCode: string[] = ['update_flag','effective','insert_ymd','insert_id','update_ymd','update_id']
+                    const tmpArr = res.data.filter((it:any)=> filterCode.indexOf(it.columnName) === -1);
+                    let length = this.cols.length
+                    for(const item of tmpArr){
+                           this.cols.push({
+                            formId: this.formId,
+                            order: length++,
+                            code: item.columnName,
+                            label: item.columnComment,
+                            type: 'input'
+                            })
+                    }
+                }
+            });
+        })
+       
+    }
     addRow() {
         const length = this.cols.length
         this.cols.push({
@@ -119,6 +156,22 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
 
     openModel(title: string, templateRef: TemplateRef<{}>, item: any) {
+        // const modal = this.modal.create<FormRegisterColComponent>({
+        //     nzTitle: title,
+        //     nzWidth: '80%',
+        //     nzContent: FormRegisterColComponent,
+        //     nzClosable: true,
+        //     nzFooter: null,
+        //     nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
+        //   });
+        //   const drawerRef = this.drawerService.create<FormRegisterColComponent, { value: string }, string>({
+        //     nzTitle: title,
+        //     nzWidth: '100%',
+        //     //nzFooter: 'Footer',
+        //     //nzExtra: 'Extra',
+        //     nzContent: FormRegisterColComponent,
+           
+        //   });
         this.modelTitle = title;
         this.formId = item.id;
         let url = this.modelTitle === '表格' ? "form/grids" : "form/cols";
@@ -247,4 +300,10 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     //         nzCancelText: null
     //     });
     // }
+
+     toHump(name:string) {
+        return name.replace(/\_(\w)/g, function(all, letter){
+            return letter.toUpperCase();
+        });
+    }
 }

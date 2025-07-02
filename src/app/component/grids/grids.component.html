@@ -33,10 +33,10 @@
             (nzResizeEnd)="onResizeW($event, control.code)"
         >
        
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div cdkDragHandle style="display: flex; justify-content: space-between; cursor: grab; align-items: center;">
                 {{ control.label }}
-               
-                <span cdkDragHandle class="drag-handle">☰</span>
+                
+                <!-- <span cdkDragHandle class="drag-handle">☰</span> -->
 
             </div>
             <nz-resize-handle nzDirection="right">

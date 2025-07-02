@@ -8,7 +8,7 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import { MyHttpService } from '@service/my-http.service';
 import { UserService } from '@service/user.service';
 import { Router } from '@angular/router';
-import { MySessionStore } from '@utils/store';
+import { MyLocalStore } from '@utils/store';
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -20,7 +20,7 @@ export class LoginComponent {
     constructor(private fb: NonNullableFormBuilder,private readonly httpClient: MyHttpService,private readonly userService: UserService,private router:Router) {
     }
     //checked = false;
-    store:MySessionStore = new MySessionStore('login');
+    store:MyLocalStore = new MyLocalStore('login');
     validateForm  = this.fb.group({
         code: this.fb.control(this.store.get('code') , [Validators.required]),
         passwd: this.fb.control(this.store.get('passwd') , [Validators.required]),

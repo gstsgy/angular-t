@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, AfterViewInit} from '@angular/core';
 import {MyApiService} from "@service/my-api.service";
 import {ActivatedRoute} from "@angular/router";
 import {FormsComponent} from "@app/component/forms/forms.component";
@@ -17,4 +17,6 @@ export class SearchFormComponent extends SearchFormModel  {
     constructor(public override myApi: MyApiService,public override route:ActivatedRoute) {
         super(myApi,route);
     }
+
+   
 }

@@ -49,10 +49,9 @@ export default class SearchFormModel extends BaseForm  {
             return;
         }
         let obj:any={...this.validateForm.value,...this.searchQuery}
-        this.data = []
         this.myApi.get(this.serverUrl, obj).then(res => {
-            this.searchQuery.total = res.data.total - 0;
-            this.data = res.data.records;
+            this.searchQuery.total = res.data.total||0 - 0;
+            this.data = res.data.records||[];
         })
     }
 

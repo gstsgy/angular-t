@@ -1,4 +1,4 @@
-import {Component, SimpleChange, SimpleChanges, TemplateRef, ViewChild} from '@angular/core';
+import {Component, SimpleChange, SimpleChanges, TemplateRef, ViewChild, AfterViewInit} from '@angular/core';
 import SearchFormModel from "@model/searchFormModel";
 import {BtnsComponent} from "@app/component/btns/btns.component";
 import {FormsComponent} from "@app/component/forms/forms.component";
@@ -17,7 +17,7 @@ import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzCheckboxGroupComponent} from "ng-zorro-antd/checkbox";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
-
+import {SearchFormComponent} from "@app/pages/comm/search-form/search-form.component";
 @Component({
     selector: 'app-user',
     standalone: true,
@@ -40,7 +40,7 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
     templateUrl: './user.component.html',
     styles: ''
 })
-export class UserComponent extends SearchFormModel {
+export class UserComponent extends SearchFormModel implements AfterViewInit {
     constructor(public override myApi: MyApiService, public override route: ActivatedRoute, private modal: NzModalService,) {
         super(myApi, route);
     }
@@ -185,4 +185,11 @@ export class UserComponent extends SearchFormModel {
             nzCancelText: null
         });
     }
+
+    ngAfterViewInit() {
+        console.log('分页参数检查:', {
+          total: this.searchQuery,
+          dataLength: this.data
+        });
+      }
 }

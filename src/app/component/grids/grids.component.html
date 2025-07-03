@@ -1,17 +1,19 @@
 <nz-table #basicTable [nzData]="data" nzBordered
           nzShowSizeChanger
           [nzFrontPagination]="false"
-          [nzTotal]="searchQuery.total"
+          [nzHideOnSinglePage]="false"
+          [nzTotal]="searchQuery.total||0"
           [nzPageSize]="searchQuery.pageSize"
-          [nzPageIndex]="searchQuery.pageIndex"
+          [nzPageIndex]="searchQuery.pageNum"
           (nzQueryParams)="nzQueryParams($event)"
           nzTableLayout="fixed"
           [nzPageSizeOptions]="pageSizeOptions"
           (nzPageSizeChange)="nzPageSizeChange($event)"
-
+          nzSize="small"
           [nzVirtualItemSize]="55"
           [nzVirtualForTrackBy]="trackByIndex"
           [nzScroll]="nzScrollConfig"
+          nzBordered 
 >
     <thead>
     <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
@@ -136,13 +138,9 @@
                                         {{ formation(control, item[control.code]) }}
                                     }
                                 </td>
-                            }
-
-                            
+                            } 
                         }
                     }
-                   
-
                 }
             </tr>
         </ng-template>

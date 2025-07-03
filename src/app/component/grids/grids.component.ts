@@ -112,6 +112,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
+        //console.log(this.data)
         // 创建一个 MutationObserver 实例
         const observer = new MutationObserver(() => {
             this.updateHeight(); // 初始化逻辑
@@ -130,6 +131,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
+            //console.log(this.data)
             this.setOfCheckedId.clear();
             this.cd.detectChanges();
             (this.nzTableComponent as any).cdkVirtualScrollViewport?.checkViewportSize();
@@ -162,6 +164,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     get isSelectAll() {
+        //console.log(this.setOfCheckedId, this.data)
         return this.setOfCheckedId.size === this.data.length && this.setOfCheckedId.size > 0;
     }
 
@@ -202,7 +205,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         parent = parent.parentElement;
         if (!parent) return
         const totalHeight = parent?.offsetHeight;
-
+        //console.log(parent)
         if (totalHeight) {
             // 获取兄弟 div1 和 div2 的高度（通过 DOM 查询）
             const div1 = parent?.querySelector('app-btns') as HTMLElement;

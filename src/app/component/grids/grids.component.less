@@ -13,6 +13,10 @@
     border-width: 0;
     border-right-width: 1px;
   }
+
+  nz-table{
+    margin-top: 10px;
+  }
 // .drag-handle {
 //     color: rgba(0, 0, 0, .22);
 //     cursor: grab;
@@ -20,7 +24,12 @@
 //     opacity: 0.5;
 //     user-select: none;
 // }
-
+:host ::ng-deep {
+  // 斑马纹
+  .ant-table-tbody > tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+}
 .drag-handle:hover {
     opacity: 1; /* 悬停时变明显 */
 }

@@ -145,6 +145,9 @@
 [nzPageSizeOptions]="pageSizeOptions"
 (nzPageSizeChange)="nzPageSizeChange($event)"
 nzShowSizeChanger
+[nzShowTotal]="totalTemplate"
 ></nz-pagination>
+<!-- <span>共计 {{ searchQuery.total }} 条</span> -->
 </div>
+<ng-template #totalTemplate let-total><span style="font-weight: bold;">共计 <span style="color: #48c0a3;">{{ searchQuery.total }}</span> 条</span></ng-template>
 

@@ -1,0 +1,15 @@
+<div class="body-content">
+    <app-btns [btns]="commonObjs.btns" (clc)="commonObjs.btnClick($event)"></app-btns>
+  
+    <app-forms #forms [form-cols]="commonObjs.formCols" [form-validate]="commonObjs.validateForm" (enter)="commonObjs.refresh()" >
+    </app-forms>
+    <app-grids [data]="commonObjs.data" [form-grids]="commonObjs.formGrids" [search-query] ="commonObjs.searchQuery"
+               (nzQueryParamsFun)="commonObjs.nzQueryParamsFun($event)" [isSelected]="commonObjs.isSelected"
+               (colDblClick)="commonObjs.gotoSetForm($event)" class="app-grids"></app-grids>
+    
+    @if(!commonObjs.isInit){
+        <div class="container">
+            <nz-spin style="margin-top: 20%;" nzSimple  nzSize="large"></nz-spin>
+          </div> 
+    }
+  </div>

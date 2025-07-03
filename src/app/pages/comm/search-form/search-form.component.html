@@ -1,14 +1,1 @@
-<app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
-
-<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()" >
-</app-forms>
-<app-grids [data]="data" [form-grids]="formGrids" [search-query] ="searchQuery"
-           (nzQueryParamsFun)="nzQueryParamsFun($event)" [isSelected]="isSelected"
-           (colDblClick)="gotoSetForm($event)" ></app-grids>
-
-@if(!isInit){
-    <div class="container">
-        <nz-spin style="margin-top: 20%;" nzSimple  nzSize="large"></nz-spin>
-      </div> 
-}
-                   
+<app-form-report [commonObjs]="commonObjs" style="height: 100%;"></app-form-report>

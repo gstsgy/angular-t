@@ -13,20 +13,23 @@
     border-width: 0;
     border-right-width: 1px;
   }
-
-  nz-table{
-    margin-top: 10px;
+  .formGrid-body{
+    height: 100%; /* 固定高度 */
+    display: flex;
+    flex-direction: column;
+    nz-table{
+      flex: 1; /* 关键属性 - 填充剩余空间 */
+    }
+    nz-pagination{
+      //margin-right: 0;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
-// .drag-handle {
-//     color: rgba(0, 0, 0, .22);
-//     cursor: grab;
-//     margin-left: 8px;
-//     opacity: 0.5;
-//     user-select: none;
-// }
+
 :host ::ng-deep {
   // 斑马纹
-  .ant-table-tbody > tr:nth-child(even) {
+  .ant-table-tbody > tr:nth-child(odd) {
     background-color: #f2f2f2;
   }
 }

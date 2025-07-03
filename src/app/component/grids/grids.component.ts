@@ -33,12 +33,13 @@ import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
 import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
-
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 @Component({
     selector: 'app-grids',
     standalone: true,
     imports: [
         NzTableModule,
+        NzPaginationModule,
         DragDropModule,
         NzResizableModule,
         CommonModule,
@@ -90,7 +91,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     selectData: EventEmitter<any[]> = new EventEmitter();
     private mutationObserver!: MutationObserver;
     nzScrollConfig = {
-        y: '240px',
+        y: '100%',
         x: '100%'
     }
 
@@ -205,7 +206,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         parent = parent.parentElement;
         if (!parent) return
         const totalHeight = parent?.offsetHeight;
-        //console.log(parent)
+        console.log(this.el.nativeElement)
         if (totalHeight) {
             // 获取兄弟 div1 和 div2 的高度（通过 DOM 查询）
             const div1 = parent?.querySelector('app-btns') as HTMLElement;
@@ -213,8 +214,10 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             const l1 = div1?.offsetHeight | 0;
             const l2 = div2?.offsetHeight | 0;
             const h = totalHeight - l1 - l2 - 50 - 55 - 32;
+            const lasth = this.el.nativeElement.offsetHeight- 50 - 55 - 32;
+            console.log(lasth)
             this.nzScrollConfig = {
-                y: h + 'px',
+                y: lasth + 'px',
                 x: '100%'
             }
 

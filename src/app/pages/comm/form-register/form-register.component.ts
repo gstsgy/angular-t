@@ -18,21 +18,18 @@ import SearchFormModel from '@app/model/searchFormModel';
 import { ActivatedRoute } from '@angular/router';
 import { MyApiService } from '@app/service/my-api.service';
 import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
-import { BtnsComponent } from '@app/component/btns/btns.component';
-import { FormsComponent } from '@app/component/forms/forms.component';
-import { GridsComponent } from '@app/component/grids/grids.component';
+
 import { FormRegisterColComponent } from '../form-register-col/form-register-col.component';
 import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { CommonModule } from '@angular/common';
-
+import {FormReportComponent} from "@app/component/form-report/form-report.component";
 @Component({
     selector: 'app-form-register',
     standalone: true,
-    imports: [ BtnsComponent,
+    imports: [ 
         NzDrawerModule,
         CommonModule,
-        FormsComponent,
-        GridsComponent,ReactiveFormsModule, NzButtonModule, NzFormModule,
+        FormReportComponent,ReactiveFormsModule, NzButtonModule, NzFormModule,
         NzIconModule, NzInputModule, NzTableModule, NzModalModule,
         NzFlexDirective, FormsModule, NzSwitchModule, CdkDropList,
         CdkDrag, NzCheckboxModule, NzSelectComponent, NzOptionComponent, NzTabsModule,SmartTemplateDirective],

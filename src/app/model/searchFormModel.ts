@@ -17,6 +17,7 @@ export default class SearchFormModel extends BaseForm  {
             this.parse();
         })
     }
+    
     data:any[]=[]
 
     selectData:any[] = []
@@ -30,6 +31,7 @@ export default class SearchFormModel extends BaseForm  {
     btnClick(code:string){
         if(code==='refresh'){
             this.refresh();
+          //  console.log(2222)
         }else if(code==='export'){
             this.export();
         }
@@ -59,6 +61,7 @@ export default class SearchFormModel extends BaseForm  {
         if(params && params.pageIndex){
             this.searchQuery.pageNum = params.pageIndex;
             this.searchQuery.pageSize = params.pageSize;
+           // console.log(11111)
             this.refresh();
         }
     }
@@ -130,5 +133,32 @@ export default class SearchFormModel extends BaseForm  {
             return obj;
         }) 
         this.myApi.exportToExcel(arr,this.menuName);
+    }
+   
+   get commonObjs(){ 
+    return {
+        data:this.data,
+        searchQuery:this.searchQuery,
+        selectData:this.selectData,
+        myApi:this.myApi,
+        route:this.route,
+        btns:this.btns,
+        formGrids:this.formGrids,
+        formCols:this.formCols,
+        validateForm:this.validateForm,
+        menuCode:this.menuCode,
+        menuName:this.menuName,
+        formId:this.formId,
+        serverUrl:this.serverUrl,
+        isInit:this.isInit,
+        btnClick:this.btnClick,
+        formation:this.formation,
+        getSelected:this.getSelected,
+        gotoSetForm:this.gotoSetForm,
+        export:this.export,
+        exportAll:this.exportAll,
+        refresh:this.refresh,
+        nzQueryParamsFun:this.nzQueryParamsFun,
+        }
     }
 }

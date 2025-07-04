@@ -95,7 +95,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         x: '100%'
     }
 
-    @ContentChildren(SmartTemplateDirective) templates!: QueryList<SmartTemplateDirective>;
+    @Input('templates') templates!: QueryList<SmartTemplateDirective>;
 
     constructor(private el: ElementRef, private ngZone: NgZone, private cd: ChangeDetectorRef) {
     }
@@ -123,7 +123,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         const config = {childList: true, subtree: true};
 
         // 开始观察目标节点
-        const div2 = this.el.nativeElement.parentElement?.querySelector('app-forms') as HTMLElement;
+        const div2 = this.el.nativeElement;
         this.ngZone.runOutsideAngular(() => {
             // @ts-ignore
             return observer.observe(div2, config);
@@ -141,10 +141,15 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     nzQueryParams(params: NzTableQueryParams) {
+        //console.log(params);
         this.nzQueryParamsFun.emit(params);
     }
-
+    nzPageIndexChange(event: number){
+        this.searchQuery.pageNum = event;
+        this.nzQueryParamsFun.emit({pageIndex: 1, pageSize: event, sort: [], filter: []});
+    }
     nzPageSizeChange(event: number) {
+        //console.log(event);
         this.searchQuery.pageSize = event;
         this.nzQueryParamsFun.emit({pageIndex: 1, pageSize: event, sort: [], filter: []});
     }
@@ -201,26 +206,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     private updateHeight() {
-        let parent = this.el.nativeElement.parentElement;
-        if (!parent) return
-        parent = parent.parentElement;
-        if (!parent) return
-        const totalHeight = parent?.offsetHeight;
-        console.log(this.el.nativeElement)
-        if (totalHeight) {
-            // 获取兄弟 div1 和 div2 的高度（通过 DOM 查询）
-            const div1 = parent?.querySelector('app-btns') as HTMLElement;
-            const div2 = parent?.querySelector('app-forms') as HTMLElement;
-            const l1 = div1?.offsetHeight | 0;
-            const l2 = div2?.offsetHeight | 0;
-            const h = totalHeight - l1 - l2 - 50 - 55 - 32;
-            const lasth = this.el.nativeElement.offsetHeight- 50 - 55 - 32;
-            console.log(lasth)
-            this.nzScrollConfig = {
+        // 39是表头高度  32 是分页器高度 10是margin-top
+        const lasth = this.el.nativeElement.offsetHeight- 39-32-10;
+        this.nzScrollConfig = {
                 y: lasth + 'px',
                 x: '100%'
-            }
-
         }
     }
 

@@ -53,6 +53,17 @@
     overflow-y: scroll !important;
     scrollbar-gutter: stable;
 }
+
+/* 在你的 component.css 或者 global styles.css 中 */
+:host ::ng-deep .ant-table-wrapper .ant-table table {
+  border-collapse: collapse; /* 确保没有额外的空间 */
+  border: 1px solid #d1d7dc; /* 设置边框宽度和颜色 */
+}
+
+:host ::ng-deep .ant-table-thead > tr > th,
+:host ::ng-deep .ant-table-tbody > tr > td {
+  border: 1px solid #d1d7dc; /* 同样设置表头和单元格的边框 */
+}
 .nz-resizable-preview {
     border-width: 0;
     border-right-width: 1px;

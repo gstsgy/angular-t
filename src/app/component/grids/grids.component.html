@@ -1,14 +1,13 @@
 <div class="formGrid-body">
-<nz-table #basicTable [nzData]="data" nzBordered
+<nz-table #basicTable [nzData]="data" 
     [nzShowPagination] = "false"
-    (nzQueryParams)="nzQueryParams($event)"
+    [nzFrontPagination]="false"
     nzTableLayout="fixed"
-   
     nzSize="small"
     [nzVirtualItemSize]="39"
     [nzVirtualForTrackBy]="trackByIndex"
-   
-    nzBordered 
+    [nzScroll]="nzScrollConfig"
+     
 >
 <thead>
 <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
@@ -144,6 +143,7 @@
 [nzPageIndex]="searchQuery.pageNum" 
 [nzPageSizeOptions]="pageSizeOptions"
 (nzPageSizeChange)="nzPageSizeChange($event)"
+(nzPageIndexChange)="nzPageIndexChange($event)"
 nzShowSizeChanger
 [nzShowTotal]="totalTemplate"
 ></nz-pagination>

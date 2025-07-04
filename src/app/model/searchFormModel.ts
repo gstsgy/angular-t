@@ -16,7 +16,56 @@ export default class SearchFormModel extends BaseForm  {
             this.formId = res['formId'];
             this.parse();
         })
+
+        // 组装commonObjs
+        const myObj = this;
+        this.getInstanceMethods(this).forEach(key=>{
+
+            const value = myObj[key as keyof this];
+
+            if (typeof value === 'function') {
+              // 备份方法
+              this.commonObjs[key] = value.bind(myObj);
+        
+              // 重新定义为 getter/setter
+              Object.defineProperty(myObj, key, {
+                get: () => this.commonObjs[key],
+                set: (fn) => {
+                    this.commonObjs[key] = fn.bind(myObj);
+                },
+                configurable: true,
+                enumerable: true
+              });
+            } else {
+              // 普通属性也可以做类似处理（可选）
+              this.commonObjs[key] = value;
+              Object.defineProperty(myObj, key, {
+                get: () => this.commonObjs[key],
+                set: (v) => {
+                  //console.log(`属性 ${key} 被修改为 ${v}`);
+                  this.commonObjs[key] = v;
+                },
+                configurable: true,
+                enumerable: true
+              });
+            }
+        })
+       
     }
+    commonObjs:any={}
+    getInstanceMethods(instance:Object) {
+        let methods = [];
+        let obj = instance;
+      
+        do {
+          methods.push(...Object.getOwnPropertyNames(obj));
+        } while (obj = Object.getPrototypeOf(obj));
+      
+        methods= [...new Set(methods)];
+        const filterMethods = ['constructor','hasOwnProperty','isPrototypeOf','propertyIsEnumerable','toLocaleString','toString','valueOf','commonObjs','getInstanceMethods']
+        return methods.filter(item => filterMethods.indexOf(item)===-1&& !item.startsWith('__'));
+
+      }
     
     data:any[]=[]
 
@@ -52,8 +101,12 @@ export default class SearchFormModel extends BaseForm  {
         }
         let obj:any={...this.validateForm.value,...this.searchQuery}
         this.myApi.get(this.serverUrl, obj).then(res => {
-            this.searchQuery.total = res.data.total||0 - 0;
-            this.data = res.data.records||[];
+            if(res.code===200||res.data){
+                this.searchQuery.total = res.data.total - 0;
+                this.data = res.data.records;
+                console.log(this.data)
+            }
+           
         })
     }
 
@@ -134,31 +187,9 @@ export default class SearchFormModel extends BaseForm  {
         }) 
         this.myApi.exportToExcel(arr,this.menuName);
     }
-   
-   get commonObjs(){ 
-    return {
-        data:this.data,
-        searchQuery:this.searchQuery,
-        selectData:this.selectData,
-        myApi:this.myApi,
-        route:this.route,
-        btns:this.btns,
-        formGrids:this.formGrids,
-        formCols:this.formCols,
-        validateForm:this.validateForm,
-        menuCode:this.menuCode,
-        menuName:this.menuName,
-        formId:this.formId,
-        serverUrl:this.serverUrl,
-        isInit:this.isInit,
-        btnClick:this.btnClick,
-        formation:this.formation,
-        getSelected:this.getSelected,
-        gotoSetForm:this.gotoSetForm,
-        export:this.export,
-        exportAll:this.exportAll,
-        refresh:this.refresh,
-        nzQueryParamsFun:this.nzQueryParamsFun,
-        }
-    }
+
+    // commonObjs:any = {
+
+    // }
+
 }

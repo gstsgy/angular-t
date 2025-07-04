@@ -1,8 +1,6 @@
 import {Component, TemplateRef, ViewChild} from '@angular/core';
 import SearchFormModel from "@model/searchFormModel";
-import {BtnsComponent} from "@app/component/btns/btns.component";
-import {FormsComponent} from "@app/component/forms/forms.component";
-import {GridsComponent} from "@app/component/grids/grids.component";
+import {FormReportComponent} from "@app/component/form-report/form-report.component";
 import {MyApiService} from "@service/my-api.service";
 import {ActivatedRoute} from "@angular/router";
 import {FormsModule} from "@angular/forms";
@@ -18,9 +16,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     standalone: true,
     imports: [
         NzModalModule,
-        BtnsComponent,
-        FormsComponent,
-        GridsComponent,
+        FormReportComponent,
         FormsModule,
         NzColDirective,
         NzFormControlComponent,

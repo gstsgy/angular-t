@@ -3,7 +3,7 @@
   
     <app-forms #forms [form-cols]="commonObjs.formCols" [form-validate]="commonObjs.validateForm" (enter)="commonObjs.refresh()" >
     </app-forms>
-    <app-grids [data]="commonObjs.data" [form-grids]="commonObjs.formGrids" [search-query] ="commonObjs.searchQuery"
+    <app-grids [templates]="templates" [data]="commonObjs.data" [form-grids]="commonObjs.formGrids" [search-query] ="commonObjs.searchQuery"
                (nzQueryParamsFun)="commonObjs.nzQueryParamsFun($event)" [isSelected]="commonObjs.isSelected"
                (colDblClick)="commonObjs.gotoSetForm($event)" class="app-grids"></app-grids>
     

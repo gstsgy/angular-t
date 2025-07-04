@@ -69,14 +69,9 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
 
     ngOnInit(): void {
-        // this.formCol.forEach(item => {
-        //     this.validateForm.addControl(item.code, this.fb.control(''));
-        // })
-
         this.myApi.get('form/tables').then(res => {
             if (res.code === 200) {
                 this.importData.tableNames=res.data;
-                console.log(res.data)
             }
         });
     }

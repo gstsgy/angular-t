@@ -1,8 +1,5 @@
 import {Component, SimpleChange, SimpleChanges, TemplateRef, ViewChild, AfterViewInit} from '@angular/core';
 import SearchFormModel from "@model/searchFormModel";
-import {BtnsComponent} from "@app/component/btns/btns.component";
-import {FormsComponent} from "@app/component/forms/forms.component";
-import {GridsComponent} from "@app/component/grids/grids.component";
 import {MyApiService} from "@service/my-api.service";
 import {ActivatedRoute} from "@angular/router";
 import {FormsModule} from "@angular/forms";
@@ -18,13 +15,12 @@ import {NzCheckboxGroupComponent} from "ng-zorro-antd/checkbox";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {SearchFormComponent} from "@app/pages/comm/search-form/search-form.component";
+import {FormReportComponent} from "@app/component/form-report/form-report.component";
 @Component({
     selector: 'app-user',
     standalone: true,
     imports: [NzModalModule,
-        BtnsComponent,
-        FormsComponent,
-        GridsComponent,
+        FormReportComponent,
         FormsModule,
         NzColDirective,
         NzFormControlComponent,

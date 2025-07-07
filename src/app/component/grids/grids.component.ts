@@ -214,11 +214,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         }
     }
 
-    @HostListener('window:resize')
-    onResize() {
-        // 窗口自适应大小
-        this.updateHeight();
-    }
+    // @HostListener('window:resize')
+    // onResize() {
+    //     // 窗口自适应大小
+    //     this.updateHeight();
+    // }
 
     trackByIndex(index: number, data: any): number {
         const possibleKeys = ['id', 'key', 'uid', 'code'];

@@ -1,0 +1,17 @@
+<!-- <p>test works!</p>
+<app-acc-editor></app-acc-editor> -->
+
+<div class="container">
+    <h1>XML 编辑器</h1>
+    
+    <app-ace-editor 
+      [(content)]="xmlContent"
+    ></app-ace-editor>
+    
+    <div class="actions">
+      <button (click)="formatXml()">格式化</button>
+      <button (click)="validateXml()">验证 XML</button>
+    </div>
+    
+    <!-- <div *ngIf="error" class="error">{{error}}</div> -->
+  </div>

@@ -17,6 +17,16 @@
         <nz-form-item>
             <button nz-button nzType="primary" (click)="save()">保存</button>
         </nz-form-item>
+        <nz-form-item>
+            <nz-form-label >后台接口</nz-form-label>
+            <nz-form-control>
+                <span> formsql/data/{{sqlItem.id}}</span>
+                <span> formsql/page/{{sqlItem.id}}</span>
+                <!-- <input nz-input [(ngModel)]="sqlItem.name" name="name"  /> -->
+            </nz-form-control>
+        </nz-form-item>
+
+        
         <!-- <nz-form-item>
             <button nz-button nzType="primary" (click)="publish()">发布</button>
         </nz-form-item>
@@ -24,5 +34,5 @@
             <button nz-button nzType="primary" (click)="unPublish()">取消发布</button>
         </nz-form-item> -->
     </form>
-    <nz-code-editor class="editor" [(ngModel)]="this.sqlItem.sql"  [nzEditorOption]="{ language: 'xml',theme: 'vs-dark' }"></nz-code-editor>
+    <app-ace-editor class="editor" [(content)]="this.sqlItem.sql"  ></app-ace-editor>
 </ng-template>

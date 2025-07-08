@@ -15,6 +15,7 @@ import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import {NzDrawerComponent, NzDrawerRef, NzDrawerService,NzDrawerModule } from "ng-zorro-antd/drawer";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
+import { AccEditorComponent } from '@app/component/ace-editor/ace-editor.component';
 @Component({
     selector: 'app-form-sql',
     standalone: true,
@@ -35,7 +36,8 @@ import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
         NzDrawerComponent,
         NzDrawerModule,
         NzButtonComponent,
-        SmartTemplateDirective
+        SmartTemplateDirective,
+        AccEditorComponent
     ],
     templateUrl: './form-sql.component.html',
     styleUrl: './form-sql.component.less'
@@ -53,7 +55,7 @@ export class FormSqlComponent extends SearchFormModel {
     sqlItem = {
         id: null,
         name: null,
-        sql: null,
+        sql: '',
     }
     private drawerRef: NzDrawerRef<any, any> | undefined ;
 
@@ -72,7 +74,7 @@ export class FormSqlComponent extends SearchFormModel {
         this.sqlItem = {
             id: null,
             name: null,
-            sql: null,
+            sql: '',
         }
         this. drawerRef = this.drawerService.create({
             nzTitle: 'SQL编辑',

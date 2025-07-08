@@ -5,6 +5,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home',data: { keep: true } },
   { path: '', canActivate: [LoginGuard],loadComponent: () => import('./pages/layout/layout.component').then(m => m.LayoutComponent),
       children:[
+          {path:'test',loadComponent: () => import('./pages/test/test.component').then(m => m.TestComponent), data: { keep: true }},
           {path:'home',loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent), data: { keep: true }},
           {path:'form-register/:formId',loadComponent: () => import('@pages/comm/form-register/form-register.component').then(m => m.FormRegisterComponent), data: { keep: true }},
           {path:'searchForm/:formId',loadComponent: () => import('@pages/comm/search-form/search-form.component').then(m => m.SearchFormComponent), data: { keep: true }},

@@ -25,14 +25,6 @@
                 <!-- <input nz-input [(ngModel)]="sqlItem.name" name="name"  /> -->
             </nz-form-control>
         </nz-form-item>
-
-        
-        <!-- <nz-form-item>
-            <button nz-button nzType="primary" (click)="publish()">发布</button>
-        </nz-form-item>
-        <nz-form-item>
-            <button nz-button nzType="primary" (click)="unPublish()">取消发布</button>
-        </nz-form-item> -->
     </form>
     <app-ace-editor class="editor" [(content)]="this.sqlItem.sql"  ></app-ace-editor>
 </ng-template>

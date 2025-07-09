@@ -64,6 +64,8 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
         tableNames:[] as any[]
     }
 
+    jsonTmp = '' as any;
+
     constructor(public override myApi: MyApiService, public override route: ActivatedRoute,  private modal: NzModalService,private drawerService: NzDrawerService) {
         super(myApi, route);
     }
@@ -164,6 +166,7 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
         //     nzContent: FormRegisterColComponent,
            
         //   });
+        this.jsonTmp = '';
         this.modelTitle = title;
         this.formId = item.id;
         let url = this.modelTitle === '表格' ? "form/grids" : "form/cols";
@@ -292,7 +295,16 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     //         nzCancelText: null
     //     });
     // }
-
+     toJson(){
+        this.jsonTmp = JSON.stringify(this.cols, null, 4);
+     }
+     parseJson(){
+        this.cols = JSON.parse(this.jsonTmp);
+        this.cols.forEach(it=>{
+            it.id = null,
+            it.formId = this.formId
+        })
+     }
      toHump(name:string) {
         return name.replace(/\_(\w)/g, function(all, letter){
             return letter.toUpperCase();

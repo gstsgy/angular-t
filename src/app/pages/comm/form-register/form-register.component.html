@@ -1,20 +1,3 @@
-<!-- <app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
-
-<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
-</app-forms>
-<app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
- [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)" (colDblClick)="editForm(form,$event)" >
- <ng-template appSmartTemplate="_editForm" let-row>
-    <a nz-button nzType="link" (click)="openModel('表单',col,row)">编辑表单</a>
-      </ng-template>
-      <ng-template appSmartTemplate="_editGrid" let-row>
-        <a nz-button nzType="link" (click)="openModel('表格',col,row)">编辑表格</a>
-      </ng-template>
-      <ng-template appSmartTemplate="_delete" let-row>
-        <a nz-button nzType="link" (click)="delete(row)" nzDanger>删除</a>
-      </ng-template>
-</app-grids> -->
-
 <app-form-report [commonObjs]="commonObjs" style="height: 100%;">
     <ng-template appSmartTemplate="_editForm" let-row>
         <a nz-button nzType="link" (click)="openModel('表单',col,row)">编辑表单</a>
@@ -135,6 +118,11 @@
 
         </tbody>
     </nz-table>
+    <div style="margin-top: 10px;">
+        <input nz-input placeholder="双击获取json" [(ngModel)]="jsonTmp" (dblclick)="toJson()" type="text" />
+        <a nz-button nzType="link" (click)="parseJson()" >应运此json</a>
+    </div>
+    
 </ng-template>
 
 <ng-template #form>

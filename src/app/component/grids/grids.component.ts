@@ -146,12 +146,12 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
     nzPageIndexChange(event: number){
         this.searchQuery.pageNum = event;
-        this.nzQueryParamsFun.emit({pageIndex: 1, pageSize: event, sort: [], filter: []});
+        this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
     }
     nzPageSizeChange(event: number) {
         //console.log(event);
         this.searchQuery.pageSize = event;
-        this.nzQueryParamsFun.emit({pageIndex: 1, pageSize: event, sort: [], filter: []});
+        this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
     }
 
     edit(row: any, col: FormsModel) {

@@ -76,6 +76,12 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
                 this.importData.tableNames=res.data;
             }
         });
+        // this.commonObjs.colDblClick=(data:{ row: any, col: FormsModel })=>{
+            
+        // }
+    }
+    override gotoSetForm(data:{ row: any, col: FormsModel }) {
+        this.editForm(this.formModel,data)
     }
     override btnClick(code: string) {
         if (code === 'add') {

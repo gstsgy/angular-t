@@ -7,20 +7,7 @@
   margin-top: 2px;
   vertical-align: top;
 }
-.title{
-  display: inline-block;
-  vertical-align: top;
-  width: calc(100% - 150px);
-  color: white;
-  font-size: 28px;
-  text-align: center;
-}
-.user-info {
-  display: inline-block;
-  vertical-align: top;
-  width: 80px;
-  color: #fff;
-}
+
 
 
 .sider-menu {
@@ -53,12 +40,40 @@ nz-header{
  // text-align: center;
   //padding: 20px;
   //margin: 0 auto;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  //background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background: linear-gradient(-87.9418deg, rgb(128, 128, 255) 0%, rgb(20, 133, 254) 100%);
+  transition: unset;
+  display: flex;
   //border-radius: 15px;
   //box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   //display: inline-block;
   //position: relative;
   //overflow: hidden;
+  .title{
+    display: inline-block;
+    vertical-align: top;
+    // width: calc(100% - 150px);
+    color: white;
+    font-size: 28px;
+    text-align: left;
+    flex-grow: 1; /* 让这个元素自动填充剩余空间 */
+  }
+  .user-info {
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: top;
+    width: 600px;
+    color: #fff;
+    text-align: right;
+    &>div{
+      display: inline-block;
+      margin-left: 15px;
+    }
+    .logout{
+      color: red;
+      cursor: pointer;
+    }
+  }
 }
 // .ant-layout-header{
 //   position: float;

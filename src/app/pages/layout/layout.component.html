@@ -1,20 +1,24 @@
 <nz-layout>
     <nz-header>
       <div class="logo"></div>
-        <div class="title">万物生低代码平台</div>
-      <div nz-dropdown [nzDropdownMenu]="menu" class="user-info"><span nz-icon nzType="user" nzTheme="outline"></span> {{userService.nickName}}</div>
+      <div class="title">万物生低代码平台</div>
+      <div  class="user-info">
+        <!-- <div>2025-01-01 12:00:00</div> -->
+        <div><span nz-icon nzType="user" nzTheme="outline"></span> 欢迎您，{{userService.nickName}} </div>
+        <div> <span nz-icon nzType="logout" nzTheme="outline" (click)="logOut()" class="logout"></span></div>
+      </div>
       <!-- <a >
         Hover me
         <span nz-icon nzType="down"></span>
       </a> -->
-      <nz-dropdown-menu #menu="nzDropdownMenu">
+      <!-- <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
          
           <li nz-menu-item (click)="logOut()"> 
             <span nz-icon nzType="logout" nzTheme="outline"></span>
             退出系统</li>
         </ul>
-      </nz-dropdown-menu>
+      </nz-dropdown-menu> -->
     </nz-header>
     <nz-layout>
       <nz-sider nzWidth="200px"  nzTheme="light" >

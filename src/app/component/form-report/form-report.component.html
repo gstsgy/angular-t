@@ -1,7 +1,7 @@
 <div class="body-content">
     <app-btns [btns]="commonObjs.btns" (clc)="commonObjs.btnClick($event)"></app-btns>
   
-    <app-forms #forms [form-cols]="commonObjs.formCols" [form-validate]="commonObjs.validateForm" (enter)="commonObjs.refresh()" >
+    <app-forms #forms [form-cols]="commonObjs.formCols"  (enter)="commonObjs.refresh()" [disabled]="commonObjs.disabled">
     </app-forms>
     <app-grids [templates]="templates" [data]="commonObjs.data" [form-grids]="commonObjs.formGrids" [search-query] ="commonObjs.searchQuery"
                (nzQueryParamsFun)="commonObjs.nzQueryParamsFun($event)" [isSelected]="commonObjs.isSelected"

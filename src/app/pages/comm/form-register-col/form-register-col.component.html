@@ -1,6 +1,6 @@
 <app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
 
-<app-forms #forms [form-cols]="formCols" [form-validate]="validateForm" (enter)="refresh()">
+<app-forms #forms [form-cols]="formCols"  (enter)="refresh()">
 </app-forms>
 <app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
  [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)"  >

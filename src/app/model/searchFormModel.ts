@@ -90,17 +90,17 @@ export default class SearchFormModel extends BaseForm  {
     }
 
     refresh() {
-        if(!this.validateForm.valid){
-            Object.values(this.validateForm.controls).forEach(control => {
-                if (control.invalid) {
-                    control.markAsDirty();
-                    control.updateValueAndValidity({onlySelf: true});
-                }
-            });
-            return;
+        for(let it of this.formCols){
+            if(it.required && !it.value){
+                this.myApi.warning(`${it.label}不能为空`);
+                return;
+            }
         }
-        let obj:any={...this.validateForm.value,...this.searchQuery}
-        this.myApi.get(this.serverUrl, obj).then(res => {
+        
+        let data = this.getFormColsData();
+        data['pageNum']= this.searchQuery.pageNum;
+        data['pageSize'] = this.searchQuery.pageSize;
+        this.myApi.get(this.serverUrl, data).then(res => {
             if(res.code===200||res.data){
                 this.searchQuery.total = res.data.total - 0;
                 this.data = res.data.records;
@@ -160,18 +160,16 @@ export default class SearchFormModel extends BaseForm  {
     }
 
     async exportAll(){
-        if(!this.validateForm.valid){
-            Object.values(this.validateForm.controls).forEach(control => {
-                if (control.invalid) {
-                    control.markAsDirty();
-                    control.updateValueAndValidity({onlySelf: true});
-                }
-            });
-            return;
+        for(let it of this.formCols){
+            if(it.required && !it.value){
+                this.myApi.warning(`${it.label}不能为空`);
+                return;
+            }
         }
-        let obj:any={...this.validateForm.value,...this.searchQuery}
-        obj['pageNum']= 1;
-        obj['pageSize'] = 50000;
+        
+       let obj = this.getFormColsData();
+       obj['pageNum']= 1;
+       obj['pageSize'] = 50000;
        const res = await this.myApi.get(this.serverUrl, obj);
        const arr =res.data.records.map((item : any,idx:number)=>{
             const obj = {} as any;
@@ -187,9 +185,4 @@ export default class SearchFormModel extends BaseForm  {
         }) 
         this.myApi.exportToExcel(arr,this.menuName);
     }
-
-    // commonObjs:any = {
-
-    // }
-
 }

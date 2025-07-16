@@ -1,12 +1,12 @@
 import {MyApiService} from "@service/my-api.service";
 import {BtnModel, DataSource, FormsModel} from "@model/forms";
-import {FormGroup, Validators} from "@angular/forms";
-import { UserService } from "@app/service/user.service";
 
 export default class BaseForm {
     isInit: boolean = false;
 
     isSelected = false;
+
+    disabled: boolean = false;
 
     formId: string = "";
 
@@ -16,7 +16,7 @@ export default class BaseForm {
 
     formCols: Array<FormsModel> = []
 
-    validateForm: FormGroup = new FormGroup({});
+    //validateForm: FormGroup = new FormGroup({});
 
     formGrids: Array<FormsModel> = []
 
@@ -48,13 +48,24 @@ export default class BaseForm {
         await this.myApi.get('form/cols', {formId: this.formId}).then(res => {
             if (res.code === 200) {
                 this.formCols = res.data;
-                const obj: any = {};
+                //const obj: any = {};
                 this.formCols.forEach(async item => {
                     item.defaultValue = this.getDefaultValue(item.defaultValue);
-                    obj[item.code] = this.myApi.fb.control({
-                        value: item.defaultValue,
-                        disabled: item.disabled ?? false
-                    }, item.required ? [Validators.required] : []);
+                    if(item.defaultValue){
+                        if (item.type === 'date') {
+                            item.defaultValue = this.myApi.dateParse(item.defaultValue);
+                        } else if (item.type === 'datetime') {
+                            item.defaultValue  = this.myApi.datetimeParse(item.defaultValue);
+                        } else if (item.type === 'time') {
+                            item.defaultValue = this.myApi.timeParse(item.defaultValue);
+                        }
+                        item.value = item.defaultValue;
+                    }
+                    
+                    // obj[item.code] = this.myApi.fb.control({
+                    //     value: item.defaultValue,
+                    //     disabled: item.disabled ?? false
+                    // }, item.required ? [Validators.required] : []);
                     if (item.optionModel) {
                         const dataSource:DataSource = JSON.parse(item.optionModel);
                         if(dataSource.type === 'static'){
@@ -71,7 +82,7 @@ export default class BaseForm {
                         
                     }
                 })
-                this.validateForm = this.myApi.fb.group(obj);
+                //this.validateForm = this.myApi.fb.group(obj);
 
 
             }
@@ -141,5 +152,23 @@ export default class BaseForm {
             return this.myApi.datetimeFormat(new Date());
         }
         return value;
+    }
+
+    getFormColsData(){
+        let data = {} as any;
+        this.formCols.forEach(it => {
+            if(!it.code.startsWith('_')){
+                if (it.type === 'date') {
+                    data[it.code] = this.myApi.dateFormat(data[it.code]);
+                } else if (it.type === 'datetime') {
+                    data[it.code] = this.myApi.datetimeFormat(data[it.code]);
+                } else if (it.type === 'time') {
+                    data[it.code] = this.myApi.timeFormat(data[it.code]);
+                }else{
+                    data[it.code] = it.value;
+                }  
+            }  
+        })
+        return data;
     }
 }

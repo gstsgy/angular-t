@@ -1,6 +1,6 @@
 <app-btns [btns]="btns" (clc)="btnClick($event)"></app-btns>
 
-<app-forms  [form-cols]="formCols" [form-validate]="validateForm">
+<app-forms  [form-cols]="formCols" [disabled]="disabled">
 </app-forms>
 <!--<app-grids [data]="data" [form-grids]="formGrids" [search-query] ="searchQuery"></app-grids>-->
 @if(!isInit){

@@ -7,19 +7,22 @@ export default class SingelSetFormModel extends BaseForm {
 
     updateObj:any={};
 
+
+
     constructor(public override myApi: MyApiService, public route: ActivatedRoute) {
         super(myApi);
-        this.route.queryParams.subscribe(res => {
+        this.route.queryParams.subscribe(async res => {
             this.id = res['id'];
             this.menuCode = res['menuCode'];
             this.menuName = res['menuName'];
-        
+            await this.getBtns(); 
             this.undo();
-            this.getBtns(); 
+            
         });
         this.route.params.subscribe(async (res) => {
             this.formId = res['formId'];
             await this.parse();
+            this.disabled = true;
         })
 
     }
@@ -44,11 +47,8 @@ export default class SingelSetFormModel extends BaseForm {
 
     add() {
         this.id = "";
-        this.validateForm.enable();
-        this.validateForm.reset();
-        this.formCols.forEach(it => {
-            this.validateForm.controls[it.code].enable();
-        })
+        this.restForm();
+        this.disabled = false;
         this.btns.forEach(it => {
             it.disable = it.code === 'add' || it.code === 'edit' || it.code === 'delete';
         })
@@ -59,30 +59,32 @@ export default class SingelSetFormModel extends BaseForm {
             setTimeout(() => this.undo(), 200);
             return;
         }
-        this.validateForm.disable();
+        this.disabled = true;
         if (this.id) {
             this.myApi.get(this.serverUrl, {id: this.id}).then(res => {
                 if (res.code === 200) {
                     this.updateObj = res.data;
-                    const obj: any = {};
                     this.formCols.forEach(it => {
-                        obj[it.code] = res.data[it.code];
-                        if (it.type === 'date') {
-                            obj[it.code] = this.myApi.dateParse(obj[it.code]);
-                        } else if (it.type === 'datetime') {
-                            obj[it.code] = this.myApi.datetimeParse(obj[it.code]);
-                        } else if (it.type === 'time') {
-                            obj[it.code] = this.myApi.timeParse(obj[it.code]);
+                       
+                        if(res.data[it.code]){
+                            if (it.type === 'date') {
+                                it.value = this.myApi.dateParse(res.data[it.code]);
+                            } else if (it.type === 'datetime') {
+                                it.value  = this.myApi.datetimeParse(res.data[it.code]);
+                            } else if (it.type === 'time') {
+                                it.value = this.myApi.timeParse(res.data[it.code]);
+                            } else{
+                                it.value = res.data[it.code];
+                            }
                         }
                     })
-                    this.validateForm.setValue(obj);
                     this.btns.forEach(it => {
                         it.disable = it.code === 'undo' || it.code === 'save' || it.code === 'delete';
                     })
                 }
             })
         } else {
-            this.validateForm.reset();
+            this.restForm();
             this.btns.forEach(it => {
                 it.disable = it.code === 'undo' || it.code === 'save' || it.code === 'edit' || it.code === 'delete';
             })
@@ -92,31 +94,16 @@ export default class SingelSetFormModel extends BaseForm {
     }
 
     save() {
-        if (!this.validateForm.valid) {
-            Object.values(this.validateForm.controls).forEach(control => {
-                if (control.invalid) {
-                    control.markAsDirty();
-                    control.updateValueAndValidity({onlySelf: true});
-                }
-            });
-            return;
-        }
-        let data = this.validateForm.value;
-        this.formCols.forEach(it => {
-            if (it.type === 'date') {
-                data[it.code] = this.myApi.dateFormat(data[it.code]);
-            } else if (it.type === 'datetime') {
-                data[it.code] = this.myApi.datetimeFormat(data[it.code]);
-            } else if (it.type === 'time') {
-                data[it.code] = this.myApi.timeFormat(data[it.code]);
+        for(let it of this.formCols){
+            if(it.required && !it.value){
+                this.myApi.warning(`${it.label}不能为空`);
+                return;
             }
-        })
-        data = Object.keys(data)
-        .filter(key => !key.startsWith('_'))
-        .reduce((acc : any, key) => {
-            acc[key] = data[key];
-            return acc;
-        }, {});
+        }
+        
+        let data = this.getFormColsData();
+       
+        
         if (this.id) {
             for(let code in data){
                 this.updateObj[code] = data[code];
@@ -135,8 +122,6 @@ export default class SingelSetFormModel extends BaseForm {
                 }
             })
         }
-
-
     }
 
     query() {
@@ -144,9 +129,7 @@ export default class SingelSetFormModel extends BaseForm {
     }
 
     edit() {
-        this.formCols.forEach(it => {
-            this.validateForm.controls[it.code].enable();
-        })
+        this.disabled = false;
         this.btns.forEach(it => {
             it.disable = it.code === 'add' || it.code === 'edit';
         })
@@ -158,10 +141,16 @@ export default class SingelSetFormModel extends BaseForm {
                 if (res.code === 200) {
                     this.myApi.success("删除成功");
                     this.id = "";
-                    this.validateForm.reset();
+                    this.restForm();
                     this.undo();
                 }
             })
         }
+    }
+
+    private restForm(){
+        this.formCols.forEach(it=>{
+            it.value = it.defaultValue;
+        })
     }
 }

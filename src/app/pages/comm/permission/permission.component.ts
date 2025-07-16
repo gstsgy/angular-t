@@ -50,6 +50,8 @@ export class PermissionComponent implements OnInit {
     currentRoleId: any = null;
 
     menusNode: NzTreeNodeOptions[] = [];
+
+    interfaceNode: NzTreeNodeOptions[] = [];
     defaultCheckedKeys:string[] = [];
     rolesModel: Array<{ label: null | string, checked: undefined | boolean, value: any }> = [];
 
@@ -62,6 +64,12 @@ export class PermissionComponent implements OnInit {
         this.myApi.get('rolemenu/menutree?type=1').then(res => {
             if (res.code === 200) {
                 this.menusNode = res.data;
+            }
+        });
+
+        this.myApi.get('rolemenu/interfacetree').then(res => {
+            if (res.code === 200) {
+                this.interfaceNode = res.data;
             }
         });
     }

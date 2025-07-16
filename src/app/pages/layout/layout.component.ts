@@ -11,11 +11,12 @@ import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {TabsComponent} from "@app/component/tabs/tabs.component";
 import {TabModel} from "@model/forms";
 import {MyApiService} from "@service/my-api.service";
-import { NzModalModule,NzModalService } from 'ng-zorro-antd/modal';
+import { Location } from '@angular/common';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [NzBreadCrumbModule, NzIconModule, NzMenuModule, NzLayoutModule, RouterOutlet, CommonModule, NzDropDownModule, TabsComponent],
+    imports: [NzBreadCrumbModule, NzIconModule, NzMenuModule, NzLayoutModule, RouterOutlet, CommonModule, NzDropDownModule, TabsComponent,NzButtonModule],
     templateUrl: './layout.component.html',
     styleUrl: './layout.component.less'
 })
@@ -23,10 +24,11 @@ export class LayoutComponent implements OnInit, AfterViewInit{
     @ViewChild(TabsComponent)
     tabs!: TabsComponent;
 
-    constructor(private readonly httpClient: MyHttpService, public readonly userService: UserService,public myApi:MyApiService) {
+    constructor(private readonly httpClient: MyHttpService, public readonly userService: UserService,public myApi:MyApiService,private location: Location) {
     }
 
     ngOnInit() {
+        this.cleanUrl();
         this.httpClient.get('auth/menus?type=1').then((data: any) => {
             if (data.code == 200) {
                 this.myApi.menus = data.data;
@@ -65,6 +67,27 @@ export class LayoutComponent implements OnInit, AfterViewInit{
 
     ngAfterViewInit(): void {
        // this.tabs.add()
+    }
+
+    clearCache() {
+        // 获取当前URL
+        let currentUrl = new URL(window.location.href);
+        
+        // 添加或更新时间戳参数
+        currentUrl.searchParams.set('t', new Date().getTime().toString());
+        
+        // 使用replace方法进行刷新并移除旧的历史记录
+        window.location.replace(currentUrl.toString());
+    }
+    cleanUrl(): void {
+        const urlTree = this.location.path(true); // 获取当前路径+查询参数
+        const url = new URL(urlTree, window.location.origin);
+    
+        if (url.searchParams.has('t')) {
+          url.searchParams.delete('t');
+          const cleanedPath = url.pathname + url.search;
+          this.location.replaceState(cleanedPath);
+        }
     }
 
 }

@@ -60,18 +60,56 @@ nz-header{
   }
   .user-info {
     font-size: 16px;
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    align-items: center;          // 垂直居中
+    justify-content: flex-end;    // 水平靠右
     width: 600px;
     color: #fff;
-    text-align: right;
-    &>div{
-      display: inline-block;
-      margin-left: 15px;
+    gap: 15px;                    // 替代 margin-left，更简洁
+  
+    > div {
+      white-space: nowrap;        // 防止文字换行
     }
-    .logout{
-      color: red;
+  
+    .logout {
+      font-size: 18px;
       cursor: pointer;
+      transition: all 0.2s ease;
+  
+      &:hover {
+        color: #faa;
+        text-decoration: underline;
+      }
+    }
+  
+    .header-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 64px;
+      cursor: pointer;
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+  
+      span:first-child {
+        font-size: 18px;
+        font-weight: bold;
+        height: 34px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+  
+      span:last-child {
+        height: 30px;
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+      }
     }
   }
 }

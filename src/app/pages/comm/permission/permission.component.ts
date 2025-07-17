@@ -1,23 +1,20 @@
-import {Component, OnInit, SimpleChange, SimpleChanges, TemplateRef, ViewChild} from '@angular/core';
-import SearchFormModel from "@model/searchFormModel";
+import {Component, OnInit} from '@angular/core';
 import {BtnsComponent} from "@app/component/btns/btns.component";
 import {FormsComponent} from "@app/component/forms/forms.component";
 import {GridsComponent} from "@app/component/grids/grids.component";
 import {MyApiService} from "@service/my-api.service";
-import {ActivatedRoute} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzInputDirective} from "ng-zorro-antd/input";
 import {NzSelectComponent} from "ng-zorro-antd/select";
 import {NzModalModule, NzModalService} from "ng-zorro-antd/modal";
-import {FormsModel} from "@model/forms";
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzCheckboxGroupComponent} from "ng-zorro-antd/checkbox";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
-import {NzFormatEmitEvent, NzTreeComponent, NzTreeModule, NzTreeNodeOptions} from 'ng-zorro-antd/tree';
+import { NzTreeModule, NzTreeNodeOptions} from 'ng-zorro-antd/tree';
 
 @Component({
     selector: 'app-user',
@@ -120,14 +117,6 @@ export class PermissionComponent implements OnInit {
                 })
             }
         })
-
-        // this.myApi.post(`rolemenu/roleinterface?roleId=${this.currentRoleId}`, this.getCheckInterface(this.interfaceNode)).then(res => {
-        //     if (res.code === 200) {
-        //         this.myApi.success("保存成功");
-        //         this.currentRoleId = null;
-        //         this.defaultCheckedKeys = [];
-        //     }
-        // })
     }
 
     getCheckBtn(arr: NzTreeNodeOptions[]) {

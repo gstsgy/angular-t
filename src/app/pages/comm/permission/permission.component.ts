@@ -52,7 +52,11 @@ export class PermissionComponent implements OnInit {
     menusNode: NzTreeNodeOptions[] = [];
 
     interfaceNode: NzTreeNodeOptions[] = [];
+
     defaultCheckedKeys:string[] = [];
+
+    defaultCheckedKeysInterface:string[] = [];
+
     rolesModel: Array<{ label: null | string, checked: undefined | boolean, value: any }> = [];
 
     ngOnInit(): void {
@@ -88,6 +92,12 @@ export class PermissionComponent implements OnInit {
 
                 }
             })
+
+            this.myApi.get(`rolemenu/interfaces?roleId=${this.currentRoleId}`).then(res => {
+                if (res.code === 200) {
+                   this.defaultCheckedKeysInterface= this.setCheckedInterface(this.interfaceNode,res.data);
+                }
+            })
         }
     }
 
@@ -98,11 +108,26 @@ export class PermissionComponent implements OnInit {
         }
         this.myApi.post(`rolemenu/rolemenu?roleId=${this.currentRoleId}`, this.getCheckBtn(this.menusNode)).then(res => {
             if (res.code === 200) {
-                this.myApi.success("保存成功");
-                this.currentRoleId = null;
+                //this.myApi.success("保存成功");
+                //this.currentRoleId = null;
                 this.defaultCheckedKeys = [];
+                this.myApi.post(`rolemenu/roleinterface?roleId=${this.currentRoleId}`, this.getCheckInterface(this.interfaceNode)).then(res => {
+                    if (res.code === 200) {
+                        this.myApi.success("保存成功");
+                        this.currentRoleId = null;
+                        this.defaultCheckedKeysInterface = [];
+                    }
+                })
             }
         })
+
+        // this.myApi.post(`rolemenu/roleinterface?roleId=${this.currentRoleId}`, this.getCheckInterface(this.interfaceNode)).then(res => {
+        //     if (res.code === 200) {
+        //         this.myApi.success("保存成功");
+        //         this.currentRoleId = null;
+        //         this.defaultCheckedKeys = [];
+        //     }
+        // })
     }
 
     getCheckBtn(arr: NzTreeNodeOptions[]) {
@@ -116,6 +141,28 @@ export class PermissionComponent implements OnInit {
             }
         }
         return resArr;
+       
+    }
+
+    getCheckInterface(arr: NzTreeNodeOptions[]) {
+        let resArr: any[] = [];
+        for (let jar of arr) {
+           for(let controller of jar.children??[]){
+               for(let method of controller.children??[]){
+                   if(method.checked){
+
+                    resArr.push({
+                        url:method.title.substring(0,method.title.lastIndexOf('-')),
+                        method:method.title.substring(method.title.lastIndexOf('-')+1),
+                        jar:jar.title,
+                        controller:controller.title,
+                        roleId:this.currentRoleId,
+                    })
+                   }  
+               }
+           }
+        }
+        return resArr;
     }
 
     setChecked(arr: NzTreeNodeOptions[], btns: string[]) {
@@ -127,5 +174,20 @@ export class PermissionComponent implements OnInit {
                 this.setChecked(arrKey.children,btns)
             }
         }
+    }
+
+    setCheckedInterface(arr: NzTreeNodeOptions[], interfaces: any[]) {
+        const methods = interfaces.map((it: { url: any; method: any; }) => `${it.url}-${it.method}`);
+        let resArr: string[] = [];
+        for (let jar of arr) {
+           for(let controller of jar.children??[]){
+               for(let method of controller.children??[]){
+                   if(method.title && methods.find(i=>i===method.title)){
+                      resArr.push(method.key)
+                   }  
+               }
+           }
+        }
+        return resArr;
     }
 }

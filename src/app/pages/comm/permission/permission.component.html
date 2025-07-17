@@ -5,17 +5,28 @@ nzShowSearch [nzOptions]="rolesModel" nzPlaceHolder="选择角色" class="role-s
    
 </nz-select>
 <button nz-button nzType="primary" style="margin-left: 35px" (click)="save()">保存</button>
-<nz-tree
-      #nzTreeComponent
-      [nzData]="menusNode"
-      [nzCheckedKeys]="defaultCheckedKeys"
-      nzCheckable
-      class="tree"
-    ></nz-tree>
 
-<nz-tree
+<div class="role-main">
+   <div>
+    <span>菜单权限</span>
+    <nz-tree
+    #nzTreeComponent
+    [nzData]="menusNode"
+    [nzCheckedKeys]="defaultCheckedKeys"
+    nzCheckable
+    class="tree"
+  ></nz-tree>
+   </div>
+   <div>
+    <span>接口权限</span>
+    <nz-tree
     #interfaceTree
     [nzData]="interfaceNode"
+    [nzCheckedKeys]="defaultCheckedKeysInterface"
     nzCheckable
     class="tree"
 ></nz-tree>
+   </div>
+</div>
+
+

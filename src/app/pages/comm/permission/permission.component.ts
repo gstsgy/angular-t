@@ -77,12 +77,10 @@ export class PermissionComponent implements OnInit {
 
     onRoleChange() {
         this.defaultCheckedKeys=[];
-        //console.log(this.currentRoleId);
         if (this.currentRoleId) {
 
             this.myApi.get(`rolemenu/menus?roleId=${this.currentRoleId}`).then(res => {
                 if (res.code === 200) {
-                   // console.log(res.data)
                     const btnIds: string[] = res.data.map((item: { menuId: string; }) => item.menuId);
                     this.setChecked(this.menusNode,btnIds);
                     this.defaultCheckedKeys = [...this.defaultCheckedKeys];

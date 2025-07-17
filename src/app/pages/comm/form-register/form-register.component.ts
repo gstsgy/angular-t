@@ -105,7 +105,6 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
         this.myApi.confirm(`是否确认带出表${this.importData.tableName}的字段}`,()=>{
             this.myApi.get(`form/table-columns?tableName=${this.importData.tableName}`).then(res => {
                 if (res.code === 200) {
-                    console.log(res.data)
                     const filterCode: string[] = ['update_flag','effective','insert_ymd','insert_id','update_ymd','update_id']
                     const tmpArr = res.data.filter((it:any)=> filterCode.indexOf(it.columnName) === -1);
                     let length = this.cols.length
@@ -199,8 +198,6 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
             }
         }else{
             this.dataSource = JSON.parse(item.optionModel);
-
-            console.log(this.dataSource)
         }
        
         this.modal.create({
@@ -257,7 +254,6 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
 
     drop(event: CdkDragDrop<string[]>): void {
-        console.log(event.previousIndex, event.currentIndex);
         moveItemInArray(this.cols, event.previousIndex, event.currentIndex);
         if (event.previousIndex !== event.currentIndex) {
             const [prevItem, currentItem] = [this.cols[event.previousIndex], this.cols[event.currentIndex]];

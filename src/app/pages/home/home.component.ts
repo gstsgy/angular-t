@@ -14,7 +14,6 @@ export class HomeComponent {
     ngOnInit() { 
       this.title = 'Home';
       // this.httpClient.get('/todos/1').then((data:any)=>{
-      //   console.log(data);
       // })
     }
 }

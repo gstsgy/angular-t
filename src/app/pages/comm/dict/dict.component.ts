@@ -82,7 +82,6 @@ export class DictComponent extends SearchFormModel {
 
     override gotoSetForm(obj:{ row: any, col: FormsModel }){
         this.dictItem = obj.row;
-        console.log(obj.row)
         this.modal.create({
             nzWidth: '640px',
             nzTitle: "选择按钮",

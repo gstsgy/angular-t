@@ -1,0 +1,76 @@
+<div  class="search-form" >
+    <!-- <div nz-row [nzGutter]="12" nzJustify="start"> -->
+        @for (control of formCol; track control) {
+            @if (control.isShow) {
+
+                        <div (keyup.enter)="enterEvent()">
+                            <div class="item">
+                                <div class="item-label">
+                                    <nz-form-label nzLabelWrap nzLabelAlign="right" [nzFor]="control.code" [nzRequired]="!!control.required"> {{ control.label }}</nz-form-label>
+                                </div>
+                           
+                                <div class="item-content"  >
+                            
+                                        @if (control.type === 'input') {
+                                            <input style="width: 100%"  nz-input [(ngModel)]="control.value" [disabled]="getDisabled(control)"  
+                                                [placeholder]="getPlaceholder(control.label)"/>
+                                        } @else if (control.type === 'password') {
+                                            <input style="width: 100%" type="password" nz-input [(ngModel)]="control.value" [disabled]="getDisabled(control)" 
+                                                [placeholder]="getPlaceholder(control.label)"/>
+                                        } @else if (control.type === 'number') {
+                                            <input style="width: 100%" type="number" nz-input [(ngModel)]="control.value" [disabled]="getDisabled(control)" 
+                                                [placeholder]="getPlaceholder(control.label)"/>
+                                        } @else if (control.type === 'switch') {
+                                            <nz-switch style="width: 100%" [(ngModel)]="control.value" [disabled]="getDisabled(control)" ></nz-switch>
+                                        }@else if (control.type === 'select') {
+                                            <nz-select style="width: 100%"
+                                            [(ngModel)]="control.value" [disabled]="getDisabled(control)" 
+                                                    nzAllowClear
+                                                    nzShowSearch
+                                                    [nzPlaceHolder]="getPlaceholder(control.label)"
+                                                    [nzOptions]="control.options??[]"
+                                            ></nz-select>
+                                        }
+                                        @else if (control.type === 'radio') {
+                                            <nz-radio-group [(ngModel)]="control.value" [disabled]="getDisabled(control)"  style="width: 100%" >
+                                                @for (op of control.options;track op){
+                                                    <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
+                                                }
+                                            </nz-radio-group>
+                                        }
+                                        @else if (control.type === 'date') {
+                                            <nz-date-picker style="width: 100%" [(ngModel)]="control.value" [disabled]="getDisabled(control)"  ></nz-date-picker>
+                                        }
+                                        @else if (control.type === 'datetime') {
+                                            <nz-date-picker style="width: 100%"
+                                                    nzShowTime
+                                                    nzFormat="yyyy-MM-dd HH:mm:ss"
+                                                    [(ngModel)]="control.value" [disabled]="getDisabled(control)" 
+                                            ></nz-date-picker>
+                                        }
+                                        @else if (control.type === 'time') {
+                                            <nz-time-picker style="width: 100%"  [(ngModel)]="control.value" [disabled]="getDisabled(control)"  >
+            
+                                            </nz-time-picker>
+                                        }
+                                        @else if (control.type === 'treeSelect') {
+                                            <nz-tree-select
+                                            style="width: 100%"
+                                                    [nzNodes]="control.options??[]"
+                                                    nzShowSearch
+                                                    [nzPlaceHolder]="getPlaceholder(control.label)"
+                                                    [(ngModel)]="control.value" [disabled]="getDisabled(control)" 
+                                            ></nz-tree-select>
+                                        }
+                                        @else if(control.type==='diy'){
+                                            <ng-container
+                                                *ngTemplateOutlet="getFormCode(control.code)!; context: { $implicit: control, rowData: control }"
+                                            ></ng-container>
+                                        }
+                                </div>
+                            </div>
+                           
+                        </div>
+            }
+        }
+</div>

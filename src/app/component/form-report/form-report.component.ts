@@ -21,7 +21,6 @@ export class FormReportComponent implements AfterViewInit {
   commonObjs: any = {}
 
   ngAfterViewInit(): void {
-    console.log(this.templates);
   }
 
 }

@@ -113,7 +113,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        //console.log(this.data)
         // 创建一个 MutationObserver 实例
         const observer = new MutationObserver(() => {
             this.updateHeight(); // 初始化逻辑
@@ -132,7 +131,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
-            //console.log(this.data)
             this.setOfCheckedId.clear();
             this.cd.detectChanges();
             (this.nzTableComponent as any).cdkVirtualScrollViewport?.checkViewportSize();
@@ -141,7 +139,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     nzQueryParams(params: NzTableQueryParams) {
-        //console.log(params);
         this.nzQueryParamsFun.emit(params);
     }
     nzPageIndexChange(event: number){
@@ -149,7 +146,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
     }
     nzPageSizeChange(event: number) {
-        //console.log(event);
         this.searchQuery.pageSize = event;
         this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
     }
@@ -170,7 +166,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     get isSelectAll() {
-        //console.log(this.setOfCheckedId, this.data)
         return this.setOfCheckedId.size === this.data.length && this.setOfCheckedId.size > 0;
     }
 
@@ -233,7 +228,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
 
     onResizeW({width}: NzResizeEvent, col: string): void {
-       // console.log(width, col)
         const ele = this.formGrid.find(it => it.code === col);
         if (ele) {
             ele.width = `${width}px`;

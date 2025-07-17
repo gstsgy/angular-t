@@ -1,0 +1,30 @@
+.search-form {
+  padding-left: 24px;
+  padding-top: 24px;
+  // background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  //padding-bottom: 5px;
+  //display: flex;
+  //flex-wrap: wrap;
+  //gap: 10px;
+}
+
+[nz-form-label] {
+  overflow: visible;
+}
+.item{
+  display: inline-flex; 
+  width: 260px;
+  margin-bottom: 20px;
+  .item-label{
+    width: 100px;
+    text-align: right;
+    flex-shrink: 0; // 禁止压缩
+  }
+  .item-content{
+    flex: 1; // 自动填充剩余空间
+    //width: calc(100% - 100px);
+    min-width: 0; // 防止内容溢出
+  }
+}

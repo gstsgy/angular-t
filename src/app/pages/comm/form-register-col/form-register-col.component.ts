@@ -47,7 +47,6 @@ export class FormRegisterColComponent  extends SearchFormModel implements OnInit
   }
 
   addRow(){
-    console.log(1111)
     this.data.push({
      
       "id": "",
@@ -65,6 +64,5 @@ export class FormRegisterColComponent  extends SearchFormModel implements OnInit
     })
     this.data = [...this.data];
     this.searchQuery.total = this.data.length;
-    //console.log(this.data)
   }
 }

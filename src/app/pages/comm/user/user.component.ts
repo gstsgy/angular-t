@@ -183,9 +183,5 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        console.log('分页参数检查:', {
-          total: this.searchQuery,
-          dataLength: this.data
-        });
       }
 }

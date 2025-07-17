@@ -42,7 +42,6 @@ export default class SearchFormModel extends BaseForm  {
               Object.defineProperty(myObj, key, {
                 get: () => this.commonObjs[key],
                 set: (v) => {
-                  //console.log(`属性 ${key} 被修改为 ${v}`);
                   this.commonObjs[key] = v;
                 },
                 configurable: true,
@@ -80,7 +79,6 @@ export default class SearchFormModel extends BaseForm  {
     btnClick(code:string){
         if(code==='refresh'){
             this.refresh();
-          //  console.log(2222)
         }else if(code==='export'){
             this.export();
         }
@@ -104,7 +102,6 @@ export default class SearchFormModel extends BaseForm  {
             if(res.code===200||res.data){
                 this.searchQuery.total = res.data.total - 0;
                 this.data = res.data.records;
-                console.log(this.data)
             }
            
         })
@@ -114,7 +111,6 @@ export default class SearchFormModel extends BaseForm  {
         if(params && params.pageIndex){
             this.searchQuery.pageNum = params.pageIndex;
             this.searchQuery.pageSize = params.pageSize;
-           // console.log(11111)
             this.refresh();
         }
     }

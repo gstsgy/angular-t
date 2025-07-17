@@ -61,11 +61,6 @@ export default class BaseForm {
                         }
                         item.value = item.defaultValue;
                     }
-                    
-                    // obj[item.code] = this.myApi.fb.control({
-                    //     value: item.defaultValue,
-                    //     disabled: item.disabled ?? false
-                    // }, item.required ? [Validators.required] : []);
                     if (item.optionModel) {
                         const dataSource:DataSource = JSON.parse(item.optionModel);
                         if(dataSource.type === 'static'){

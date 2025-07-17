@@ -34,7 +34,7 @@ export class MyApiService {
                 private readonly message: NzMessageService,
                 public fb: NonNullableFormBuilder,
                 private readonly router: Router,
-                private readonly modal: NzModalService,public readonly userService: UserService) {
+                public readonly modal: NzModalService,public readonly userService: UserService) {
     }
 
     navigateById(url: string, id: string): void {
@@ -174,7 +174,7 @@ export class MyApiService {
             nzOkDanger: true,
             nzOnOk: () => onFun(),
             nzCancelText: '否',
-            nzOnCancel: () => console.log('Cancel')
+            nzOnCancel: () => {}
         });
     }
 

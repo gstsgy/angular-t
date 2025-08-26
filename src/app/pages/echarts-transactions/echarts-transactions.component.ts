@@ -19,6 +19,7 @@ export class EchartsTransactionsComponent implements OnInit{
     year:null,
   }
   account_books: any[] = [];
+  totalAmount:number = 0;
   constructor(public myApi : MyApiService) { }
   ngOnInit() {
     this.paramsInit();
@@ -82,6 +83,45 @@ export class EchartsTransactionsComponent implements OnInit{
     lineChart.setOption(option);
   }
 
+  typeChart(typeChart :Map<string,number>){
+    const ec = echarts as any;
+    const lineChart = ec.init(document.getElementById('typeChart'));
+    const option = {
+      xAxis: {
+        max: 'dataMax'
+      },
+      yAxis: {
+        type: 'category',
+        data: [...typeChart.keys()],
+        inverse: true,
+        animationDuration: 300,
+        animationDurationUpdate: 300,
+        max: 8 // only the largest 3 bars will be displayed
+      },
+      series: [
+        {
+          realtimeSort: true,
+          name: 'X',
+          type: 'bar',
+          data: [...typeChart.values()],
+          label: {
+            show: true,
+            position: 'right',
+            valueAnimation: true
+          }
+        }
+      ],
+      legend: {
+        show: true
+      },
+      animationDuration: 3000,
+      animationDurationUpdate: 3000,
+      animationEasing: 'linear',
+      animationEasingUpdate: 'linear'
+    };
+    
+    lineChart.setOption(option);
+  }
   paramsInit(){
     this.myApi.get('/account_book/all-enum').then(res => {
       if (res.code === 200) {
@@ -95,7 +135,11 @@ export class EchartsTransactionsComponent implements OnInit{
       if (res.code === 200) {
         const map = new Map();
         const mapUserNames = new Map();
+        const typeChart = new Map();
+        this.totalAmount = 0;
         res.data.forEach((item:any)=>{
+          this.totalAmount += item.value;
+
           const name = item.userName;
           let userValue = item.value;
           if(mapUserNames.has(name)){
@@ -103,6 +147,16 @@ export class EchartsTransactionsComponent implements OnInit{
           }
           userValue = Math.round(userValue * 100) / 100;;
           mapUserNames.set(name,userValue);
+
+          
+          const type = item.type;
+          let typeValue = item.value;
+          if(typeChart.has(type)){
+            typeValue = typeChart.get(type)+item.value;
+            
+          }
+          typeValue = Math.round(typeValue * 100) / 100;;
+          typeChart.set(type,typeValue);
 
 
           const  key = item.time.slice(0,7);
@@ -115,6 +169,8 @@ export class EchartsTransactionsComponent implements OnInit{
         })
         this.initCharts([...map.keys()].reverse(),[...map.values()].reverse());
         this.initTwo(mapUserNames);
+        this.typeChart(typeChart);
+        this.totalAmount = Math.round(this.totalAmount * 100) / 100;
         // const ec = echarts as any;
         // const lineChart = ec.init(document.getElementById('lineChart'));
      

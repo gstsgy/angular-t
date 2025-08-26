@@ -4,10 +4,11 @@ import * as echarts from 'echarts';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { MyApiService } from '@app/service/my-api.service';
 import { isTemplateRef } from 'ng-zorro-antd/core/util';
+import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 @Component({
   selector: 'app-echarts-transactions',
   standalone: true,
-  imports: [FormsModule,NzSelectModule],
+  imports: [FormsModule,NzSelectModule,NzCalendarModule],
   templateUrl: './echarts-transactions.component.html',
   styleUrl: './echarts-transactions.component.less'
 })

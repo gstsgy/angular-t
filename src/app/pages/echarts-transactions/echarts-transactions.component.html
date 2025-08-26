@@ -1,0 +1,21 @@
+ <div class="main-content">
+    <div>
+        账本
+        <nz-select [(ngModel)]="params.account_book_id" style="width: 180px;" [nzOptions]="account_books" (ngModelChange)="getData()">
+           
+          </nz-select>
+          年份
+          <nz-select ngModel="params.year" style="width: 180px;" >
+            <nz-option nzValue="2024" nzLabel="2024"></nz-option>
+            <nz-option nzValue="2025" nzLabel="2025"></nz-option>
+            </nz-select>
+     </div>
+    <div class="echarts">
+        <div id="lineChart" style="width: 600px;height:400px;"></div>
+        <div id="twoLineChart" style="width: 600px;height:400px;"></div>
+    </div>
+    
+
+ </div>
+ 
+ 

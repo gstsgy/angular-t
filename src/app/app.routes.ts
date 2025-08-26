@@ -16,6 +16,7 @@ export const routes: Routes = [
           {path:'role/:formId',loadComponent: () => import('@pages/comm/role/role.component').then(m => m.RoleComponent), data: { keep: true }},
           {path:'permission/:formId',loadComponent: () => import('@pages/comm/permission/permission.component').then(m => m.PermissionComponent), data: { keep: true }},
           {path:'formSql/:formId',loadComponent: () => import('@pages/comm/form-sql/form-sql.component').then(m => m.FormSqlComponent), data: { keep: true }},
+          {path:'echarts-transactions',loadComponent: () => import('@pages/echarts-transactions/echarts-transactions.component').then(m => m.EchartsTransactionsComponent), data: { keep: true }},
       ]
 
    },

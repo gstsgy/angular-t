@@ -124,7 +124,7 @@ export class EchartsTransactionsComponent implements OnInit{
     lineChart.setOption(option);
   }
   paramsInit(){
-    this.myApi.get('/account_book/all-enum').then(res => {
+    this.myApi.get('/account_book/all-self-enum').then(res => {
       if (res.code === 200) {
         //
         this.account_books = res.data;

@@ -73,7 +73,8 @@ export default class SearchFormModel extends BaseForm  {
     searchQuery: any = {
         pageNum: 1,
         pageSize: 50,
-        
+        orderBy: null,
+        isAsc:true,
         total: 0
     }
 
@@ -99,6 +100,8 @@ export default class SearchFormModel extends BaseForm  {
         let data = this.getFormColsData();
         data['pageNum']= this.searchQuery.pageNum;
         data['pageSize'] = this.searchQuery.pageSize;
+        data['orderBy'] = this.searchQuery.orderBy;
+        data['isAsc'] = this.searchQuery.isAsc;
         this.myApi.get(this.serverUrl, data).then(res => {
             if(res.code===200||res.data){
                 this.searchQuery.total = res.data.total - 0;
@@ -108,13 +111,14 @@ export default class SearchFormModel extends BaseForm  {
         })
     }
 
-    nzQueryParamsFun(params: NzTableQueryParams){
-        if(params && params.pageIndex){
-            this.searchQuery.pageNum = params.pageIndex;
-            this.searchQuery.pageSize = params.pageSize;
-            this.refresh();
-        }
+    queryFun(params: any){
+        this.searchQuery.pageNum = params.pageNum;
+        this.searchQuery.pageSize = params.pageSize;
+        this.searchQuery.orderBy = params.orderBy;
+        this.searchQuery.isAsc = params.isAsc;
+        this.refresh();
     }
+
 
 
     gotoSetForm(obj:{ row: any, col: FormsModel }){

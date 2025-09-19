@@ -4,7 +4,7 @@
     <app-forms #forms [form-cols]="commonObjs.formCols"  (enter)="commonObjs.refresh()" [disabled]="commonObjs.disabled">
     </app-forms>
     <app-grids [templates]="templates" [data]="commonObjs.data" [form-grids]="commonObjs.formGrids" [search-query] ="commonObjs.searchQuery"
-               (nzQueryParamsFun)="commonObjs.nzQueryParamsFun($event)" [isSelected]="commonObjs.isSelected" (selectData)="commonObjs.getSelected($event)"
+               (queryFun)="commonObjs.queryFun($event)" [isSelected]="commonObjs.isSelected" (selectData)="commonObjs.getSelected($event)"
                (colDblClick)="commonObjs.gotoSetForm($event)" class="app-grids"></app-grids>
     
     @if(!commonObjs.isInit){

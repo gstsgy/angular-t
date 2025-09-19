@@ -3,7 +3,7 @@
 <app-forms #forms [form-cols]="formCols"  (enter)="refresh()">
 </app-forms>
 <app-grids [data]="data" [isSelected]="isSelected" (selectData)="getSelected($event)"  [form-grids]="formGrids"
- [search-query] ="searchQuery" (nzQueryParamsFun)="nzQueryParamsFun($event)"  >
+ [search-query] ="searchQuery" (nzQueryParamsFun)="queryFun($event)"  >
  <!-- <ng-template appSmartTemplate="_editForm" let-row>
     <a nz-button nzType="link" (click)="openModel('表单',col,row)">编辑表单</a>
       </ng-template>

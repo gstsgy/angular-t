@@ -72,6 +72,8 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     searchQuery: any = {
         pageNum: 1,
         pageSize: 50,
+        orderBy: null,
+        isAsc:true,
         total: 0
     }
     pageSizeOptions = [50, 200, 500, 2000, 5000]
@@ -82,7 +84,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     setOfCheckedId: Set<number> = new Set<number>();
 
     @Output()
-    nzQueryParamsFun: EventEmitter<NzTableQueryParams> = new EventEmitter();
+    queryFun: EventEmitter<any> = new EventEmitter();
 
     @Output()
     colDblClick: EventEmitter<{ row: any, col: FormsModel }> = new EventEmitter();
@@ -139,15 +141,17 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     nzQueryParams(params: NzTableQueryParams) {
-        this.nzQueryParamsFun.emit(params);
+        this.searchQuery.pageNum = params.pageIndex;
+        this.searchQuery.pageSize = params.pageSize;
+        this.queryFun.emit(this.searchQuery);
     }
     nzPageIndexChange(event: number){
         this.searchQuery.pageNum = event;
-        this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
+        this.queryFun.emit(this.searchQuery);
     }
     nzPageSizeChange(event: number) {
         this.searchQuery.pageSize = event;
-        this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [], filter: []});
+        this.queryFun.emit(this.searchQuery);
     }
 
     edit(row: any, col: FormsModel) {
@@ -202,6 +206,9 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     onSort(event: string | null, col: string) {
         console.log(event, col);
+        this.searchQuery.isAsc = event==='ascend';
+        this.searchQuery.orderBy = col;
+        this.queryFun.emit(this.searchQuery);
        // this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [{key: event.key, value: event.value}], filter: []});
     }
 

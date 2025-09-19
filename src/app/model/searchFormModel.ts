@@ -73,6 +73,7 @@ export default class SearchFormModel extends BaseForm  {
     searchQuery: any = {
         pageNum: 1,
         pageSize: 50,
+        
         total: 0
     }
 

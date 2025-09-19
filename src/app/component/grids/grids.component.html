@@ -25,6 +25,9 @@
       <th cdkDrag  class="cdk-drag" [nzWidth]="control.width || 'auto'"
       nz-resizable
       nzBounds="window"
+      [nzShowSort] = "control.isSort"
+      [nzSortFn]="true"
+      (nzSortOrderChange)="onSort($event, control.code)"
       nzPreview
       (nzResizeEnd)="onResizeW($event, control.code)"
   >

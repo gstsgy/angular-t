@@ -9,6 +9,8 @@ interface FormsModel {
     value: any | null,
     required: boolean | null,
     isShow: boolean,
+    isSort: boolean| null,
+    isFilter: boolean| null,
     disable?: boolean | null,
     editable?: boolean | null,
     options?: Array<any>,

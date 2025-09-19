@@ -200,6 +200,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         moveItemInArray(this.formGrid, event.previousIndex, event.currentIndex);
     }
 
+    onSort(event: string | null, col: string) {
+        console.log(event, col);
+       // this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [{key: event.key, value: event.value}], filter: []});
+    }
+
     private updateHeight() {
         // 39是表头高度  32 是分页器高度 10是margin-top
         const lasth = this.el.nativeElement.offsetHeight- 39-32-10;

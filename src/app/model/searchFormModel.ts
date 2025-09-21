@@ -74,7 +74,7 @@ export default class SearchFormModel extends BaseForm  {
         pageNum: 1,
         pageSize: 50,
         orderBy: null,
-        isAsc:true,
+        asc:true,
         total: 0
     }
 
@@ -101,7 +101,7 @@ export default class SearchFormModel extends BaseForm  {
         data['pageNum']= this.searchQuery.pageNum;
         data['pageSize'] = this.searchQuery.pageSize;
         data['orderBy'] = this.searchQuery.orderBy;
-        data['isAsc'] = this.searchQuery.isAsc;
+        data['asc'] = this.searchQuery.asc;
         this.myApi.get(this.serverUrl, data).then(res => {
             if(res.code===200||res.data){
                 this.searchQuery.total = res.data.total - 0;
@@ -115,7 +115,7 @@ export default class SearchFormModel extends BaseForm  {
         this.searchQuery.pageNum = params.pageNum;
         this.searchQuery.pageSize = params.pageSize;
         this.searchQuery.orderBy = params.orderBy;
-        this.searchQuery.isAsc = params.isAsc;
+        this.searchQuery.asc = params.asc;
         this.refresh();
     }
 

@@ -73,7 +73,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         pageNum: 1,
         pageSize: 50,
         orderBy: null,
-        isAsc:true,
+        asc:true,
         total: 0
     }
     pageSizeOptions = [50, 200, 500, 2000, 5000]
@@ -206,8 +206,12 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     onSort(event: string | null, col: string) {
         console.log(event, col);
-        this.searchQuery.isAsc = event==='ascend';
+
+        this.searchQuery.asc = event==='ascend';
         this.searchQuery.orderBy = col;
+        if(event===null){
+            this.searchQuery.orderBy = null;
+        }
         this.queryFun.emit(this.searchQuery);
        // this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [{key: event.key, value: event.value}], filter: []});
     }

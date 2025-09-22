@@ -28,6 +28,10 @@
       [nzShowSort] = "control.isSort"
       [nzSortFn]="true"
       (nzSortOrderChange)="onSort($event, control.code)"
+      [nzShowFilter]="control.isFilter"
+      [nzFilters]="nzFiltersData.get(control.code)??[]"
+      [nzFilterFn]="control.filterFn??true"
+     
       nzPreview
       (nzResizeEnd)="onResizeW($event, control.code)"
   >

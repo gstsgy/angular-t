@@ -10,9 +10,7 @@ import {
     ElementRef,
     NgZone,
     ChangeDetectorRef,
-    HostListener,
     ViewChild,
-    ContentChildren,
     QueryList,
     TemplateRef
 } from '@angular/core';
@@ -25,7 +23,6 @@ import {CdkDragDrop, moveItemInArray, DragDropModule} from '@angular/cdk/drag-dr
 import {NzResizableModule, NzResizeEvent} from 'ng-zorro-antd/resizable';
 import { CommonModule } from '@angular/common';
 import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
-
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzSwitchModule} from 'ng-zorro-antd/switch';
 import {NzSelectComponent} from "ng-zorro-antd/select";
@@ -64,6 +61,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     @Input('isSelected')
     isSelected = false;
+
+    nzFiltersData : Map<String,Array<{
+        text:string;
+        value:string;
+    }>>=new Map();
 
     @Input('editable')
     editable = false;
@@ -137,8 +139,14 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             this.cd.detectChanges();
             (this.nzTableComponent as any).cdkVirtualScrollViewport?.checkViewportSize();
             this.updateHeight();
+            this.updateFiltersData();
+        }
+        else if(changes['formGrid']){
+            this.updateFiltersFn();
         }
     }
+
+
 
     nzQueryParams(params: NzTableQueryParams) {
         this.searchQuery.pageNum = params.pageIndex;
@@ -205,17 +213,31 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     onSort(event: string | null, col: string) {
-        console.log(event, col);
-
         this.searchQuery.asc = event==='ascend';
         this.searchQuery.orderBy = col;
         if(event===null){
             this.searchQuery.orderBy = null;
         }
         this.queryFun.emit(this.searchQuery);
-       // this.nzQueryParamsFun.emit({pageIndex: this.searchQuery.pageNum, pageSize: this.searchQuery.pageSize, sort: [{key: event.key, value: event.value}], filter: []});
     }
 
+    private updateFiltersFn(){
+        this.formGrid.filter(it=>it.isFilter).forEach(it=>{
+           it.filterFn = (list: string[], item: any) => list.some(name => item[it.code].indexOf(name) !== -1)
+        })
+    }
+
+    private updateFiltersData(){
+        this.formGrid.filter(it=>it.isFilter).forEach(it=>{
+            const arr:{text:string;value:string}[]=[];
+            this.data.forEach(item=>{
+                if(!arr.find(i=>i.value===item[it.code])){
+                    arr.push({text:item[it.code],value:item[it.code]})
+                }
+            })
+            this.nzFiltersData.set(it.code,arr);
+        })
+    }
     private updateHeight() {
         // 39是表头高度  32 是分页器高度 10是margin-top
         const lasth = this.el.nativeElement.offsetHeight- 39-32-10;

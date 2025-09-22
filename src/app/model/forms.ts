@@ -1,4 +1,5 @@
 import {DetachedRouteHandle} from "@angular/router";
+import { NzTableFilterFn } from "ng-zorro-antd/table";
 
 type FormType='input'|'number'|'password'|'switch'|'select'|'radio'|'date'|'time'|'datetime'|'treeSelect'|'diy';
 
@@ -17,6 +18,7 @@ interface FormsModel {
     optionModel?: string | null,
     width?: string | null,
     defaultValue?: any | null,
+    filterFn?: NzTableFilterFn
 }
 
 interface ResponseBean {

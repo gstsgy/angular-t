@@ -154,11 +154,11 @@ export default class BaseForm {
         this.formCols.forEach(it => {
             if(!it.code.startsWith('_')){
                 if (it.type === 'date') {
-                    data[it.code] = this.myApi.dateFormat(data[it.code]);
+                    data[it.code] = this.myApi.dateFormat(it.value);
                 } else if (it.type === 'datetime') {
-                    data[it.code] = this.myApi.datetimeFormat(data[it.code]);
+                    data[it.code] = this.myApi.datetimeFormat(it.value);
                 } else if (it.type === 'time') {
-                    data[it.code] = this.myApi.timeFormat(data[it.code]);
+                    data[it.code] = this.myApi.timeFormat(it.value);
                 }else{
                     data[it.code] = it.value;
                 }  

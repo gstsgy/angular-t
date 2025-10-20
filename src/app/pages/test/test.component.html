@@ -2,7 +2,27 @@
 <app-acc-editor></app-acc-editor> -->
 
 <div class="container">
+  <button (click)="down()">下载</button>
+  <button (click)="getQr()">获取二维码</button>
   <button (click)="editor1()">点击</button>
+  <button (click)="getQr1()">验证</button>
+  <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+    <button nz-button>
+      <span nz-icon nzType="upload"></span>
+      Select File
+    </button>
+  </nz-upload>
+  <button
+  nz-button
+  nzType="primary"
+  
+  (click)="handleUpload()"
+  [disabled]="fileList.length === 0"
+>
+  {{ uploading ? 'Uploading' : 'Start Upload' }}
+</button>
+
+<nz-qrcode [nzValue]="qr"></nz-qrcode>
     <!-- <h1>XML 编辑器</h1>
     
     <app-ace-editor 

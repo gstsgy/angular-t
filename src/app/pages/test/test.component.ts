@@ -5,10 +5,12 @@ import { FormsModel } from "@app/model/forms";
 import BaseForm from "@model/base-form";
 import { MyApiService } from "@service/my-api.service";
 import { NzModalRef } from "ng-zorro-antd/modal";
+import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 @Component({
   selector: "app-test",
   standalone: true,
-  imports: [AccEditorComponent, FormsVerticalComponent],
+  imports: [AccEditorComponent, FormsVerticalComponent,NzUploadModule,NzQRCodeModule],
   templateUrl: "./test.component.html",
   styleUrl: "./test.component.less",
 })
@@ -26,7 +28,9 @@ export class TestComponent extends BaseForm {
   </root>`;
 
   error: string | null = null;
-
+  uploading = false;
+  fileList: NzUploadFile[] = [];
+  qr:string='';
   @ViewChild(AccEditorComponent) editor!: AccEditorComponent;
 
   formatXml(): void {
@@ -61,5 +65,36 @@ export class TestComponent extends BaseForm {
       model.componentInstance.formCol = this.formCols;
     }
     
+  }
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
+  handleUpload(): void {
+    const formData = new FormData();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.fileList.forEach((file: any) => {
+      formData.append('file', file);
+    });
+    this.uploading = true;
+    this.myApi.post('file/upload',formData)
+    // You can use any AJAX library you like
+  }
+  down(){
+    this.myApi.down(`file/download?id=1978835568335884289`)
+  }
+
+  getQr(){
+    this.myApi.get('user/qr').then(res=>{
+      this.qr=res.data;
+    })
+  }
+
+  getQr1(){
+    this.myApi.showPrompt("请输入code").then(res=>{
+      this.myApi.get('user/qr1?secret=5D2RSMSL25UGFOH6&code='+res).then(res=>{
+        this.qr=res.data;
+      })
+    })
   }
 }

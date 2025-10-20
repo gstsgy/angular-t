@@ -23,6 +23,7 @@ export class LoginComponent {
     store:MyLocalStore = new MyLocalStore('login');
     validateForm  = this.fb.group({
         code: this.fb.control(this.store.get('code') , [Validators.required]),
+        code1: this.fb.control(0 , []),
         passwd: this.fb.control(this.store.get('passwd') , [Validators.required]),
         checked: this.fb.control(this.store.get('checked'),[])
     });
@@ -37,12 +38,16 @@ export class LoginComponent {
             });
             return;
         }
-        this.httpClient.post('auth/login',this.validateForm.value).then((data:any)=>{
+        this.httpClient.post('auth/login?code='+this.validateForm.value.code1,this.validateForm.value).then((data:any)=>{
             if(data.code == 200){
                 if(this.validateForm.value.checked){
                     this.store.set('code',this.validateForm.value.code);
                     this.store.set('passwd',this.validateForm.value.passwd);
                     this.store.set('checked',this.validateForm.value.checked);
+                }else{
+                    this.store.remove('code');
+                    this.store.remove('passwd');
+                    this.store.remove('checked');
                 }
                
                 this.userService.token =  data.data;

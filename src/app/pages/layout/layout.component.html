@@ -3,14 +3,14 @@
       <div class="logo"></div>
       <div class="title">万物生低代码平台</div>
       <div  class="user-info">
-        <div class="header-btn" (click)="clearCache()"> <span nz-icon nzType="sync" nzTheme="outline"></span> <span>清空缓存</span></div>
+        <button class="header-btn" nz-button nzType="default" nzSize="small" (click)="clearCache()" type="button"><span nz-icon nzType="sync" nzTheme="outline"></span> <span>清空缓存</span></button>
         <!-- <div>2025-01-01 12:00:00</div> -->
         <div>
           <button nz-button nzType="default" nzShape="circle" nzSize="small">
             <span nz-icon nzType="user" nzTheme="outline"></span></button>
           <!-- <span nz-icon nzType="user" nzTheme="outline"></span>  -->
           欢迎您，{{userService.nickName}} </div>
-        <div> <span nz-icon nzType="logout" nzTheme="outline" (click)="logOut()" class="logout"></span></div>
+        <div> <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="logOut()" type="button" class="logout"><span nz-icon nzType="logout" nzTheme="outline"></span></button></div>
       </div>
       <!-- <a >
         Hover me
@@ -26,7 +26,7 @@
       </nz-dropdown-menu> -->
     </nz-header>
     <nz-layout>
-      <nz-sider nzWidth="200px"  nzTheme="light" >
+      <nz-sider [nzWidth]="200"  nzTheme="light" >
         <ul nz-menu nzMode="inline" class="sider-menu">
           <li *ngFor="let item of myApi.menus" nz-submenu  [nzIcon]="item.icon" [nzTitle]="item.name">
             <ul>
@@ -44,3 +44,11 @@
       </nz-layout>
     </nz-layout>
   </nz-layout>
+
+
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="开启二次认证" (nzOnCancel)="isVisible=false" nzOkText="已绑定" (nzOnOk)="isVisible=false">
+    <ng-container *nzModalContent>
+      <p>请在手机商店下载 “Microsoft Authenticator” 应用，扫描二维码进行二次认证</p>
+      <nz-qrcode nzValue="https://ng.ant.design/"></nz-qrcode>
+    </ng-container>
+  </nz-modal>

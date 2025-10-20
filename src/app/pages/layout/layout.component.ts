@@ -13,17 +13,19 @@ import {TabModel} from "@model/forms";
 import {MyApiService} from "@service/my-api.service";
 import { Location } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [NzBreadCrumbModule, NzIconModule, NzMenuModule, NzLayoutModule, RouterOutlet, CommonModule, NzDropDownModule, TabsComponent,NzButtonModule],
+    imports: [NzBreadCrumbModule, NzIconModule, NzMenuModule, NzLayoutModule, RouterOutlet, CommonModule, NzDropDownModule, TabsComponent,NzButtonModule,NzModalModule,NzQRCodeModule],
     templateUrl: './layout.component.html',
     styleUrl: './layout.component.less'
 })
 export class LayoutComponent implements OnInit, AfterViewInit{
     @ViewChild(TabsComponent)
     tabs!: TabsComponent;
-
+    isVisible:boolean = false;
     constructor(private readonly httpClient: MyHttpService, public readonly userService: UserService,public myApi:MyApiService,private location: Location) {
     }
 
@@ -39,6 +41,10 @@ export class LayoutComponent implements OnInit, AfterViewInit{
                 this.userService.nickName = data.data.nickName;
                 this.userService.userId = data.data.id;
                 this.userService.code = data.data.code;
+               
+                if(!data.data.totpsecret){
+                    this.isVisible = true;
+                }
             }
         })
 

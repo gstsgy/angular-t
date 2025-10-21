@@ -46,9 +46,9 @@
   </nz-layout>
 
 
-  <nz-modal [(nzVisible)]="isVisible" nzTitle="开启二次认证" (nzOnCancel)="isVisible=false" nzOkText="已绑定" (nzOnOk)="isVisible=false">
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="开启二次认证" (nzOnCancel)="isVisible=false" nzOkText="已绑定" (nzOnOk)="bindQrcode()">
     <ng-container *nzModalContent>
       <p>请在手机商店下载 “Microsoft Authenticator” 应用，扫描二维码进行二次认证</p>
-      <nz-qrcode nzValue="https://ng.ant.design/"></nz-qrcode>
+      <nz-qrcode [nzValue]="qrcode"></nz-qrcode>
     </ng-container>
   </nz-modal>

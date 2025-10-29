@@ -1,4 +1,42 @@
-<p>home works!</p>
-<div>
-    {{title}}
+<div class="home-container">
+  <div class="welcome-section">
+    <h1>欢迎使用万物生低代码平台</h1>
+    <p class="subtitle">一个高效、灵活的低代码开发平台</p>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-value">{{menuCount}}</span>
+        <span class="stat-label">功能模块</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{userCount}}</span>
+        <span class="stat-label">活跃用户</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{version}}</span>
+        <span class="stat-label">系统版本</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="quick-actions">
+    <h2>快速开始</h2>
+    <div class="actions-grid">
+      <div class="action-card" (click)="goToPage('form-register')">
+        <span nz-icon nzType="form" nzTheme="outline" class="action-icon"></span>
+        <span class="action-text">表单设计</span>
+      </div>
+      <div class="action-card" (click)="goToPage('searchForm')">
+        <span nz-icon nzType="search" nzTheme="outline" class="action-icon"></span>
+        <span class="action-text">查询配置</span>
+      </div>
+      <div class="action-card" (click)="goToPage('setForm')">
+        <span nz-icon nzType="setting" nzTheme="outline" class="action-icon"></span>
+        <span class="action-text">系统设置</span>
+      </div>
+      <div class="action-card" (click)="goToPage('dict')">
+        <span nz-icon nzType="book" nzTheme="outline" class="action-icon"></span>
+        <span class="action-text">数据字典</span>
+      </div>
+    </div>
+  </div>
 </div>

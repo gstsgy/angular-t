@@ -1,16 +1,45 @@
 <nz-layout>
     <nz-header>
-      <div class="logo"></div>
-      <div class="title">万物生低代码平台</div>
-      <div  class="user-info">
-        <button class="header-btn" nz-button nzType="default" nzSize="small" (click)="clearCache()" type="button"><span nz-icon nzType="sync" nzTheme="outline"></span> <span>清空缓存</span></button>
+      <div class="header-left">
+        <span class="logo" nz-icon nzType="code-sandbox" nzTheme="outline"></span>
+        <div class="title">万物生低代码平台</div>
+      </div>
+<!--      <div class="header-center">-->
+<!--        &lt;!&ndash; 菜单搜索框 &ndash;&gt;-->
+<!--        <div class="menu-search">-->
+<!--          <nz-input-group nzSearch [nzAddOnAfter]="searchSuffix">-->
+<!--            <input type="text" nz-input placeholder="搜索菜单..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)" (keyup.enter)="searchMenu()" />-->
+<!--          </nz-input-group>-->
+<!--          <ng-template #searchSuffix>-->
+<!--            <button nz-button nzSearch nzType="primary" (click)="searchMenu()">-->
+<!--              <span nz-icon nzType="search"></span>-->
+<!--            </button>-->
+<!--          </ng-template>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="user-info">
+        <button class="header-btn" nz-button nzType="default" nzSize="small" (click)="clearCache()" type="button" nz-tooltip nzTooltipTitle="清空缓存">
+          <span nz-icon nzType="sync" nzTheme="outline"></span>
+        </button>
         <!-- <div>2025-01-01 12:00:00</div> -->
-        <div>
-          <button nz-button nzType="default" nzShape="circle" nzSize="small">
-            <span nz-icon nzType="user" nzTheme="outline"></span></button>
-          <!-- <span nz-icon nzType="user" nzTheme="outline"></span>  -->
-          欢迎您，{{userService.nickName}} </div>
-        <div> <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="logOut()" type="button" class="logout"><span nz-icon nzType="logout" nzTheme="outline"></span></button></div>
+        <div class="user-actions">
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" nz-dropdown [nzDropdownMenu]="userMenu" nzPlacement="bottomRight">
+            <span nz-icon nzType="user" nzTheme="outline"></span>
+          </button>
+          <nz-dropdown-menu #userMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item>
+                <span nz-icon nzType="user" nzTheme="outline"></span>
+                <span>欢迎您，{{userService.nickName}}</span>
+              </li>
+              <li nz-menu-divider></li>
+              <li nz-menu-item (click)="logOut()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                <span>退出登录</span>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
       </div>
       <!-- <a >
         Hover me

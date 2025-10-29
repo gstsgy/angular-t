@@ -1,10 +1,7 @@
 <div class="body">
-    <div class="tab-scroll-button left" onclick="scrollTabs(-100)">
+    <div class="tab-scroll-button left" (click)="scrollTabs(-100)">
         <span nz-icon nzType="left" nzTheme="outline"></span>
     </div>
-<!--    <div class="left-right" >-->
-<!--        <span class="left-right-img" nz-icon nzType="left" (click)="left()"></span>-->
-<!--    </div>-->
     <div class="tabs-container">
     @for(item of myApi.tabs;track item;let i =$index){
         <div class="tab-item" [ngClass]="{'active':item.active}" (contextmenu)="contextMenu(item.active,$event, menu)" (click)="active(item)" >
@@ -21,10 +18,7 @@
         </nz-dropdown-menu>
     }
     </div>
-<!--    <div class="left-right" >-->
-<!--        <span class="left-right-img" nz-icon nzType="right" (click)="left()"></span>-->
-<!--    </div>-->
-    <div class="tab-scroll-button right" onclick="scrollTabs(100)">
+    <div class="tab-scroll-button right" (click)="scrollTabs(100)">
         <span nz-icon nzType="right" nzTheme="outline"></span>
     </div>
 </div>

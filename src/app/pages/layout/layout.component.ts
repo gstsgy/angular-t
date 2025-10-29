@@ -4,7 +4,6 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzMenuModule } from "ng-zorro-antd/menu";
 import { RouterOutlet } from "@angular/router";
-import { MyHttpService } from "@service/my-http.service";
 import { UserService } from "@service/user.service";
 import { CommonModule } from "@angular/common";
 import { NzDropDownModule } from "ng-zorro-antd/dropdown";
@@ -34,14 +33,13 @@ import { NzQRCodeModule } from "ng-zorro-antd/qr-code";
   templateUrl: "./layout.component.html",
   styleUrl: "./layout.component.less",
 })
-export class LayoutComponent implements OnInit, AfterViewInit {
+export class LayoutComponent implements OnInit {
   @ViewChild(TabsComponent)
   tabs!: TabsComponent;
   isVisible: boolean = false;
   totpsecret: string | null = "";
   qrcode: string = "";
   constructor(
-    private readonly httpClient: MyHttpService,
     public readonly userService: UserService,
     public myApi: MyApiService,
     private location: Location
@@ -49,12 +47,12 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.cleanUrl();
-    this.httpClient.get("auth/menus?type=1").then((data: any) => {
+    this.myApi.get("auth/menus?type=1").then((data: any) => {
       if (data.code == 200) {
         this.myApi.menus = data.data;
       }
     });
-    this.httpClient.get("user/self").then((data: any) => {
+    this.myApi.get("user/self").then((data: any) => {
       if (data.code == 200) {
         this.userService.nickName = data.data.nickName;
         this.userService.userId = data.data.id;
@@ -100,9 +98,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     this.myApi.navigate(e.code);
   }
 
-  ngAfterViewInit(): void {
-    // this.tabs.add()
-  }
+
 
   clearCache() {
     // 获取当前URL

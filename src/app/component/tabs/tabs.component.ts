@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, AfterViewInit} from '@angular/core';
+import {Component, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
 import {NgClass} from "@angular/common";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {TabModel} from "@model/forms";
@@ -23,8 +23,9 @@ import {ActivatedRoute, Router} from "@angular/router";
     styleUrl: './tabs.component.less'
 })
 export class TabsComponent implements AfterViewInit {
+    @ViewChild('tabsContainer') tabsContainer!: ElementRef;
 
-    constructor(public myApi: MyApiService, private nzContextMenuService: NzContextMenuService,  private route: ActivatedRoute) {
+    constructor(public myApi: MyApiService, private nzContextMenuService: NzContextMenuService,  private route: ActivatedRoute, private router: Router) {
     }
 
     public subscription: Subscription | undefined;
@@ -39,15 +40,6 @@ export class TabsComponent implements AfterViewInit {
                     findItem.active = true;
                 } else {
                     let item = this.myApi.getMenuByPath(path);
-                    // this.myApi.menus.find(it => it.path === path);
-                    // if (!item) {
-                    //     this.myApi.menus.forEach(it => {
-                    //         item = it.children.find((i: { path: string; }) => i.path === path);
-                    //         if (item) {
-                    //             return;
-                    //         }
-                    //     })
-                    // }
                     if (item) {
                         this.myApi.tabs.push({
                             menuCode:item.id,
@@ -99,9 +91,8 @@ export class TabsComponent implements AfterViewInit {
     }
 
     contextMenu(active: boolean | null | undefined, $event: MouseEvent, menu: NzDropdownMenuComponent): void {
-        if (active) {
-            this.nzContextMenuService.create($event, menu);
-        }
+        $event.preventDefault();
+        this.nzContextMenuService.create($event, menu);
     }
 
     closeAll() {
@@ -139,11 +130,9 @@ export class TabsComponent implements AfterViewInit {
     }
 
     reloadCurrentPage(index: number, item: TabModel) {
-
         this.myApi.shouldReuse = false;
         // 1. 移除当前标签页
         this.myApi.tabs.splice(index, 1);
-
 
         this.myApi.navigateReload(item.code);
 
@@ -151,15 +140,14 @@ export class TabsComponent implements AfterViewInit {
             this.myApi.shouldReuse = true;
             this.myApi.tabs.splice(index, 0, item); // 重新添加标签页
         }, 200)
-
     }
 
     // 标签滚动功能
-   scrollTabs(scrollAmount:number) {
-    const tabsContainer = document.querySelector('.tabs-container');
-    tabsContainer?.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
-  }
+    scrollTabs(scrollAmount: number) {
+        const tabsContainer = this.tabsContainer.nativeElement;
+        tabsContainer.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
 }

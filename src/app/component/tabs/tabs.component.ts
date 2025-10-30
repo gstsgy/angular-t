@@ -4,9 +4,8 @@ import {NzIconDirective} from "ng-zorro-antd/icon";
 import {TabModel} from "@model/forms";
 import {MyApiService} from "@service/my-api.service";
 import {Subscription} from "rxjs";
-import {NzContextMenuService, NzDropDownDirective, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
+import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {NzMenuDirective, NzMenuItemComponent} from "ng-zorro-antd/menu";
-import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-tabs',
@@ -14,7 +13,6 @@ import {ActivatedRoute, Router} from "@angular/router";
     imports: [
         NgClass,
         NzIconDirective,
-        NzDropDownDirective,
         NzDropdownMenuComponent,
         NzMenuDirective,
         NzMenuItemComponent
@@ -25,7 +23,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class TabsComponent implements AfterViewInit {
     @ViewChild('tabsContainer') tabsContainer!: ElementRef;
 
-    constructor(public myApi: MyApiService, private nzContextMenuService: NzContextMenuService,  private route: ActivatedRoute, private router: Router) {
+    constructor(public myApi: MyApiService, private nzContextMenuService: NzContextMenuService) {
     }
 
     public subscription: Subscription | undefined;

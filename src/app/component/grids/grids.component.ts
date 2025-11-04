@@ -18,19 +18,21 @@ import {
     NzTableModule, NzTableQueryParams, NzTableComponent
 } from "ng-zorro-antd/table";
 import {FormsModel} from "@model/forms";
-import { FormsModule } from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, DragDropModule} from '@angular/cdk/drag-drop';
 import {NzResizableModule, NzResizeEvent} from 'ng-zorro-antd/resizable';
-import { CommonModule } from '@angular/common';
-import { SmartTemplateDirective } from '@app/directive/SmartTemplateDirective';
+import {CommonModule} from '@angular/common';
+import {SmartTemplateDirective} from '@app/directive/SmartTemplateDirective';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzSwitchModule} from 'ng-zorro-antd/switch';
 import {NzSelectComponent} from "ng-zorro-antd/select";
 import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
 import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
-import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
+import {NzPaginationModule} from 'ng-zorro-antd/pagination';
+import {NavigationStart, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
 @Component({
     selector: 'app-grids',
     standalone: true,
@@ -55,17 +57,16 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 })
 export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     @ViewChild('basicTable', {static: false}) nzTableComponent?: NzTableComponent<any>;
-
     @Input('data')
     data: any[] = []
 
     @Input('isSelected')
     isSelected = false;
 
-    nzFiltersData : Map<String,Array<{
-        text:string;
-        value:string;
-    }>>=new Map();
+    nzFiltersData: Map<String, Array<{
+        text: string;
+        value: string;
+    }>> = new Map();
 
     @Input('editable')
     editable = false;
@@ -75,11 +76,12 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         pageNum: 1,
         pageSize: 50,
         orderBy: null,
-        asc:true,
+        asc: true,
         total: 0
     }
-    pageSizeOptions = [50, 200, 500, 2000, 5000]
+    pageSizeOptions = [50, 200, 500, 2000, 5000];
 
+    isVirtualScroll: boolean = false;
     @Input('form-grids')
     formGrid: Array<FormsModel> = []
 
@@ -96,24 +98,38 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     private mutationObserver!: MutationObserver;
     nzScrollConfig = {
         y: '100%',
-        x: '100%'
+        x: '80%'
     }
 
     @Input('templates') templates!: QueryList<SmartTemplateDirective>;
 
-    constructor(private el: ElementRef, private ngZone: NgZone, private cd: ChangeDetectorRef) {
+    // 用于跟踪组件是否处于活动状态
+    private isActive = true;
+    private routerSubscription: any;
+
+    constructor(
+        private el: ElementRef,
+        private ngZone: NgZone,
+        private cd: ChangeDetectorRef,
+        private router: Router
+    ) {
     }
-    
+
+
     getTemplate(key: string): TemplateRef<any> | null {
-        const item = this.templates.find(item=>item.id===key);
-        if(item){
+        const item = this.templates.find(item => item.id === key);
+        if (item) {
             return item.templateRef;
         }
         return null;
-      }
+    }
 
     ngOnDestroy(): void {
-        this.mutationObserver.disconnect();
+        this.mutationObserver?.disconnect();
+        this.isActive = false;
+        if (this.routerSubscription) {
+            this.routerSubscription.unsubscribe();
+        }
     }
 
     ngAfterViewInit(): void {
@@ -131,32 +147,69 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             // @ts-ignore
             return observer.observe(div2, config);
         });
+
+        // 监听路由变化，在导航开始时刷新虚拟滚动状态（仅当数据量大时需要）
+        this.routerSubscription = this.router.events.pipe(
+            filter(event => event instanceof NavigationStart)
+        ).subscribe(() => {
+            // 只有在数据量大并启用了虚拟滚动时才需要刷新
+
+            setTimeout(() => {
+                this.refreshVirtualScroll();
+            }, 0);
+
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
+            this.isVirtualScroll = changes['data'].currentValue.length > 1000;
             this.setOfCheckedId.clear();
             this.cd.detectChanges();
-            (this.nzTableComponent as any).cdkVirtualScrollViewport?.checkViewportSize();
+            this.refreshVirtualScroll();
             this.updateHeight();
             this.updateFiltersData();
-        }
-        else if(changes['formGrid']){
+
+        } else if (changes['formGrid']) {
             this.updateFiltersFn();
         }
     }
 
+    // 解决虚拟滚动空白问题的关键方法（仅在数据量大时使用）
+    private refreshVirtualScroll(): void {
+        // 只有在数据量大并启用了虚拟滚动且组件处于激活状态时才执行
+        //console.log(this.nzTableComponent?.cdkVirtualScrollViewport,this.nzTableComponent? );
+        if (this.isVirtualScroll&&this.nzTableComponent  && this.isActive) {
+           // console.log(this.virtualViewport);
+            // 强制检查视口大小并重置滚动位置
+            // setTimeout(() => {
+            //
+            //        // 先滚动到顶部
+            //     this.virtualViewport?.scrollToIndex(0);
+            //         // 强制重新计算视口大小
+            //     this.virtualViewport?.checkViewportSize();
+            //         // 再次检查确保正确渲染
+            //         setTimeout(() => {
+            //
+            //             this.virtualViewport?.checkViewportSize();
+            //
+            //        }, 50);
 
+          //  }, 0);
+        }
+    }
 
     nzQueryParams(params: NzTableQueryParams) {
         this.searchQuery.pageNum = params.pageIndex;
         this.searchQuery.pageSize = params.pageSize;
         this.queryFun.emit(this.searchQuery);
     }
-    nzPageIndexChange(event: number){
+
+    nzPageIndexChange(event: number) {
         this.searchQuery.pageNum = event;
         this.queryFun.emit(this.searchQuery);
     }
+
     nzPageSizeChange(event: number) {
         this.searchQuery.pageSize = event;
         this.queryFun.emit(this.searchQuery);
@@ -213,37 +266,38 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     onSort(event: string | null, col: string) {
-        this.searchQuery.asc = event==='ascend';
+        this.searchQuery.asc = event === 'ascend';
         this.searchQuery.orderBy = col;
-        if(event===null){
+        if (event === null) {
             this.searchQuery.orderBy = null;
         }
         this.queryFun.emit(this.searchQuery);
     }
 
-    private updateFiltersFn(){
-        this.formGrid.filter(it=>it.isFilter).forEach(it=>{
-           it.filterFn = (list: string[], item: any) => list.some(name => item[it.code].indexOf(name) !== -1)
+    private updateFiltersFn() {
+        this.formGrid.filter(it => it.isFilter).forEach(it => {
+            it.filterFn = (list: string[], item: any) => list.some(name => item[it.code].indexOf(name) !== -1)
         })
     }
 
-    private updateFiltersData(){
-        this.formGrid.filter(it=>it.isFilter).forEach(it=>{
-            const arr:{text:string;value:string}[]=[];
-            this.data.forEach(item=>{
-                if(!arr.find(i=>i.value===item[it.code])){
-                    arr.push({text:item[it.code],value:item[it.code]})
+    private updateFiltersData() {
+        this.formGrid.filter(it => it.isFilter).forEach(it => {
+            const arr: { text: string; value: string }[] = [];
+            this.data.forEach(item => {
+                if (!arr.find(i => i.value === item[it.code])) {
+                    arr.push({text: item[it.code], value: item[it.code]})
                 }
             })
-            this.nzFiltersData.set(it.code,arr);
+            this.nzFiltersData.set(it.code, arr);
         })
     }
+
     private updateHeight() {
         // 39是表头高度  32 是分页器高度 10是margin-top
-        const lasth = this.el.nativeElement.offsetHeight- 39-32-10;
+        const lasth = this.el.nativeElement.offsetHeight - 39 - 32 - 10;
         this.nzScrollConfig = {
-                y: lasth + 'px',
-                x: '100%'
+            y: lasth + 'px',
+            x: '100%'
         }
     }
 
@@ -271,7 +325,8 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             ele.width = `${width}px`;
         }
     }
-    getPlaceholder(name:string|null):string{
+
+    getPlaceholder(name: string | null): string {
         return `请输入${name} `;
     }
 }

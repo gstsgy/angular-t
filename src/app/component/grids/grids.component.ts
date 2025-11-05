@@ -31,8 +31,9 @@ import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
 import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
-import {NavigationStart, Router} from '@angular/router';
-import {filter} from 'rxjs/operators';
+import {NavigationStart, Router, NavigationEnd} from '@angular/router';
+import {debounceTime, distinctUntilChanged, filter} from 'rxjs/operators';
+
 @Component({
     selector: 'app-grids',
     standalone: true,
@@ -106,6 +107,9 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     // 用于跟踪组件是否处于活动状态
     private isActive = true;
     private routerSubscription: any;
+    private leaveSubscription: any;
+    private currentUrl: string = '';
+    private scrollPosition = 0;
 
     constructor(
         private el: ElementRef,
@@ -130,9 +134,13 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         if (this.routerSubscription) {
             this.routerSubscription.unsubscribe();
         }
+        if (this.leaveSubscription) {
+            this.leaveSubscription.unsubscribe();
+        }
     }
 
     ngAfterViewInit(): void {
+        this.currentUrl = this.router.url;
         // 创建一个 MutationObserver 实例
         const observer = new MutationObserver(() => {
             this.updateHeight(); // 初始化逻辑
@@ -149,61 +157,95 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         });
 
         // 监听路由变化，在导航开始时刷新虚拟滚动状态（仅当数据量大时需要）
+        // @ts-ignore
         this.routerSubscription = this.router.events.pipe(
-            filter(event => event instanceof NavigationStart)
-        ).subscribe(() => {
+            filter(event => event instanceof NavigationStart),
+            // 去重：相同的URL在短时间内只处理一次
+            distinctUntilChanged((prev, curr) =>
+                (prev as NavigationStart).url === (curr as NavigationStart).url
+            ),
+            // 防抖：避免快速连续触发
+            debounceTime(50)
+        ).subscribe((event) => {
+            //console.log('routerSubscription', event,this.currentUrl)
             // 只有在数据量大并启用了虚拟滚动时才需要刷新
+            if (this.currentUrl === (event as NavigationStart).url && !this.isActive) {
+                this.isActive = true;
+                setTimeout(() => {
+                    // 先滚动到顶部
+                    this.refreshVirtualScroll();
+                }, 0);
+            }
+        });
+        // 监控路由离开
+        this.leaveSubscription = this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd),
+            // 去重：相同的URL在短时间内只处理一次
+            distinctUntilChanged((prev, curr) =>
+                (prev as NavigationEnd).url === (curr as NavigationEnd).url
+            ),
+            // 防抖：避免快速连续触发
+            debounceTime(50)
+        ).subscribe((event) => {
 
-            setTimeout(() => {
-                this.refreshVirtualScroll();
-            }, 0);
+            if (this.isActive && this.currentUrl !== (event as NavigationEnd).url) {
+                this.isActive = false;
+                this.scrollPosition = this.getScrollPosition();
+                console.log('离开', this.scrollPosition);
+            }
 
         });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
-            this.isVirtualScroll = changes['data'].currentValue.length > 1000;
             this.setOfCheckedId.clear();
             this.cd.detectChanges();
-            this.refreshVirtualScroll();
             this.updateHeight();
             this.updateFiltersData();
-
         } else if (changes['formGrid']) {
             this.updateFiltersFn();
         }
     }
 
-    // 解决虚拟滚动空白问题的关键方法（仅在数据量大时使用）
+    //解决虚拟滚动空白问题的关键方法（仅在数据量大时使用）
     private refreshVirtualScroll(): void {
-        // 只有在数据量大并启用了虚拟滚动且组件处于激活状态时才执行
-        //console.log(this.nzTableComponent?.cdkVirtualScrollViewport,this.nzTableComponent? );
-        if (this.isVirtualScroll&&this.nzTableComponent  && this.isActive) {
-           // console.log(this.virtualViewport);
-            // 强制检查视口大小并重置滚动位置
-            // setTimeout(() => {
-            //
-            //        // 先滚动到顶部
-            //     this.virtualViewport?.scrollToIndex(0);
-            //         // 强制重新计算视口大小
-            //     this.virtualViewport?.checkViewportSize();
-            //         // 再次检查确保正确渲染
-            //         setTimeout(() => {
-            //
-            //             this.virtualViewport?.checkViewportSize();
-            //
-            //        }, 50);
+        if (this.isActive) {
+            if (this.isVirtualScroll) {
 
-          //  }, 0);
+                this.nzTableComponent?.cdkVirtualScrollViewport?.scrollToOffset(this.scrollPosition);
+                // 强制重新计算视口大小
+                this.nzTableComponent?.cdkVirtualScrollViewport?.checkViewportSize();
+
+            } else {
+                const tableBody = this.el.nativeElement.querySelector('.ant-table-body');
+                if (tableBody) {
+                    tableBody.scrollTop = this.scrollPosition;
+                }
+            }
+
+
         }
     }
 
-    nzQueryParams(params: NzTableQueryParams) {
-        this.searchQuery.pageNum = params.pageIndex;
-        this.searchQuery.pageSize = params.pageSize;
-        this.queryFun.emit(this.searchQuery);
+    private getScrollPosition(): number {
+        if (this.nzTableComponent?.cdkVirtualScrollViewport) {
+            // 虚拟滚动情况下的滚动位置
+            return this.nzTableComponent.cdkVirtualScrollViewport.getOffsetToRenderedContentStart() ?? 0;
+        } else {
+            // 普通滚动情况下的滚动位置
+            const tableBody = this.el.nativeElement.querySelector('.ant-table-body');
+            console.log('滚动位置', tableBody,tableBody.scrollTop);
+            return tableBody ? tableBody.scrollTop : 0;
+        }
     }
+
+
+    // nzQueryParams(params: NzTableQueryParams) {
+    //     this.searchQuery.pageNum = params.pageIndex;
+    //     this.searchQuery.pageSize = params.pageSize;
+    //     this.queryFun.emit(this.searchQuery);
+    // }
 
     nzPageIndexChange(event: number) {
         this.searchQuery.pageNum = event;
@@ -212,7 +254,8 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     nzPageSizeChange(event: number) {
         this.searchQuery.pageSize = event;
-        this.queryFun.emit(this.searchQuery);
+        this.isVirtualScroll = this.searchQuery.pageSize > 1000;
+        //this.queryFun.emit(this.searchQuery);
     }
 
     edit(row: any, col: FormsModel) {

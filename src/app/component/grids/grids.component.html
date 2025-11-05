@@ -1,164 +1,216 @@
 <div class="formGrid-body">
-<nz-table #basicTable [nzData]="data" 
-    [nzShowPagination] = "false"
-    [nzFrontPagination]="false"
-    nzTableLayout="fixed"
-    nzSize="small"
-    [nzScroll]="data.length>0?nzScrollConfig:{}"
-    [nzVirtualItemSize]="isVirtualScroll ? 39 : 0"
-    [nzVirtualForTrackBy]="trackByIndex"
->
-<thead>
-<tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
-  @if (isSelected){
-      <th
-              [nzChecked]="isSelectAll"
-              [nzIndeterminate]="indeterminate"
-              (nzCheckedChange)="onAllChecked($event)"
-              
-      >
-  </th>
-  }
-  @for (control of formGrid; track control) {
-     @if (control.isShow) {
-      <th cdkDrag  class="cdk-drag" [nzWidth]="control.width || 'auto'"
-      nz-resizable
-      nzBounds="window"
-      [nzShowSort] = "control.isSort"
-      [nzSortFn]="true"
-      (nzSortOrderChange)="onSort($event, control.code)"
-      [nzShowFilter]="control.isFilter"
-      [nzFilters]="nzFiltersData.get(control.code)??[]"
-      [nzFilterFn]="control.filterFn??true"
-     
-      nzPreview
-      (nzResizeEnd)="onResizeW($event, control.code)"
-  >
- 
-      <div cdkDragHandle style="display: flex; justify-content: space-between; cursor: grab; align-items: center;">
-          {{ control.label }}
-      </div>
-      <nz-resize-handle nzDirection="right">
-          <div class="resize-trigger"></div>
-      </nz-resize-handle>
-      
-  </th>
-     }
-     
-  }
-</tr>
-</thead>
-<tbody >
-  <!-- 根据数据量决定使用普通循环还是虚拟滚动 -->
-  @if (isVirtualScroll) {
-    <ng-template nz-virtual-scroll let-item let-idx="index">
-      <tr>
-        @if (isSelected) {
-          <td [nzChecked]="setOfCheckedId.has(idx)" (nzCheckedChange)="onItemChecked(idx, $event)"></td>
-        }
-        @for (control of formGrid; track control) {
-          @if (control.isShow) {
-            @if (control.code === '_Index') {
-              <td (dblclick)="edit(item,control)">{{ (searchQuery.pageNum-1)*searchQuery.pageSize + idx + 1 }}</td>
-            } @else {
-              @if (control.type === 'diy') {
-                <td [nzEllipsis]="true">
-                  <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
-                </td>
-              } @else {
-                <td (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
-                  @if (editable && control.editable) {
-                    @if (control.type === 'input') {
-                      <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'password') {
-                      <input type="password" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'number') {
-                      <input type="number" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'switch') {
-                      <nz-switch [(ngModel)]="item[control.code]"></nz-switch>
-                    } @else if (control.type === 'select') {
-                      <nz-select style="width: 100%;" [(ngModel)]="item[control.code]" nzAllowClear nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [nzOptions]="control.options??[]"></nz-select>
-                    } @else if (control.type === 'radio') {
-                      <nz-radio-group [(ngModel)]="item[control.code]">
-                        @for (op of control.options; track op) {
-                          <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
-                        }
-                      </nz-radio-group>
-                    } @else if (control.type === 'date') {
-                      <nz-date-picker [(ngModel)]="item[control.code]"></nz-date-picker>
-                    } @else if (control.type === 'datetime') {
-                      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="item[control.code]"></nz-date-picker>
-                    } @else if (control.type === 'time') {
-                      <nz-time-picker [(ngModel)]="item[control.code]"></nz-time-picker>
-                    } @else if (control.type === 'treeSelect') {
-                      <nz-tree-select style="width: 250px" [nzNodes]="control.options??[]" nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [(ngModel)]="item[control.code]"></nz-tree-select>
+    @if (isVirtualScroll) {
+        <nz-table #basicTable [nzData]="data"
+                  [nzShowPagination] = "false"
+                  [nzFrontPagination]="false"
+                  nzTableLayout="fixed"
+                  nzSize="small"
+                  [nzScroll]="nzScrollConfig"
+                  [nzVirtualItemSize]="39"
+                  [nzVirtualForTrackBy]="trackByIndex"
+                  style="flex: 1;"
+        >
+            <thead>
+            <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
+                @if (isSelected){
+                    <th
+                            [nzChecked]="isSelectAll"
+                            [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="onAllChecked($event)"
+
+                    >
+                    </th>
+                }
+                @for (control of formGrid; track control) {
+                    @if (control.isShow) {
+                        <th cdkDrag  class="cdk-drag" [nzWidth]="control.width || 'auto'"
+                            nz-resizable
+                            nzBounds="window"
+                            [nzShowSort] = "control.isSort"
+                            [nzSortFn]="true"
+                            (nzSortOrderChange)="onSort($event, control.code)"
+                            [nzShowFilter]="control.isFilter"
+                            [nzFilters]="nzFiltersData.get(control.code)??[]"
+                            [nzFilterFn]="control.filterFn??true"
+
+                            nzPreview
+                            (nzResizeEnd)="onResizeW($event, control.code)"
+                        >
+
+                            <div cdkDragHandle style="display: flex; justify-content: space-between; cursor: grab; align-items: center;">
+                                {{ control.label }}
+                            </div>
+                            <nz-resize-handle nzDirection="right">
+                                <div class="resize-trigger"></div>
+                            </nz-resize-handle>
+
+                        </th>
                     }
-                  } @else {
-                    {{ formation(control, item[control.code]) }}
-                  }
-                </td>
-              }
-            }
-          }
-        }
-      </tr>
-    </ng-template>
-  } @else {
-    @for (item of data; track item; let idx = $index) {
-      <tr>
-        @if (isSelected) {
-          <td [nzChecked]="setOfCheckedId.has(idx)" (nzCheckedChange)="onItemChecked(idx, $event)"></td>
-        }
-        @for (control of formGrid; track control) {
-          @if (control.isShow) {
-            @if (control.code === '_Index') {
-              <td (dblclick)="edit(item,control)">{{ (searchQuery.pageNum-1)*searchQuery.pageSize + idx + 1 }}</td>
-            } @else {
-              @if (control.type === 'diy') {
-                <td [nzEllipsis]="true">
-                  <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
-                </td>
-              } @else {
-                <td (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
-                  @if (editable && control.editable) {
-                    @if (control.type === 'input') {
-                      <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'password') {
-                      <input type="password" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'number') {
-                      <input type="number" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
-                    } @else if (control.type === 'switch') {
-                      <nz-switch [(ngModel)]="item[control.code]"></nz-switch>
-                    } @else if (control.type === 'select') {
-                      <nz-select style="width: 100%;" [(ngModel)]="item[control.code]" nzAllowClear nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [nzOptions]="control.options??[]"></nz-select>
-                    } @else if (control.type === 'radio') {
-                      <nz-radio-group [(ngModel)]="item[control.code]">
-                        @for (op of control.options; track op) {
-                          <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
-                        }
-                      </nz-radio-group>
-                    } @else if (control.type === 'date') {
-                      <nz-date-picker [(ngModel)]="item[control.code]"></nz-date-picker>
-                    } @else if (control.type === 'datetime') {
-                      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="item[control.code]"></nz-date-picker>
-                    } @else if (control.type === 'time') {
-                      <nz-time-picker [(ngModel)]="item[control.code]"></nz-time-picker>
-                    } @else if (control.type === 'treeSelect') {
-                      <nz-tree-select style="width: 250px" [nzNodes]="control.options??[]" nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [(ngModel)]="item[control.code]"></nz-tree-select>
+
+                }
+            </tr>
+            </thead>
+            <tbody >
+            <ng-template nz-virtual-scroll   let-item let-idx="index">
+                        <tr>
+                            @if (isSelected) {
+                                <td [nzChecked]="setOfCheckedId.has(idx)" (nzCheckedChange)="onItemChecked(idx, $event)"></td>
+                            }
+                            @for (control of formGrid; track control) {
+                                @if (control.isShow) {
+                                    @if (control.code === '_Index') {
+                                        <td (dblclick)="edit(item,control)">{{ (searchQuery.pageNum-1)*searchQuery.pageSize + idx + 1 }}</td>
+                                    } @else {
+                                        @if (control.type === 'diy') {
+                                            <td [nzEllipsis]="true">
+                                                <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
+                                            </td>
+                                        } @else {
+                                            <td (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
+                                                @if (editable && control.editable) {
+                                                    @if (control.type === 'input') {
+                                                        <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'password') {
+                                                        <input type="password" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'number') {
+                                                        <input type="number" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'switch') {
+                                                        <nz-switch [(ngModel)]="item[control.code]"></nz-switch>
+                                                    } @else if (control.type === 'select') {
+                                                        <nz-select style="width: 100%;" [(ngModel)]="item[control.code]" nzAllowClear nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [nzOptions]="control.options??[]"></nz-select>
+                                                    } @else if (control.type === 'radio') {
+                                                        <nz-radio-group [(ngModel)]="item[control.code]">
+                                                            @for (op of control.options; track op) {
+                                                                <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
+                                                            }
+                                                        </nz-radio-group>
+                                                    } @else if (control.type === 'date') {
+                                                        <nz-date-picker [(ngModel)]="item[control.code]"></nz-date-picker>
+                                                    } @else if (control.type === 'datetime') {
+                                                        <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="item[control.code]"></nz-date-picker>
+                                                    } @else if (control.type === 'time') {
+                                                        <nz-time-picker [(ngModel)]="item[control.code]"></nz-time-picker>
+                                                    } @else if (control.type === 'treeSelect') {
+                                                        <nz-tree-select style="width: 250px" [nzNodes]="control.options??[]" nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [(ngModel)]="item[control.code]"></nz-tree-select>
+                                                    }
+                                                } @else {
+                                                    {{ formation(control, item[control.code]) }}
+                                                }
+                                            </td>
+                                        }
+                                    }
+                                }
+                            }
+                        </tr>
+                    </ng-template>
+            </tbody>
+        </nz-table>
+    } @else {
+        <nz-table #basicTable [nzData]="data"
+                  [nzShowPagination] = "false"
+                  [nzFrontPagination]="false"
+                  nzTableLayout="fixed"
+                  nzSize="small"
+                  [nzScroll]="data.length>0?nzScrollConfig:{}"
+                  style="flex: 1;"
+        >
+            <thead>
+            <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
+                @if (isSelected){
+                    <th
+                            [nzChecked]="isSelectAll"
+                            [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="onAllChecked($event)"
+
+                    >
+                    </th>
+                }
+                @for (control of formGrid; track control) {
+                    @if (control.isShow) {
+                        <th cdkDrag  class="cdk-drag" [nzWidth]="control.width || 'auto'"
+                            nz-resizable
+                            nzBounds="window"
+                            [nzShowSort] = "control.isSort"
+                            [nzSortFn]="true"
+                            (nzSortOrderChange)="onSort($event, control.code)"
+                            [nzShowFilter]="control.isFilter"
+                            [nzFilters]="nzFiltersData.get(control.code)??[]"
+                            [nzFilterFn]="control.filterFn??true"
+
+                            nzPreview
+                            (nzResizeEnd)="onResizeW($event, control.code)"
+                        >
+
+                            <div cdkDragHandle style="display: flex; justify-content: space-between; cursor: grab; align-items: center;">
+                                {{ control.label }}
+                            </div>
+                            <nz-resize-handle nzDirection="right">
+                                <div class="resize-trigger"></div>
+                            </nz-resize-handle>
+
+                        </th>
                     }
-                  } @else {
-                    {{ formation(control, item[control.code]) }}
-                  }
-                </td>
-              }
-            }
-          }
-        }
-      </tr>
+
+                }
+            </tr>
+            </thead>
+            <tbody >
+                    @for (item of data; track item; let idx = $index) {
+                        <tr>
+                            @if (isSelected) {
+                                <td [nzChecked]="setOfCheckedId.has(idx)" (nzCheckedChange)="onItemChecked(idx, $event)"></td>
+                            }
+                            @for (control of formGrid; track control) {
+                                @if (control.isShow) {
+                                    @if (control.code === '_Index') {
+                                        <td (dblclick)="edit(item,control)">{{ (searchQuery.pageNum-1)*searchQuery.pageSize + idx + 1 }}</td>
+                                    } @else {
+                                        @if (control.type === 'diy') {
+                                            <td [nzEllipsis]="true">
+                                                <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
+                                            </td>
+                                        } @else {
+                                            <td (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
+                                                @if (editable && control.editable) {
+                                                    @if (control.type === 'input') {
+                                                        <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'password') {
+                                                        <input type="password" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'number') {
+                                                        <input type="number" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>
+                                                    } @else if (control.type === 'switch') {
+                                                        <nz-switch [(ngModel)]="item[control.code]"></nz-switch>
+                                                    } @else if (control.type === 'select') {
+                                                        <nz-select style="width: 100%;" [(ngModel)]="item[control.code]" nzAllowClear nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [nzOptions]="control.options??[]"></nz-select>
+                                                    } @else if (control.type === 'radio') {
+                                                        <nz-radio-group [(ngModel)]="item[control.code]">
+                                                            @for (op of control.options; track op) {
+                                                                <label nz-radio [nzValue]="op.value">{{ op.label }}</label>
+                                                            }
+                                                        </nz-radio-group>
+                                                    } @else if (control.type === 'date') {
+                                                        <nz-date-picker [(ngModel)]="item[control.code]"></nz-date-picker>
+                                                    } @else if (control.type === 'datetime') {
+                                                        <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]="item[control.code]"></nz-date-picker>
+                                                    } @else if (control.type === 'time') {
+                                                        <nz-time-picker [(ngModel)]="item[control.code]"></nz-time-picker>
+                                                    } @else if (control.type === 'treeSelect') {
+                                                        <nz-tree-select style="width: 250px" [nzNodes]="control.options??[]" nzShowSearch [nzPlaceHolder]="getPlaceholder(control.label)" [(ngModel)]="item[control.code]"></nz-tree-select>
+                                                    }
+                                                } @else {
+                                                    {{ formation(control, item[control.code]) }}
+                                                }
+                                            </td>
+                                        }
+                                    }
+                                }
+                            }
+                        </tr>
+                    }
+            </tbody>
+        </nz-table>
     }
-  }
-</tbody>
-</nz-table>
+
 
 <nz-pagination  [nzTotal]="searchQuery.total||1"
 [nzPageSize]="searchQuery.pageSize"

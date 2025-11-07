@@ -15,7 +15,7 @@ import {
     TemplateRef
 } from '@angular/core';
 import {
-    NzTableModule, NzTableQueryParams, NzTableComponent
+    NzTableModule, NzTableComponent
 } from "ng-zorro-antd/table";
 import {FormsModel} from "@model/forms";
 import {FormsModule} from '@angular/forms';
@@ -31,7 +31,7 @@ import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
 import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzPaginationModule} from 'ng-zorro-antd/pagination';
-import {NavigationStart, Router, NavigationEnd} from '@angular/router';
+import {NavigationStart, Router} from '@angular/router';
 import {debounceTime, distinctUntilChanged, filter} from 'rxjs/operators';
 
 @Component({
@@ -107,7 +107,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     // 用于跟踪组件是否处于活动状态
     private isActive = true;
     private routerSubscription: any;
-    private leaveSubscription: any;
+    private scrollSubscription: any;
     private currentUrl: string = '';
     private scrollPosition = 0;
 
@@ -134,12 +134,13 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         if (this.routerSubscription) {
             this.routerSubscription.unsubscribe();
         }
-        if (this.leaveSubscription) {
-            this.leaveSubscription.unsubscribe();
+        if (this.scrollSubscription) {
+            this.scrollSubscription.unsubscribe();
         }
     }
 
     ngAfterViewInit(): void {
+        
         this.currentUrl = this.router.url;
         // 创建一个 MutationObserver 实例
         const observer = new MutationObserver(() => {
@@ -167,7 +168,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             // 防抖：避免快速连续触发
             debounceTime(50)
         ).subscribe((event) => {
-            //console.log('routerSubscription', event,this.currentUrl)
+            if (this.isActive && this.currentUrl !== (event as NavigationStart).url) {
+                            this.isActive = false;
+                            // 使用setTimeout确保在DOM更新完成后再获取滚动位置
+                             this.scrollPosition = this.getScrollPosition();
+                        }
             // 只有在数据量大并启用了虚拟滚动时才需要刷新
             if (this.currentUrl === (event as NavigationStart).url && !this.isActive) {
                 this.isActive = true;
@@ -176,24 +181,6 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
                     this.refreshVirtualScroll();
                 }, 0);
             }
-        });
-        // 监控路由离开
-        this.leaveSubscription = this.router.events.pipe(
-            filter(event => event instanceof NavigationEnd),
-            // 去重：相同的URL在短时间内只处理一次
-            distinctUntilChanged((prev, curr) =>
-                (prev as NavigationEnd).url === (curr as NavigationEnd).url
-            ),
-            // 防抖：避免快速连续触发
-            debounceTime(50)
-        ).subscribe((event) => {
-
-            if (this.isActive && this.currentUrl !== (event as NavigationEnd).url) {
-                this.isActive = false;
-                this.scrollPosition = this.getScrollPosition();
-                console.log('离开', this.scrollPosition);
-            }
-
         });
     }
 
@@ -211,6 +198,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     //解决虚拟滚动空白问题的关键方法（仅在数据量大时使用）
     private refreshVirtualScroll(): void {
         if (this.isActive) {
+            console.log('恢复滚动位置', this.scrollPosition);
             if (this.isVirtualScroll) {
 
                 this.nzTableComponent?.cdkVirtualScrollViewport?.scrollToOffset(this.scrollPosition);
@@ -220,7 +208,11 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
             } else {
                 const tableBody = this.el.nativeElement.querySelector('.ant-table-body');
                 if (tableBody) {
-                    tableBody.scrollTop = this.scrollPosition;
+                    // 确保在DOM更新后再设置滚动位置
+                    setTimeout(() => {
+                        tableBody.scrollTop = this.scrollPosition;
+                        console.log('设置滚动位置', this.scrollPosition);
+                    }, 0);
                 }
             }
 
@@ -235,8 +227,9 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
         } else {
             // 普通滚动情况下的滚动位置
             const tableBody = this.el.nativeElement.querySelector('.ant-table-body');
-            console.log('滚动位置', tableBody,tableBody.scrollTop);
-            return tableBody ? tableBody.scrollTop : 0;
+            const scrollPosition = tableBody ? tableBody.scrollTop : 0;
+            console.log('保存滚动位置', scrollPosition, tableBody);
+            return scrollPosition;
         }
     }
 

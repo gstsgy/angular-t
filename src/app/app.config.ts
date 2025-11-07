@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -17,7 +17,10 @@ registerLocaleData(zh);
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),LoginGuard,DeFaultGuard, provideClientHydration(),
+    provideRouter(routes, 
+      withInMemoryScrolling({scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled'}),
+      withRouterConfig({onSameUrlNavigation: 'reload'})
+    ),LoginGuard,DeFaultGuard, provideClientHydration(),
     provideNzI18n(zh_CN),
     importProvidersFrom(FormsModule), provideAnimationsAsync(),
     provideHttpClient(withFetch(),withInterceptors([noopInterceptor]),),

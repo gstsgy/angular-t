@@ -312,4 +312,23 @@ export class MyApiService {
     XLSX.utils.book_append_sheet(workBook, sheetData, "Sheet1");
     XLSX.writeFile(workBook, `${fileName}.xlsx`);
   }
+
+  copy(text: string){
+      if (navigator.clipboard && window.isSecureContext) {
+          // 使用现代 Clipboard API（需要 HTTPS 或 localhost）
+          navigator.clipboard.writeText(text)
+              .then(() => {
+                  this.success('复制成功:'+ text);
+                  return true;
+              })
+              .catch(err => {
+                  console.error('复制失败:', err);
+                  this.error('复制失败:'+ text);
+                  return false;
+              });
+      } else {
+          // 降级到传统方法
+          this.error('复制失败:'+ text);
+      }
+  }
 }

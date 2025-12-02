@@ -1,18 +1,108 @@
-<app-form-report [commonObjs]="commonObjs" style="height: 100%;"></app-form-report>
+<div class="dict-tree-container">
+    <!-- 操作工具栏 -->
+    <div class="tree-toolbar">
+        <button nzType="primary" nz-button (click)="refresh()" >
+            <span nz-icon nzType="sync"></span> 刷新
+        </button>
+
+        <div class="search-box">
+            <nz-input-group nzPrefixIcon="search">
+                <input
+                        nz-input
+                        [(ngModel)]="searchValue"
+                        placeholder="搜索节点..."
+                        (keyup.enter)="refresh()"
+                />
+                <button nz-button nzType="link" (click)="refresh()">
+                    搜索
+                </button>
+            </nz-input-group>
+        </div>
+    </div>
+
+    <!-- 树形结构 -->
+    <div class="tree-wrapper">
+        <nz-spin [nzSpinning]="loading">
+            <nz-tree
+                    [nzData]="nodes"
+                    [nzShowIcon]="true"
+                    [nzExpandAll]="false"
+            >
+                <ng-template #nzTreeTemplate let-node let-origin="origin">
+                    <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">
+<!--                        <span nz-icon [nzType]="node.icon" nzTheme="outline"></span>-->
+                        <span class="node-title">{{ node.title }}</span>
+                        <span class="node-key">{{ origin.value }}</span>
+
+                        <!-- 节点操作按钮 -->
+<!--                        @if(showOperations){-->
+<!--                            <div class="node-actions" >-->
+
+
+<!--                                <button-->
+<!--                                        nz-button-->
+<!--                                        nzType="text"-->
+<!--                                        nzSize="small"-->
+<!--                                        (click)="add(node); $event.stopPropagation()"-->
+<!--                                >-->
+<!--                                    <span nz-icon nzType="plus" nzTheme="outline"></span>-->
+<!--                                </button>-->
+
+
+
+
+<!--                                @if(node.key!=='4'){-->
+<!--                                    <button-->
+<!--                                            nz-button-->
+<!--                                            nzType="text"-->
+<!--                                            nzSize="small"-->
+<!--                                            (click)="edit(node); $event.stopPropagation()"-->
+<!--                                    >-->
+<!--                                        <span nz-icon nzType="edit" nzTheme="outline"></span>-->
+<!--                                    </button>-->
+<!--                                    <button-->
+<!--                                            nz-button-->
+<!--                                            nzType="text"-->
+<!--                                            nzSize="small"-->
+<!--                                            nzDanger-->
+<!--                                            nz-popconfirm-->
+<!--                                            nzPopconfirmTitle="确定删除此节点？"-->
+<!--                                            (nzOnConfirm)="delete(node)"-->
+<!--                                            (click)="$event.stopPropagation()"-->
+<!--                                    >-->
+<!--                                        <span nz-icon nzType="delete" nzTheme="outline"></span>-->
+<!--                                    </button>-->
+<!--                                }-->
+<!--                                <button-->
+<!--                                        nz-button-->
+<!--                                        nzType="text"-->
+<!--                                        nzSize="small"-->
+<!--                                        (click)="copy(origin.value); $event.stopPropagation()"-->
+<!--                                >-->
+<!--                                    <span nz-icon nzType="copy" nzTheme="outline"></span>-->
+<!--                                </button>-->
+
+<!--                            </div>-->
+<!--                        }-->
+
+                    </div>
+                </ng-template>
+            </nz-tree>
+        </nz-spin>
+    </div>
+</div>
+
+
+
+
+<!--<app-form-report [commonObjs]="commonObjs" style="height: 100%;"></app-form-report>-->
 
 <ng-template #dictForm>
     <form nz-form>
         <nz-form-item>
-            <nz-form-label [nzSpan]="5">模块</nz-form-label>
+            <nz-form-label [nzSpan]="5">model</nz-form-label>
             <nz-form-control  [nzSpan]="12" >
-                <nz-select
-                        [(ngModel)]="dictItem.modelCode"
-                        name="modelCode"
-                        nzAllowClear
-                        nzShowSearch
-                        nzPlaceHolder="选择模块"
-                        [nzOptions]="modelOptions"
-                ></nz-select>
+                <input nz-input [disabled]="true"  [(ngModel)]="dictItem.modelCode" name="modelCode"  />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -27,11 +117,49 @@
                 <input nz-input [(ngModel)]="dictItem.dictValue" name="dictValue" />
             </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzSpan]="5">顺序</nz-form-label>
-            <nz-form-control  [nzSpan]="12" >
-                <nz-input-number ngDefaultControl nz-input [(ngModel)]="dictItem.seq" name="seq" />
-            </nz-form-control>
-        </nz-form-item>
     </form>
 </ng-template>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item (click)="add(currentNode); $event.stopPropagation()">
+            <button
+                nz-button
+                nzType="text"
+                nzSize="small"
+
+        >
+            <span nz-icon nzType="plus" nzTheme="outline"></span>
+        </button> 添加一项</li>
+<!--        @if(currentNode.key!=='4'){-->
+            <li nz-menu-item (click)="edit(currentNode); $event.stopPropagation()"> <button
+                    nz-button
+                    nzType="text"
+                    nzSize="small"
+
+            >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+            </button>编辑该项</li>
+            <li nz-menu-item  (click)="delete(currentNode);$event.stopPropagation()">  <button
+                    nz-button
+                    nzType="text"
+                    nzSize="small"
+                    nzDanger
+            >
+                <span nz-icon nzType="delete" nzTheme="outline"></span>
+            </button>删除该项</li>
+        <li nz-menu-item (click)="copy(currentNode.origin.value); $event.stopPropagation()">
+        <button
+                nz-button
+                nzType="text"
+                nzSize="small"
+
+        >
+            <span nz-icon nzType="copy" nzTheme="outline"></span>
+        </button>复制key</li>
+
+<!--            ｝-->
+
+
+    </ul>
+</nz-dropdown-menu>

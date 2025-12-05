@@ -29,7 +29,11 @@ export class PrintComponent implements AfterViewInit{
         this. app = new App({ view: 'leafer', fill: '#333', editor: {
                 keyEvent:true
             } })
-
+        this.leafer.nativeElement.tabIndex = 0;
+        this.app.on('keydown', (e: any) => {
+            // 只有當 LeaferJS 內部識別到事件時才會觸發
+            console.log('Leafer keydown:', e.key);
+        });
         //this. app .tree.add({ tag: 'Text', x: 100, y: 100, text: '可拖拽上方图形到这里', fill: '#999', fontSize: 16 })
        const tools =  this.tools.nativeElement.children;
         for (let i = 0; i < tools.length; i++) {

@@ -23,6 +23,7 @@
     "@angular/ssr": "^18.0.0",
     "@leafer-in/editor": "^1.11.2",
     "@leafer-in/resize": "^1.11.2",
+    "@leafer-in/state": "^1.11.2",
     "@leafer-in/viewport": "^1.11.2",
     "@types/crypto-js": "^4.2.2",
     "ace-builds": "^1.43.1",

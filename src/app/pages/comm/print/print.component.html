@@ -26,7 +26,7 @@
             <nz-collapse>
                 <nz-collapse-panel  nzHeader="基础元素" nzActive="true">
                     <div class="tool-item" name="circle" draggable="true">
-                        <span nz-icon nzType="borderless" nzTheme="outline"></span>
+                        <span nz-icon nzType="borderless-table" nzTheme="outline"></span>
                         圆形
                     </div>
                     <div class="tool-item" name="rect" draggable="true">
@@ -68,28 +68,48 @@
 
         <div class="print-main-right">
             <nz-tabset>
+<!--                @if (selectedElement!==undefined)｛-->
                 <nz-tab nzTitle="属性">
+
                     <div class="property-panel">
+
+                            <nz-form-item>
+                                <nz-form-label>宽度</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number [(ngModel)]="selectItem.width"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label>高度</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number [(ngModel)]="selectItem.height"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-form-item>
+                                <nz-form-label>颜色</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number [(ngModel)]="selectItem.color"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+
                         <nz-form-item>
-                            <nz-form-label>宽度</nz-form-label>
+                            <nz-form-label>x</nz-form-label>
                             <nz-form-control>
-                                <nz-input-number [(ngModel)]="selectedElement.width"></nz-input-number>
+                                <nz-input-number [(ngModel)]="selectItem.x"></nz-input-number>
                             </nz-form-control>
                         </nz-form-item>
                         <nz-form-item>
-                            <nz-form-label>高度</nz-form-label>
+                            <nz-form-label>y</nz-form-label>
                             <nz-form-control>
-                                <nz-input-number [(ngModel)]="selectedElement.height"></nz-input-number>
-                            </nz-form-control>
-                        </nz-form-item>
-                        <nz-form-item>
-                            <nz-form-label>颜色</nz-form-label>
-                            <nz-form-control>
-                                <input nz-input [(ngModel)]="selectedElement.color" readonly>
+                                <nz-input-number [(ngModel)]="selectItem.y"></nz-input-number>
                             </nz-form-control>
                         </nz-form-item>
                     </div>
+
+
                 </nz-tab>
+<!--                ｝-->
                 <nz-tab nzTitle="数据源">
                     <div class="data-source-panel">
                         <nz-tree

@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import { App, Rect, Ellipse,KeyEvent, PointerEvent } from 'leafer-ui'
+import {AfterViewInit, Component, ElementRef, HostListener, TemplateRef, ViewChild} from '@angular/core';
+import {App, Rect, Ellipse, KeyEvent, PointerEvent, Line, Text} from 'leafer-ui'
 import { Ruler } from 'leafer-x-ruler'
 import { Snap } from 'leafer-x-easy-snap'
-import '@leafer-in/editor' // 导入图形编辑器插件
+import '@leafer-in/state' // 导入交互状态插件 //
 import '@leafer-in/viewport'
 import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzIconDirective} from "ng-zorro-antd/icon";
@@ -11,7 +11,9 @@ import {NzTabComponent, NzTabSetComponent} from "ng-zorro-antd/tabs";
 import {NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
 import {FormsModule} from "@angular/forms";
-import {NzTreeComponent} from "ng-zorro-antd/tree"; // 导入视口插件 (可选)
+import {NzTreeComponent} from "ng-zorro-antd/tree";
+import {ILeafer} from "@leafer-ui/interface";
+import {MyApiService} from "@service/my-api.service"; // 导入视口插件 (可选)
 @Component({
   selector: 'app-print',
   standalone: true,
@@ -36,7 +38,7 @@ import {NzTreeComponent} from "ng-zorro-antd/tree"; // 导入视口插件 (可�
 export class PrintComponent implements AfterViewInit{
     //@ViewChild('tools') tools!: ElementRef<HTMLElement> ;
     @ViewChild('leafer') leafer!: ElementRef<HTMLElement> ;
-    hasElements = false;
+
     dataSourceTree = [
         {
             title: '用户信息',
@@ -58,7 +60,7 @@ export class PrintComponent implements AfterViewInit{
         }
     ];
     private app!: App;
-    constructor() { }
+    constructor(public  myApi: MyApiService,) { }
 
 
 
@@ -66,17 +68,14 @@ export class PrintComponent implements AfterViewInit{
 
         // 创建应用
         this. app = new App({ view: 'leafer', fill: '#333', editor: {
-                keyEvent:true
-            } ,tree: { type: 'viewport' },wheel: { disabled: true }})
+                keyEvent:true,
+                multipleSelect:false
+            } ,tree: { type: 'viewport' },wheel: { disabled: true },})
+
         const ruler = new Ruler(this. app)
         const snap = new Snap(this. app)
 // 启用
         snap.enable(true)
-        this.leafer.nativeElement.tabIndex = 0;
-        this.app.on('keydown', (e: any) => {
-            // 只有當 LeaferJS 內部識別到事件時才會觸發
-            console.log('Leafer keydown:', e.key);
-        });
         //this. app .tree.add({ tag: 'Text', x: 100, y: 100, text: '可拖拽上方图形到这里', fill: '#999', fontSize: 16 })
         //console.log(this.tools.nativeElement)
        const tools =  document.querySelectorAll('.tool-item');
@@ -127,11 +126,68 @@ export class PrintComponent implements AfterViewInit{
                         }
                     },}, point.x, point.y))
             }
+            else if (type === 'line') {
+                this.app.tree.add(Line.one({  editable: true,strokeWidth: 5,
+                    stroke: '#32cd79'}, point.x, point.y))
+            }
+            else if (type === 'text') {
+                this.app.tree.add(Text.one({  editable: true,fill: '#32cd79',placeholder: '输入文本',}, point.x, point.y))
+            }
         })
 
 
     }
-    selectedElement: any = {};
+
+    @HostListener('document:keydown', ['$event'])
+    handleGlobalKeyDown(event: KeyboardEvent) {
+        if( event.key === 'Delete'){
+            if (this.app?.editor.leafList.list.length>0) {
+                this.app?.editor.leafList.list[0].destroy();
+            }
+        }
+        if (event.ctrlKey && event.key.toLowerCase() === 'v') {
+            this.myApi.readClipboard().then(res=>{
+                if(res){
+                   const json = JSON.parse( res);
+                    json.x +=10;
+                    json.y +=10;
+                   this.app.tree.add(json)
+                    this.myApi.copy(JSON.stringify(json))
+                }
+            })
+        }
+        if (event.ctrlKey && event.key.toLowerCase() === 'c') {
+            if (this.app?.editor.leafList.list.length>0) {
+                this.myApi.copy(this.app.editor.leafList.list[0].toString())
+            }
+        }
+
+
+        // 监听Ctrl+S保存
+    }
+    get hasElements(): boolean {
+        return this.app?.tree.children.length > 0;
+    }
+
+    get selectItem(){
+        let item: any =  {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+
+            color:''
+        }
+        if (this.app?.editor.leafList.list.length>0) {
+            item.width = this.app.editor.leafList.list[0].width;
+            item.height = this.app.editor.leafList.list[0].height;
+            item.x = this.app.editor.leafList.list[0].x;
+            item.y = this.app.editor.leafList.list[0].y;
+            //item.width = this.app.editor.leafList.list[0].width;
+        }
+
+        return item;
+    }
     initDragAndDrop(): void {
         // 实现拖拽功能
 

@@ -4,22 +4,59 @@ import { Ruler } from 'leafer-x-ruler'
 import { Snap } from 'leafer-x-easy-snap'
 import '@leafer-in/editor' // 导入图形编辑器插件
 import '@leafer-in/viewport'
-import {NzButtonComponent} from "ng-zorro-antd/button";
-import {NzIconDirective} from "ng-zorro-antd/icon"; // 导入视口插件 (可选)
+import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
+import {NzIconDirective} from "ng-zorro-antd/icon";
+import {NzCollapseComponent, NzCollapsePanelComponent} from "ng-zorro-antd/collapse";
+import {NzTabComponent, NzTabSetComponent} from "ng-zorro-antd/tabs";
+import {NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent} from "ng-zorro-antd/form";
+import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
+import {FormsModule} from "@angular/forms";
+import {NzTreeComponent} from "ng-zorro-antd/tree"; // 导入视口插件 (可选)
 @Component({
   selector: 'app-print',
   standalone: true,
     imports: [
         NzButtonComponent,
-        NzIconDirective
+        NzIconDirective,
+        NzButtonGroupComponent,
+        NzCollapseComponent,
+        NzCollapsePanelComponent,
+        NzTabSetComponent,
+        NzTabComponent,
+        NzFormItemComponent,
+        NzFormLabelComponent,
+        NzFormControlComponent,
+        NzInputNumberComponent,
+        FormsModule,
+        NzTreeComponent
     ],
   templateUrl: './print.component.html',
   styleUrl: './print.component.less'
 })
 export class PrintComponent implements AfterViewInit{
-    @ViewChild('tools') tools!: ElementRef<HTMLElement> ;
+    //@ViewChild('tools') tools!: ElementRef<HTMLElement> ;
     @ViewChild('leafer') leafer!: ElementRef<HTMLElement> ;
-
+    hasElements = false;
+    dataSourceTree = [
+        {
+            title: '用户信息',
+            key: 'user',
+            children: [
+                { title: '姓名', key: 'userName', isLeaf: true },
+                { title: '年龄', key: 'age', isLeaf: true },
+                { title: '邮箱', key: 'email', isLeaf: true }
+            ]
+        },
+        {
+            title: '订单信息',
+            key: 'order',
+            children: [
+                { title: '订单号', key: 'orderId', isLeaf: true },
+                { title: '金额', key: 'amount', isLeaf: true },
+                { title: '时间', key: 'createTime', isLeaf: true }
+            ]
+        }
+    ];
     private app!: App;
     constructor() { }
 
@@ -41,7 +78,9 @@ export class PrintComponent implements AfterViewInit{
             console.log('Leafer keydown:', e.key);
         });
         //this. app .tree.add({ tag: 'Text', x: 100, y: 100, text: '可拖拽上方图形到这里', fill: '#999', fontSize: 16 })
-       const tools =  this.tools.nativeElement.children;
+        //console.log(this.tools.nativeElement)
+       const tools =  document.querySelectorAll('.tool-item');
+       //console.log(this.tools.nativeElement)
         for (let i = 0; i < tools.length; i++) {
             tools[i].addEventListener('dragstart',  (e: any)=> {
                 e.dataTransfer.setData("type", tools[i].getAttribute('name'))
@@ -91,6 +130,27 @@ export class PrintComponent implements AfterViewInit{
         })
 
 
+    }
+    selectedElement: any = {};
+    initDragAndDrop(): void {
+        // 实现拖拽功能
+
+    }
+
+    editTemplate(): void {
+        // 编辑模板逻辑
+    }
+
+    saveTemplate(): void {
+        // 保存模板逻辑
+    }
+
+    exportTemplate(): void {
+        // 导出模板逻辑
+    }
+
+    previewTemplate(): void {
+        // 预览模板逻辑
     }
 
 }

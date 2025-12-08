@@ -1,29 +1,105 @@
-
-
-
-<div class="print">
+<!-- print.component.html -->
+<div class="print-container">
     <div class="print-header">
-        <button nz-button nzType="primary">
-            <span nz-icon nzType="search"></span>
-            编辑
-        </button>
-        <button nz-button nzType="primary">
-            <span nz-icon nzType="search"></span>
-            保存
-        </button>
-        <button nz-button nzType="primary">
-            <span nz-icon nzType="search"></span>
-            导出
-        </button>
+        <nz-button-group>
+            <button nz-button nzType="primary" (click)="editTemplate()">
+                <span nz-icon nzType="edit"></span>
+                编辑
+            </button>
+            <button nz-button nzType="primary" (click)="saveTemplate()">
+                <span nz-icon nzType="save"></span>
+                保存
+            </button>
+            <button nz-button nzType="default" (click)="exportTemplate()">
+                <span nz-icon nzType="export"></span>
+                导出
+            </button>
+            <button nz-button nzType="default" (click)="previewTemplate()">
+                <span nz-icon nzType="eye"></span>
+                预览
+            </button>
+        </nz-button-group>
     </div>
-    <div  class="print-main">
-        <div class="print-main-left" #tools>
-            <div  name="circle"  draggable="true" style=" border-radius: 25px; "></div>
-            <div  name="rect"   draggable="true"  ></div>
+
+    <div class="print-main">
+        <div class="print-main-left" >
+            <nz-collapse>
+                <nz-collapse-panel  nzHeader="基础元素" nzActive="true">
+                    <div class="tool-item" name="circle" draggable="true">
+                        <span nz-icon nzType="borderless" nzTheme="outline"></span>
+                        圆形
+                    </div>
+                    <div class="tool-item" name="rect" draggable="true">
+                        <span nz-icon nzType="border-horizontal" nzTheme="outline"></span>
+                        矩形
+                    </div>
+                    <div class="tool-item" name="line" draggable="true">
+                        <span nz-icon nzType="minus" nzTheme="outline"></span>
+                        直线
+                    </div>
+                    <div class="tool-item" name="text" draggable="true">
+                        <span nz-icon nzType="font-colors" nzTheme="outline"></span>
+                        文本
+                    </div>
+                </nz-collapse-panel>
+
+                <nz-collapse-panel nzHeader="数据元素" nzActive="true">
+                    <div class="tool-item" name="field" draggable="true">
+                        <span nz-icon nzType="database" nzTheme="outline"></span>
+                        数据字段
+                    </div>
+                    <div class="tool-item" name="table" draggable="true">
+                        <span nz-icon nzType="table" nzTheme="outline"></span>
+                        表格
+                    </div>
+                </nz-collapse-panel>
+            </nz-collapse>
         </div>
+
         <div class="print-main-center" #leafer id="leafer">
-<!--            <div   ></div>-->
+            @if (!hasElements){
+                <div class="canvas-placeholder" >
+                    <p>拖拽元素到此处开始设计</p>
+                    <span nz-icon nzType="plus-circle" nzTheme="outline" style="font-size: 48px;"></span>
+                </div>
+            }
+
         </div>
-        <div class="print-main-data"></div>
+
+        <div class="print-main-right">
+            <nz-tabset>
+                <nz-tab nzTitle="属性">
+                    <div class="property-panel">
+                        <nz-form-item>
+                            <nz-form-label>宽度</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-number [(ngModel)]="selectedElement.width"></nz-input-number>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label>高度</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-number [(ngModel)]="selectedElement.height"></nz-input-number>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label>颜色</nz-form-label>
+                            <nz-form-control>
+                                <input nz-input [(ngModel)]="selectedElement.color" readonly>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="数据源">
+                    <div class="data-source-panel">
+                        <nz-tree
+                                [nzData]="dataSourceTree"
+                                nzShowIcon="true">
+                        </nz-tree>
+                    </div>
+                </nz-tab>
+            </nz-tabset>
+        </div>
     </div>
 </div>
+

@@ -1,55 +1,86 @@
-.print{
+.print-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  &-header{
-    height: 36px;
-    width: 100%;
-    display: flex;
-
-    //justify-content: space-between;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-    & >button{
-      margin-right: 20px;
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-  }
-  &-main{
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    flex: 1;
-
-    &-left{
-      display: inline-flex;
-      flex-direction: column;
-      width: 20%;
-      &>div{
-        display: inline-flex;
-        width: 50px;
-        height: 50px;
-        background-color: #32cd79;
-        cursor: move;
-      }
-
-    }
-    &-center{
-      display: inline-flex;
-     // width: 75%;
-      height: 100%;
-      flex: 1;
-      //position: absolute; top: 70px; right: 0; bottom: 0; left: 0;
-    }
-    &-data{
-      display: inline-flex;
-      width: 20%;
-    }
-  }
-
 }
 
+.print-header {
+  padding: 12px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.print-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.print-main-left {
+  width: 240px;
+  border-right: 1px solid #e8e8e8;
+  background: #fafafa;
+  padding: 12px;
+  overflow-y: auto;
+
+  .tool-item {
+    padding: 8px 12px;
+    cursor: move;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+}
+
+.print-main-center {
+  flex: 1;
+  position: relative;
+  background: #f5f5f5;
+  overflow: auto;
+  min-height: 400px;
+
+  .canvas-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #999;
+  }
+}
+
+.print-main-right {
+  width: 300px;
+  border-left: 1px solid #e8e8e8;
+  background: #fff;
+  overflow-y: auto;
+
+  .property-panel,
+  .data-source-panel {
+    padding: 16px;
+  }
+
+  .data-source-panel {
+    nz-tree {
+      overflow: auto;
+    }
+  }
+}
+
+nz-collapse {
+  background: transparent;
+}
+
+nz-tabset {
+  height: 100%;
+}
+
+::ng-deep .ant-tabs-content {
+  height: calc(100% - 40px);
+}

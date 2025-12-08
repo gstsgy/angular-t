@@ -1,5 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { App, Rect, Ellipse,KeyEvent, PointerEvent } from 'leafer-ui'
+import { Ruler } from 'leafer-x-ruler'
+import { Snap } from 'leafer-x-easy-snap'
 import '@leafer-in/editor' // 导入图形编辑器插件
 import '@leafer-in/viewport'
 import {NzButtonComponent} from "ng-zorro-antd/button";
@@ -28,7 +30,11 @@ export class PrintComponent implements AfterViewInit{
         // 创建应用
         this. app = new App({ view: 'leafer', fill: '#333', editor: {
                 keyEvent:true
-            } })
+            } ,tree: { type: 'viewport' },wheel: { disabled: true }})
+        const ruler = new Ruler(this. app)
+        const snap = new Snap(this. app)
+// 启用
+        snap.enable(true)
         this.leafer.nativeElement.tabIndex = 0;
         this.app.on('keydown', (e: any) => {
             // 只有當 LeaferJS 內部識別到事件時才會觸發

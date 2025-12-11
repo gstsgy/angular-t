@@ -72,39 +72,15 @@
                 <nz-tab nzTitle="属性">
 
                     <div class="property-panel">
-
-                            <nz-form-item>
-                                <nz-form-label>宽度</nz-form-label>
-                                <nz-form-control>
-                                    <nz-input-number [(ngModel)]="selectItem.width"></nz-input-number>
-                                </nz-form-control>
-                            </nz-form-item>
-                            <nz-form-item>
-                                <nz-form-label>高度</nz-form-label>
-                                <nz-form-control>
-                                    <nz-input-number [(ngModel)]="selectItem.height"></nz-input-number>
-                                </nz-form-control>
-                            </nz-form-item>
-
-                            <nz-form-item>
-                                <nz-form-label>颜色</nz-form-label>
-                                <nz-form-control>
-                                    <nz-input-number [(ngModel)]="selectItem.color"></nz-input-number>
-                                </nz-form-control>
-                            </nz-form-item>
-
-                        <nz-form-item>
-                            <nz-form-label>x</nz-form-label>
-                            <nz-form-control>
-                                <nz-input-number [(ngModel)]="selectItem.x"></nz-input-number>
-                            </nz-form-control>
-                        </nz-form-item>
-                        <nz-form-item>
-                            <nz-form-label>y</nz-form-label>
-                            <nz-form-control>
-                                <nz-input-number [(ngModel)]="selectItem.y"></nz-input-number>
-                            </nz-form-control>
-                        </nz-form-item>
+                        <div>
+                            <span>类型</span> <input nz-input [(ngModel)]="selectItem.type" name="type"/>
+                        </div>
+                        <div>
+                            <span>宽度</span>    <nz-input-number [(ngModel)]="selectItem.width" (nzBlur)="fieldChange(selectItem.width,'width')" name="width"></nz-input-number>
+                        </div>
+                        <div>
+                            <span>高度</span>  <nz-input-number [ngModel]="selectItem.height" name="height"></nz-input-number>
+                        </div> 
                     </div>
 
 

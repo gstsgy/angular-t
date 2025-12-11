@@ -1,9 +1,11 @@
 import {AfterViewInit, Component, ElementRef, HostListener, TemplateRef, ViewChild} from '@angular/core';
-import {App, Rect, Ellipse, KeyEvent, PointerEvent, Line, Text} from 'leafer-ui'
+import {App, Rect, Ellipse, KeyEvent, PointerEvent, Line, Text,UI} from 'leafer-ui'
+import { EditorEvent } from '@leafer-in/editor' // 导入图形编辑器插件 //
 import { Ruler } from 'leafer-x-ruler'
 import { Snap } from 'leafer-x-easy-snap'
 import '@leafer-in/state' // 导入交互状态插件 //
 import '@leafer-in/viewport'
+import '@leafer-in/text-editor' // 导入文本编辑插件 //
 import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzCollapseComponent, NzCollapsePanelComponent} from "ng-zorro-antd/collapse";
@@ -14,6 +16,8 @@ import {FormsModule} from "@angular/forms";
 import {NzTreeComponent} from "ng-zorro-antd/tree";
 import {ILeafer} from "@leafer-ui/interface";
 import {MyApiService} from "@service/my-api.service"; // 导入视口插件 (可选)
+import { NzInputModule } from 'ng-zorro-antd/input';
+import {Table,QrCode} from "@model/print-model";
 @Component({
   selector: 'app-print',
   standalone: true,
@@ -25,10 +29,8 @@ import {MyApiService} from "@service/my-api.service"; // 导入视口插件 (可
         NzCollapsePanelComponent,
         NzTabSetComponent,
         NzTabComponent,
-        NzFormItemComponent,
-        NzFormLabelComponent,
-        NzFormControlComponent,
         NzInputNumberComponent,
+        NzInputModule,
         FormsModule,
         NzTreeComponent
     ],
@@ -59,6 +61,14 @@ export class PrintComponent implements AfterViewInit{
             ]
         }
     ];
+    selectItem: any={
+        type: 'window',
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        color:''
+    };
     private app!: App;
     constructor(public  myApi: MyApiService,) { }
 
@@ -69,9 +79,26 @@ export class PrintComponent implements AfterViewInit{
         // 创建应用
         this. app = new App({ view: 'leafer', fill: '#333', editor: {
                 keyEvent:true,
-                multipleSelect:false
+                multipleSelect:true
             } ,tree: { type: 'viewport' },wheel: { disabled: true },})
-
+            const table = new Table(3, 4); // 3行4列
+            this.app.tree.add(table)
+        this.app.editor.on(EditorEvent.SELECT, (e: EditorEvent) => {
+                console.log(e.editor.list)
+                if (this.app?.editor.leafList.list.length>0) {
+                    this.selectItem.type = this.app.editor.leafList.list[0].tag
+                    this.selectItem.width = this.app.editor.leafList.list[0].width;
+                    this.selectItem.height = this.app.editor.leafList.list[0].height;
+                    this.selectItem.x = this.app.editor.leafList.list[0].x;
+                    this.selectItem.y = this.app.editor.leafList.list[0].y;
+                }else{
+                    this.selectItem.type = 'window'
+                    this.selectItem.width = this.app?.width;
+                    this.selectItem.height = this.app?.height;
+                }
+        });
+        this.selectItem.width = this.app?.width;
+        this.selectItem.height = this.app?.height;
         const ruler = new Ruler(this. app)
         const snap = new Snap(this. app)
 // 启用
@@ -97,38 +124,21 @@ export class PrintComponent implements AfterViewInit{
             const type = e.dataTransfer.getData("type")
             const point = this.app.getPagePointByClient(e) // 浏览器原生事件的 client 坐标 转 应用的 page 坐标
             if (type === 'rect') {
-                this.app.tree.add(Rect.one({ fill: '#32cd79', editable: true ,event: {
-                        // [KeyEvent.DOWN]: [
-                        //     function (e: KeyEvent) {
-                        //         console.log(e.code)
-                        //     },
-                        //     //'once', // 同 on() 的第二个参数
-                        // ],
-                        [PointerEvent.ENTER]: function (e: PointerEvent) {
-                            console.log('enter')
-                        },
-                        [KeyEvent.DOWN]: function (e: KeyEvent) {
-                            console.log('down')
-                           console.log(e.code)
-                        }
-                    },}, point.x, point.y))
+                this.app.tree.add(Rect.one({ fill: '#32cd79', editable: true }, point.x, point.y))
             } else if (type === 'circle') {
                 this.app.tree.add(Ellipse.one({ fill: '#32cd79', editable: true, event: {
-                        // [KeyEvent.DOWN]: [
-                        //     function (e: KeyEvent) {
-                        //         console.log(e.code)
-                        //     },
-                        //     //'once', // 同 on() 的第二个参数
-                        // ],
-                        [KeyEvent.DOWN]: function (e: KeyEvent) {
-                            console.log('down')
-                            console.log(e.code)
-                        }
                     },}, point.x, point.y))
             }
             else if (type === 'line') {
-                this.app.tree.add(Line.one({  editable: true,strokeWidth: 5,
-                    stroke: '#32cd79'}, point.x, point.y))
+                const qr = new QrCode({
+                    content: 'https://leaferjs.com',
+                    size: 150,
+                    x: point.x,
+                    y: point.y
+                  });
+                  
+                 // app.add(qr);
+                this.app.tree.add(qr)
             }
             else if (type === 'text') {
                 this.app.tree.add(Text.one({  editable: true,fill: '#32cd79',placeholder: '输入文本',}, point.x, point.y))
@@ -157,6 +167,7 @@ export class PrintComponent implements AfterViewInit{
             })
         }
         if (event.ctrlKey && event.key.toLowerCase() === 'c') {
+            console.log(this.app?.editor.leafList.list)
             if (this.app?.editor.leafList.list.length>0) {
                 this.myApi.copy(this.app.editor.leafList.list[0].toString())
             }
@@ -169,25 +180,18 @@ export class PrintComponent implements AfterViewInit{
         return this.app?.tree.children.length > 0;
     }
 
-    get selectItem(){
-        let item: any =  {
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0,
 
-            color:''
-        }
+
+    fieldChange(event: any, field: string ) {
+        console.log(event, field)
         if (this.app?.editor.leafList.list.length>0) {
-            item.width = this.app.editor.leafList.list[0].width;
-            item.height = this.app.editor.leafList.list[0].height;
-            item.x = this.app.editor.leafList.list[0].x;
-            item.y = this.app.editor.leafList.list[0].y;
-            //item.width = this.app.editor.leafList.list[0].width;
+            (this.app.editor.leafList.list[0] as any)[field] = event;
+        }else{
+            (this.app as any )[field] = event;
         }
-
-        return item;
     }
+
+
     initDragAndDrop(): void {
         // 实现拖拽功能
 

@@ -24,19 +24,19 @@
     <nz-tree
     [nzData]="nodes"
     nzBlockNode
-    [nzShowLine]="false"
+    [nzShowLine]="true"
     [nzShowIcon]="false"
     [nzExpandAll]="false"
     [nzMultiple]="true"
 >       
 <ng-template #nzTreeTemplate let-node let-origin="origin">
     <span class="macos-tree-node" (contextmenu)="contextMenu($event, menu,node)">
-        @if(!node.isLeaf){
+        <!-- @if(!node.isLeaf){
             <i class="folder-icon" ></i>
         }
         @else if (node.isLeaf) {
             <i class="file-icon"></i>
-        }
+        } -->
         {{ node.title }}-{{origin.value}}
       </span>
     <!-- <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">

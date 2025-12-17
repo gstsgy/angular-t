@@ -1,9 +1,9 @@
 <div class="dict-tree-container">
     <!-- 操作工具栏 -->
     <div class="tree-toolbar">
-        <button nzType="primary" nz-button (click)="refresh()" >
+        <!-- <button nzType="primary" nz-button (click)="refresh()" >
             <span nz-icon nzType="sync"></span> 刷新
-        </button>
+        </button> -->
 
         <div class="search-box">
             <nz-input-group nzPrefixIcon="search">
@@ -21,75 +21,31 @@
     </div>
 
     <!-- 树形结构 -->
-    <div class="tree-wrapper">
-        <nz-spin [nzSpinning]="loading">
-            <nz-tree
-                    [nzData]="nodes"
-                    [nzShowIcon]="true"
-                    [nzExpandAll]="false"
-            >
-                <ng-template #nzTreeTemplate let-node let-origin="origin">
-                    <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">
-<!--                        <span nz-icon [nzType]="node.icon" nzTheme="outline"></span>-->
-                        <span class="node-title">{{ node.title }}</span>
-                        <span class="node-key">{{ origin.value }}</span>
-
-                        <!-- 节点操作按钮 -->
-<!--                        @if(showOperations){-->
-<!--                            <div class="node-actions" >-->
-
-
-<!--                                <button-->
-<!--                                        nz-button-->
-<!--                                        nzType="text"-->
-<!--                                        nzSize="small"-->
-<!--                                        (click)="add(node); $event.stopPropagation()"-->
-<!--                                >-->
-<!--                                    <span nz-icon nzType="plus" nzTheme="outline"></span>-->
-<!--                                </button>-->
-
-
-
-
-<!--                                @if(node.key!=='4'){-->
-<!--                                    <button-->
-<!--                                            nz-button-->
-<!--                                            nzType="text"-->
-<!--                                            nzSize="small"-->
-<!--                                            (click)="edit(node); $event.stopPropagation()"-->
-<!--                                    >-->
-<!--                                        <span nz-icon nzType="edit" nzTheme="outline"></span>-->
-<!--                                    </button>-->
-<!--                                    <button-->
-<!--                                            nz-button-->
-<!--                                            nzType="text"-->
-<!--                                            nzSize="small"-->
-<!--                                            nzDanger-->
-<!--                                            nz-popconfirm-->
-<!--                                            nzPopconfirmTitle="确定删除此节点？"-->
-<!--                                            (nzOnConfirm)="delete(node)"-->
-<!--                                            (click)="$event.stopPropagation()"-->
-<!--                                    >-->
-<!--                                        <span nz-icon nzType="delete" nzTheme="outline"></span>-->
-<!--                                    </button>-->
-<!--                                }-->
-<!--                                <button-->
-<!--                                        nz-button-->
-<!--                                        nzType="text"-->
-<!--                                        nzSize="small"-->
-<!--                                        (click)="copy(origin.value); $event.stopPropagation()"-->
-<!--                                >-->
-<!--                                    <span nz-icon nzType="copy" nzTheme="outline"></span>-->
-<!--                                </button>-->
-
-<!--                            </div>-->
-<!--                        }-->
-
-                    </div>
-                </ng-template>
-            </nz-tree>
-        </nz-spin>
-    </div>
+    <nz-tree
+    [nzData]="nodes"
+    nzBlockNode
+    [nzShowLine]="false"
+    [nzShowIcon]="false"
+    [nzExpandAll]="false"
+    [nzMultiple]="true"
+>       
+<ng-template #nzTreeTemplate let-node let-origin="origin">
+    <span class="macos-tree-node" (contextmenu)="contextMenu($event, menu,node)">
+        @if(!node.isLeaf){
+            <i class="folder-icon" ></i>
+        }
+        @else if (node.isLeaf) {
+            <i class="file-icon"></i>
+        }
+        {{ node.title }}-{{origin.value}}
+      </span>
+    <!-- <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">
+<!--                        <span nz-icon [nzType]="node.icon" nzTheme="outline"></span>
+        <span class="node-title">{{ node.title }}</span>
+        <span class="node-key">{{ origin.value }}</span>
+    </div> -->
+</ng-template>
+</nz-tree>
 </div>
 
 

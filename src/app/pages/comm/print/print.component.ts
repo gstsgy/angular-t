@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, HostListener, TemplateRef, ViewChild} from '@angular/core';
-import {App, Rect, Ellipse, KeyEvent, PointerEvent, Line, Text,UI} from 'leafer-ui'
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {App, Rect, Ellipse, Text} from 'leafer-ui'
 import { EditorEvent } from '@leafer-in/editor' // 导入图形编辑器插件 //
 import { Ruler } from 'leafer-x-ruler'
 import { Snap } from 'leafer-x-easy-snap'
@@ -10,11 +10,9 @@ import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzCollapseComponent, NzCollapsePanelComponent} from "ng-zorro-antd/collapse";
 import {NzTabComponent, NzTabSetComponent} from "ng-zorro-antd/tabs";
-import {NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
 import {FormsModule} from "@angular/forms";
 import {NzTreeComponent} from "ng-zorro-antd/tree";
-import {ILeafer} from "@leafer-ui/interface";
 import {MyApiService} from "@service/my-api.service"; // 导入视口插件 (可选)
 import { NzInputModule } from 'ng-zorro-antd/input';
 import {Table,QrCode} from "@model/print-model";
@@ -77,14 +75,13 @@ export class PrintComponent implements AfterViewInit{
     ngAfterViewInit(): void {
 
         // 创建应用
-        this. app = new App({ view: 'leafer', fill: '#333', editor: {
+        this. app = new App({ view: 'leafer', fill: '#aaa', editor: {
                 keyEvent:true,
                 multipleSelect:true
-            } ,tree: { type: 'viewport' },wheel: { disabled: true },})
+            } ,tree: { type: 'design' },wheel: { disabled: true },})
             const table = new Table(3, 4); // 3行4列
             this.app.tree.add(table)
         this.app.editor.on(EditorEvent.SELECT, (e: EditorEvent) => {
-                console.log(e.editor.list)
                 if (this.app?.editor.leafList.list.length>0) {
                     this.selectItem.type = this.app.editor.leafList.list[0].tag
                     this.selectItem.width = this.app.editor.leafList.list[0].width;
@@ -161,13 +158,12 @@ export class PrintComponent implements AfterViewInit{
                    const json = JSON.parse( res);
                     json.x +=10;
                     json.y +=10;
-                   this.app.tree.add(json)
+                    this.app.tree.add(json)
                     this.myApi.copy(JSON.stringify(json))
                 }
             })
         }
         if (event.ctrlKey && event.key.toLowerCase() === 'c') {
-            console.log(this.app?.editor.leafList.list)
             if (this.app?.editor.leafList.list.length>0) {
                 this.myApi.copy(this.app.editor.leafList.list[0].toString())
             }
@@ -183,34 +179,10 @@ export class PrintComponent implements AfterViewInit{
 
 
     fieldChange(event: any, field: string ) {
-        console.log(event, field)
         if (this.app?.editor.leafList.list.length>0) {
             (this.app.editor.leafList.list[0] as any)[field] = event;
         }else{
             (this.app as any )[field] = event;
         }
     }
-
-
-    initDragAndDrop(): void {
-        // 实现拖拽功能
-
-    }
-
-    editTemplate(): void {
-        // 编辑模板逻辑
-    }
-
-    saveTemplate(): void {
-        // 保存模板逻辑
-    }
-
-    exportTemplate(): void {
-        // 导出模板逻辑
-    }
-
-    previewTemplate(): void {
-        // 预览模板逻辑
-    }
-
 }

@@ -1,4 +1,4 @@
-import { Group, Rect, Text, IRect, IText, PointerEvent ,Image, IImage } from 'leafer-ui';
+import { Group, Rect, Text, IRect, IText, PointerEvent ,Image, IImage, BoundsEvent  } from 'leafer-ui';
 import QRCode from 'qrcode';
 interface CellData {
   row: number;
@@ -16,7 +16,6 @@ class Cell extends Group {
   
   public _data: CellData;
   public bg: Rect;
-  public border: Rect;
   public label: Text;
 
   constructor(data: CellData, width: number, height: number) {
@@ -25,21 +24,28 @@ class Cell extends Group {
     this.draggable=false;
     this._data = data;
     // 背景（无边框）
+    // this.bg = new Rect({
+    //   fill: '#fff',
+    //   width,
+    //   height,
+    //   interactive: true
+    // });
     this.bg = new Rect({
       fill: '#fff',
-      width,
-      height,
+      x: 1,
+      y: 1,
+      width: width - 2,
+      height: height - 2,
       interactive: true
     });
-
     // 边框（独立绘制，方便控制）
-    this.border = new Rect({
-      stroke: '#ccc',
-      strokeWidth: 1,
-      width,
-      height,
-      interactive: false // 避免干扰点击
-    });
+    // this.border = new Rect({
+    //   stroke: '#000',
+    //   strokeWidth: 1,
+    //   width,
+    //   height,
+    //   interactive: false // 避免干扰点击
+    // });
 
     this.label = new Text({
       text: data.text || '',
@@ -50,7 +56,7 @@ class Cell extends Group {
       dragBounds: 'parent', 
     });
 
-    this.add([this.bg, this.border, this.label]);
+    this.add([this.bg,  this.label]);
     this.on(PointerEvent.MENU, this.onPointerDown.bind(this));
   }
 
@@ -58,11 +64,6 @@ class Cell extends Group {
     if (e.buttons === 2) { // 右键
       this.emit('cellRightClick', { cell: this, event: e });
     }
-  }
-
-  setBorder(stroke: string, width: number = 1) {
-    this.border.stroke = stroke;
-    this.border.strokeWidth = width;
   }
 
   setText(text: string) {
@@ -75,7 +76,8 @@ class Table extends Group {
     public cols: number;
     private cellWidth: number;
     private cellHeight: number;
-    private cells: Cell[][] = [];
+    private cells: (Cell|null)[][] = [];
+    private mergeRegions: { r1: number; c1: number; r2: number; c2: number }[] = [];
   
     constructor(rows: number, cols: number, cellWidth = 100, cellHeight = 40) {
       super();
@@ -89,13 +91,68 @@ class Table extends Group {
     }
   
     private render() {
-      this.cells = [];
       this.clear();
-  
+      this.cells = [];
+      // === 新增：绘制网格线 ===
+  const gridLines = new Group();
+
+  // 1. 垂直线（cols + 1 条）
+  for (let c = 0; c <= this.cols; c++) {
+    const x = c * this.cellWidth;
+    gridLines.add(new Rect({
+      x,
+      y: 0,
+      width: 1,
+      widthRange :{ min: 1, max: 1 },
+      editable: true,
+      height: this.rows * this.cellHeight,
+      fill: '#000'
+    }));
+  }
+
+  // 2. 水平线（rows + 1 条）
+  for (let r = 0; r <= this.rows; r++) {
+    const y = r * this.cellHeight;
+    gridLines.add(new Rect({
+      x: 0,
+      y,
+      editable: true,
+      width: this.cols * this.cellWidth,
+      height: 1,
+      heightRange  :{ min: 1, max: 1 },
+      fill: '#000'
+    }));
+  }
+  this.add(gridLines);
+      // 辅助函数：判断 (r, c) 是否是某个合并区域的主单元格（左上角）
+      const getMergeRegion = (r: number, c: number) => {
+        return this.mergeRegions.find(m => m.r1 === r && m.c1 === c);
+      };
+    
+      // 辅助函数：判断 (r, c) 是否被某个合并区域覆盖（且不是主单元格）
+      const isCovered = (r: number, c: number) => {
+        return this.mergeRegions.some(m =>
+          r >= m.r1 && r <= m.r2 &&
+          c >= m.c1 && c <= m.c2 &&
+          !(r === m.r1 && c === m.c1) // 排除主单元格
+        );
+      };
+    
       for (let r = 0; r < this.rows; r++) {
-        const row: Cell[] = [];
+        const row: (Cell | null)[] = [];
         for (let c = 0; c < this.cols; c++) {
-          const cell = new Cell({ row: r, col: c }, this.cellWidth, this.cellHeight);
+          // 如果被覆盖（非主单元格），跳过
+          if (isCovered(r, c)) {
+            row.push(null);
+            continue;
+          }
+    
+          // 检查是否是主单元格
+          const merge = getMergeRegion(r, c);
+          const width = merge ? (merge.c2 - merge.c1 + 1) * this.cellWidth : this.cellWidth;
+          const height = merge ? (merge.r2 - merge.r1 + 1) * this.cellHeight : this.cellHeight;
+    
+          const cell = new Cell({ row: r, col: c, text: '' }, width, height);
           cell.x = c * this.cellWidth;
           cell.y = r * this.cellHeight;
           cell.on('cellRightClick', (e) => this.onCellRightClick(e));
@@ -126,7 +183,7 @@ class Table extends Group {
         case '1': this.addRow(); break;
         case '2': this.addCol(); break;
         case '3': this.mergeCells(row, col, row, col + 1); break;
-        case '4': this.cells[row][col].setBorder('#000', 2); break;
+        //case '4': this.cells?[row][col]?.setBorder('#000', 2); break;
       }
     }
   
@@ -141,23 +198,49 @@ class Table extends Group {
     }
   
     mergeCells(r1: number, c1: number, r2: number, c2: number) {
-      // 简单合并：隐藏 c2 单元格，扩展 c1 宽度
-      if (c2 >= this.cols || r2 >= this.rows) return;
-  
-      const cell1 = this.cells[r1][c1];
-      const cell2 = this.cells[r2][c2];
-  
-      // 隐藏 cell2
-      cell2.visible = false;
-  
-      // 扩展 cell1 宽度（假设水平合并）
-      cell1.width = this.cellWidth * 2;
-      cell1.border.width = this.cellWidth * 2;
-      cell1.bg.width = this.cellWidth * 2;
-      cell1.label.width = this.cellWidth * 2 - 8;
+      const top = Math.min(r1, r2);
+      const left = Math.min(c1, c2);
+      const bottom = Math.max(r1, r2);
+      const right = Math.max(c1, c2);
+    
+      if (bottom >= this.rows || right >= this.cols) return;
+    
+      // 检查区域内是否有其他合并冲突（简化版：不允许重叠）
+      for (let r = top; r <= bottom; r++) {
+        for (let c = left; c <= right; c++) {
+          if (this.isCellInAnyMerge(r, c)) {
+            console.warn('合并区域重叠，取消操作');
+            return;
+          }
+        }
+      }
+    
+      // 只记录左上角为主单元格
+      this.mergeRegions.push({
+        r1: top,
+        c1: left,
+        r2: bottom,
+        c2: right
+      });
+    
+      this.render();
     }
-  }
-  class QrCode extends Image {
+    
+    // 判断 (r,c) 是否在任何合并区域内（包括主单元格）
+    private isCellInAnyMerge(r: number, c: number): boolean {
+      return this.mergeRegions.some(m =>
+        r >= m.r1 && r <= m.r2 &&
+        c >= m.c1 && c <= m.c2
+      );
+    }
+    unmergeCell(r: number, c: number) {
+      this.mergeRegions = this.mergeRegions.filter(m => !(m.r1 === r && m.c1 === c));
+      this.render();
+    }
+}
+
+
+class QrCode extends Image {
     private _data: string;
     private _size: number;
   

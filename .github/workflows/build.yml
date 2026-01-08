@@ -1,0 +1,27 @@
+name: test
+on: 
+  push:
+    branches: [ master]
+jobs:
+  build:
+    name: My first job
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: set nodejs
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+    - name: instll
+      run: npm install
+    - name: build
+      run: npm run build
+
+    - name: depoloy
+      uses: peaceiris/actions-gh-pages@v3
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist/t/browser
+        keep_files: false
+        force_orphan: true

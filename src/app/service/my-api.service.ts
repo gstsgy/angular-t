@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {MyHttpService} from "@service/my-http.service";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {NonNullableFormBuilder} from "@angular/forms";
-import {Router} from "@angular/router";
-import {Observable, Subject} from "rxjs";
-import {ResponseBean, TabModel} from "@model/forms";
-import {format, parse} from "date-fns";
-import {NzModalService} from "ng-zorro-antd/modal";
-import {PromptComponent} from '@app/component/prompt/prompt.component'; // 引入自定义内容组件
-import * as XLSX from 'xlsx'
-import {UserService} from './user.service';
+import { Injectable } from "@angular/core";
+import { MyHttpService } from "@service/my-http.service";
+import { NzMessageService } from "ng-zorro-antd/message";
+import { NonNullableFormBuilder } from "@angular/forms";
+import { Router } from "@angular/router";
+import { Observable, Subject } from "rxjs";
+import { ResponseBean, TabModel } from "@model/forms";
+import { format, parse } from "date-fns";
+import { NzModalService } from "ng-zorro-antd/modal";
+import { PromptComponent } from "@app/component/prompt/prompt.component"; // 引入自定义内容组件
+import * as XLSX from "xlsx";
+import { UserService } from "./user.service";
 
 @Injectable({
   providedIn: "root",
@@ -314,68 +314,73 @@ export class MyApiService {
     XLSX.writeFile(workBook, `${fileName}.xlsx`);
   }
 
-  copy(text: string){
-      if (navigator.clipboard && window.isSecureContext) {
-          // 使用现代 Clipboard API（需要 HTTPS 或 localhost）
-          navigator.clipboard.writeText(text)
-              .then(() => {
-                 // this.success('复制成功:'+ text);
-                  return true;
-              })
-              .catch(err => {
-                  console.error('复制失败:', err);
-                  this.error('复制失败:'+ text);
-                  return false;
-              });
-      } else {
-          // 降级到传统方法
-          this.error('复制失败:'+ text);
-      }
+  copy(text: string) {
+    if (navigator.clipboard && window.isSecureContext) {
+      // 使用现代 Clipboard API（需要 HTTPS 或 localhost）
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          // this.success('复制成功:'+ text);
+          return true;
+        })
+        .catch((err) => {
+          console.error("复制失败:", err);
+          this.error("复制失败:" + text);
+          return false;
+        });
+    } else {
+      // 降级到传统方法
+      this.error("复制失败:" + text);
+    }
   }
 
-    async readClipboard() {
-        try {
-            // 检查权限（需要 HTTPS 环境）
-            const permission = await navigator.permissions.query({
-                name: 'clipboard-read' as PermissionName
-            });
+  async readClipboard() {
+    try {
+      // 检查权限（需要 HTTPS 环境）
+      const permission = await navigator.permissions.query({
+        name: "clipboard-read" as PermissionName,
+      });
 
-            if (permission.state === 'denied') {
-                alert('请允许剪贴板访问权限');
-                return;
-            }
+      if (permission.state === "denied") {
+        alert("请允许剪贴板访问权限");
+        return;
+      }
 
-            // 读取文本
-            return await navigator.clipboard.readText();
+      // 读取文本
+      return await navigator.clipboard.readText();
 
-            // // 读取多种格式
-            // const clipboardItems = await navigator.clipboard.read();
-            // for (const item of clipboardItems) {
-            //     console.log('可用格式:', item.types);
-            //
-            //     // 获取文本
-            //     if (item.types.includes('text/plain')) {
-            //         const textBlob = await item.getType('text/plain');
-            //         const text = await textBlob.text();
-            //         console.log('纯文本:', text);
-            //     }
-            //
-            //     // 获取 HTML
-            //     if (item.types.includes('text/html')) {
-            //         const htmlBlob = await item.getType('text/html');
-            //         const html = await htmlBlob.text();
-            //         console.log('HTML:', html);
-            //     }
-            //
-            //     // 获取图片
-            //     if (item.types.includes('image/png')) {
-            //         const imageBlob = await item.getType('image/png');
-            //         // 处理图片数据
-            //     }
-            // }
-        } catch (err: any) {
-            console.error('读取剪贴板失败:', err);
-            return  '';
-        }
+      // // 读取多种格式
+      // const clipboardItems = await navigator.clipboard.read();
+      // for (const item of clipboardItems) {
+      //     console.log('可用格式:', item.types);
+      //
+      //     // 获取文本
+      //     if (item.types.includes('text/plain')) {
+      //         const textBlob = await item.getType('text/plain');
+      //         const text = await textBlob.text();
+      //         console.log('纯文本:', text);
+      //     }
+      //
+      //     // 获取 HTML
+      //     if (item.types.includes('text/html')) {
+      //         const htmlBlob = await item.getType('text/html');
+      //         const html = await htmlBlob.text();
+      //         console.log('HTML:', html);
+      //     }
+      //
+      //     // 获取图片
+      //     if (item.types.includes('image/png')) {
+      //         const imageBlob = await item.getType('image/png');
+      //         // 处理图片数据
+      //     }
+      // }
+    } catch (err: any) {
+      console.error("读取剪贴板失败:", err);
+      return "";
     }
+  }
+
+  async sleep(ms:number){
+    await new Promise(resolve => setTimeout(resolve, ms));
+  }
 }

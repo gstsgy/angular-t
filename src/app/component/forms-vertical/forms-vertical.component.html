@@ -1,6 +1,6 @@
 <div  class="search-form" >
     <!-- <div nz-row [nzGutter]="12" nzJustify="start"> -->
-        @for (control of formCol; track control) {
+        @for (control of nzModalData.formCol; track control) {
             @if (control.isShow) {
 
                         <div (keyup.enter)="enterEvent()">
@@ -73,4 +73,9 @@
                         </div>
             }
         }
+
+        <div class="btn">
+            <button nz-button nzType="default" (click)="close()">取消</button>
+            <button nz-button nzType="primary" (click)="ok()" [nzLoading]="okLoading">确定</button>
+            </div>
 </div>

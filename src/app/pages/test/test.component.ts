@@ -1,7 +1,7 @@
 import { Component, ViewChild } from "@angular/core";
 import { AccEditorComponent } from "@app/component/ace-editor/ace-editor.component";
 import { FormsVerticalComponent } from "@app/component/forms-vertical/forms-vertical.component";
-import { FormsModel } from "@app/model/forms";
+import { FormsModel,FormsVerticalData } from "@app/model/forms";
 import BaseForm from "@model/base-form";
 import { MyApiService } from "@service/my-api.service";
 import { NzModalRef } from "ng-zorro-antd/modal";
@@ -53,18 +53,20 @@ export class TestComponent extends BaseForm {
     }
   }
   editor1() {
-    const model:NzModalRef<FormsVerticalComponent> = this.myApi.modal.create<FormsVerticalComponent>({
+    const model = this.myApi.modal.create<FormsVerticalComponent,FormsVerticalData>({
       nzTitle: "新增表单",
       nzContent: FormsVerticalComponent,
       nzWidth: "640px",
+      nzFooter:null,
+      nzData: {
+        method: 'post',
+        url: 'sdsd',
+        formCol:  this.formCols
+      },
       nzOnOk: (componentInstance) => {
         //this.xmlContent = componentInstance.xmlContent;
       },
-    })
-    if(model.componentInstance){
-      model.componentInstance.formCol = this.formCols;
-    }
-    
+    }) 
   }
   beforeUpload = (file: NzUploadFile): boolean => {
     this.fileList = this.fileList.concat(file);

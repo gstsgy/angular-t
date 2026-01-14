@@ -1,74 +1,101 @@
-import {DetachedRouteHandle} from "@angular/router";
+import { DetachedRouteHandle } from "@angular/router";
 import { NzTableFilterFn } from "ng-zorro-antd/table";
 
-type FormType='input'|'number'|'password'|'switch'|'select'|'radio'|'date'|'time'|'datetime'|'treeSelect'|'diy';
+type FormType =
+  | "input"
+  | "number"
+  | "password"
+  | "switch"
+  | "select"
+  | "radio"
+  | "date"
+  | "time"
+  | "datetime"
+  | "treeSelect"
+  | "diy";
 
 interface FormsModel {
-    code: string,
-    type: FormType,
-    label: string | null,
-    value: any | null,
-    required: boolean | null,
-    isShow: boolean,
-    isSort: boolean| null,
-    isFilter: boolean| null,
-    disable?: boolean | null,
-    editable?: boolean | null,
-    options?: Array<any>,
-    optionModel?: string | null,
-    width?: string | null,
-    defaultValue?: any | null,
-    filterFn?: NzTableFilterFn
+  code: string;
+  type: FormType;
+  label: string | null;
+  value: any | null;
+  required: boolean | null;
+  isShow: boolean;
+  isSort: boolean | null;
+  isFilter: boolean | null;
+  disable?: boolean | null;
+  editable?: boolean | null;
+  options?: Array<any>;
+  optionModel?: string | null;
+  width?: string | null;
+  defaultValue?: any | null;
+  filterFn?: NzTableFilterFn;
 }
 
 interface ResponseBean {
-    code: number,
+  code: number;
 
-    message: string | null,
+  message: string | null;
 
-    data: any,
+  data: any;
 }
 
 interface BtnModel {
-    type: "primary" | "default" | "dashed" | "link" | "text" | null,
+  type: "primary" | "default" | "dashed" | "link" | "text" | null;
 
-    name: string,
+  name: string;
 
-    code: string,
+  code: string;
 
-    icon?: string | null,
+  icon?: string | null;
 
-    disable?: boolean | null,
+  disable?: boolean | null;
 }
 
 interface TabModel {
-    menuCode:string,
-    code: string,
-    name: string,
-    active?: boolean | null,
-    handle?: DetachedRouteHandle | null,
+  menuCode: string;
+  code: string;
+  name: string;
+  active?: boolean | null;
+  handle?: DetachedRouteHandle | null;
 }
 
 interface DataSource {
-    type: 'static'|'dict'|'api',
-    code: string,
-    dataSource?: any | null,
-    url?: string | null,
-    method?: 'get'|'post'|'put'|'delete'|'patch'|'head'|'options'|'connect'|'trace'|'get'|'post'|'put'|'delete',
-    params?: any | null,
-
+  type: "static" | "dict" | "api";
+  code: string;
+  dataSource?: any | null;
+  url?: string | null;
+  method?:
+    | "get"
+    | "post"
+    | "put"
+    | "delete"
+    | "patch"
+    | "head"
+    | "options"
+    | "connect"
+    | "trace"
+    | "get"
+    | "post"
+    | "put"
+    | "delete";
+  params?: any | null;
 }
 
 interface FormItem {
-    code: string,
-    label: string,
-    name: string,
-    type: string,
-    value: any,
-    required: boolean,
-    disabled?: boolean | null,
-    options?: Array<{ value: string | number, label: string }>,
-    optionModel?: string | null,
+  code: string;
+  label: string;
+  name: string;
+  type: string;
+  value: any;
+  required: boolean;
+  disabled?: boolean | null;
+  options?: Array<{ value: string | number; label: string }>;
+  optionModel?: string | null;
 }
-
-export {FormsModel, BtnModel, ResponseBean, TabModel,DataSource};
+interface FormsVerticalData {
+  method: string;
+  url: string;
+  formCol: Array<FormsModel>;
+}
+export { FormsModel, BtnModel, ResponseBean, TabModel, DataSource,FormsVerticalData };

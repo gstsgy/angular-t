@@ -93,11 +93,10 @@ export class DictComponent  implements OnInit{
     }
 
     add(parentNode:any= null) {
-        console.log(parentNode)
         this.dictItem = {
             id: null,
             parentId: parentNode.key,
-            modelCode: parentNode.id===4?'':parentNode.origin.value,
+            modelCode: parentNode.id===4?'9527':parentNode.origin.value,
             dictKey: null,
             dictValue: null,
             seq:0

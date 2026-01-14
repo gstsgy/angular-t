@@ -1,121 +1,112 @@
 <div class="dict-tree-container">
-    <!-- 操作工具栏 -->
-    <div class="tree-toolbar">
-        <!-- <button nzType="primary" nz-button (click)="refresh()" >
+  <!-- 操作工具栏 -->
+  <div class="tree-toolbar">
+    <!-- <button nzType="primary" nz-button (click)="refresh()" >
             <span nz-icon nzType="sync"></span> 刷新
         </button> -->
 
-        <div class="search-box">
-            <nz-input-group nzPrefixIcon="search">
-                <input
-                        nz-input
-                        [(ngModel)]="searchValue"
-                        placeholder="搜索节点..."
-                        (keyup.enter)="refresh()"
-                />
-                <button nz-button nzType="link" (click)="refresh()">
-                    搜索
-                </button>
-            </nz-input-group>
-        </div>
+    <div class="search-box">
+      <nz-input-group nzPrefixIcon="search">
+        <input
+          nz-input
+          [(ngModel)]="searchValue"
+          placeholder="搜索节点..."
+          (keyup.enter)="refresh()"
+        />
+        <button nz-button nzType="link" (click)="refresh()">搜索</button>
+      </nz-input-group>
     </div>
+  </div>
 
-    <!-- 树形结构 -->
-    <nz-tree
+  <!-- 树形结构 -->
+  <nz-tree
     [nzData]="nodes"
     nzBlockNode
     [nzShowLine]="true"
     [nzShowIcon]="false"
     [nzExpandAll]="false"
     [nzMultiple]="true"
->       
-<ng-template #nzTreeTemplate let-node let-origin="origin">
-    <span class="macos-tree-node" (contextmenu)="contextMenu($event, menu,node)">
+  >
+    <ng-template #nzTreeTemplate let-node let-origin="origin">
+      <span
+        class="macos-tree-node"
+        (contextmenu)="contextMenu($event, menu, node)"
+      >
         <!-- @if(!node.isLeaf){
             <i class="folder-icon" ></i>
         }
         @else if (node.isLeaf) {
             <i class="file-icon"></i>
         } -->
-        {{ node.title }}-{{origin.value}}
+        {{ node.title }}-{{ origin.value }}
       </span>
-    <!-- <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">
+      <!-- <div class="tree-node-content" (contextmenu)="contextMenu($event, menu,node)">
 <!--                        <span nz-icon [nzType]="node.icon" nzTheme="outline"></span>
         <span class="node-title">{{ node.title }}</span>
         <span class="node-key">{{ origin.value }}</span>
     </div> -->
-</ng-template>
-</nz-tree>
+    </ng-template>
+  </nz-tree>
 </div>
-
-
-
 
 <!--<app-form-report [commonObjs]="commonObjs" style="height: 100%;"></app-form-report>-->
 
 <ng-template #dictForm>
-    <form nz-form>
-        <nz-form-item>
-            <nz-form-label [nzSpan]="5">model</nz-form-label>
-            <nz-form-control  [nzSpan]="12" >
-                <input nz-input [disabled]="true"  [(ngModel)]="dictItem.modelCode" name="modelCode"  />
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzSpan]="5">键</nz-form-label>
-            <nz-form-control  [nzSpan]="12" >
-                <input nz-input [(ngModel)]="dictItem.dictKey" name="dictKey"  />
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzSpan]="5">值</nz-form-label>
-            <nz-form-control  [nzSpan]="12" >
-                <input nz-input [(ngModel)]="dictItem.dictValue" name="dictValue" />
-            </nz-form-control>
-        </nz-form-item>
-    </form>
+  <form nz-form>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="5">model</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input
+          nz-input
+          [disabled]="true"
+          [(ngModel)]="dictItem.modelCode"
+          name="modelCode"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="5">键</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input [(ngModel)]="dictItem.dictKey" name="dictKey" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="5">值</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <input nz-input [(ngModel)]="dictItem.dictValue" name="dictValue" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
 </ng-template>
 
 <nz-dropdown-menu #menu="nzDropdownMenu">
-    <ul nz-menu>
-        <li nz-menu-item (click)="add(currentNode); $event.stopPropagation()">
-            <button
-                nz-button
-                nzType="text"
-                nzSize="small"
+  <ul nz-menu>
+    <li nz-menu-item (click)="add(currentNode); $event.stopPropagation()">
+      <button nz-button nzType="text" nzSize="small">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+      </button>
+      添加一项
+    </li>
+    <!--        @if(currentNode.key!=='4'){-->
+    <li nz-menu-item (click)="edit(currentNode); $event.stopPropagation()">
+      <button nz-button nzType="text" nzSize="small">
+        <span nz-icon nzType="edit" nzTheme="outline"></span></button
+      >编辑该项
+    </li>
+    <li nz-menu-item (click)="delete(currentNode); $event.stopPropagation()">
+      <button nz-button nzType="text" nzSize="small" nzDanger>
+        <span nz-icon nzType="delete" nzTheme="outline"></span></button
+      >删除该项
+    </li>
+    <li
+      nz-menu-item
+      (click)="copy(currentNode.origin.value); $event.stopPropagation()"
+    >
+      <button nz-button nzType="text" nzSize="small">
+        <span nz-icon nzType="copy" nzTheme="outline"></span></button
+      >复制key
+    </li>
 
-        >
-            <span nz-icon nzType="plus" nzTheme="outline"></span>
-        </button> 添加一项</li>
-<!--        @if(currentNode.key!=='4'){-->
-            <li nz-menu-item (click)="edit(currentNode); $event.stopPropagation()"> <button
-                    nz-button
-                    nzType="text"
-                    nzSize="small"
-
-            >
-                <span nz-icon nzType="edit" nzTheme="outline"></span>
-            </button>编辑该项</li>
-            <li nz-menu-item  (click)="delete(currentNode);$event.stopPropagation()">  <button
-                    nz-button
-                    nzType="text"
-                    nzSize="small"
-                    nzDanger
-            >
-                <span nz-icon nzType="delete" nzTheme="outline"></span>
-            </button>删除该项</li>
-        <li nz-menu-item (click)="copy(currentNode.origin.value); $event.stopPropagation()">
-        <button
-                nz-button
-                nzType="text"
-                nzSize="small"
-
-        >
-            <span nz-icon nzType="copy" nzTheme="outline"></span>
-        </button>复制key</li>
-
-<!--            ｝-->
-
-
-    </ul>
+    <!--            ｝-->
+  </ul>
 </nz-dropdown-menu>

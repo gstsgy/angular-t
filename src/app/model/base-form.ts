@@ -20,6 +20,8 @@ export default class BaseForm {
 
     formGrids: Array<FormsModel> = []
 
+    formSingleCols: Array<FormsModel> = []
+
     btns: Array<BtnModel> = []
 
     serverUrl: string = ""
@@ -87,6 +89,30 @@ export default class BaseForm {
             if (res.code === 200) {
                 this.formGrids = res.data;
                 this.formGrids.forEach(async item => {
+                    item.defaultValue = this.getDefaultValue(item.defaultValue);
+                    if (item.optionModel) {
+                        const dataSource:DataSource = JSON.parse(item.optionModel);
+                        if(dataSource.type === 'static'){
+                            item.options = dataSource.dataSource;
+                        }else if(dataSource.type === 'dict'){
+                            this.myApi.getDict(dataSource.code).subscribe(res => {
+                                item.options = res;
+                            })
+                        }else if(dataSource.type === 'api'){
+                            this.myApi.request(dataSource.method??'get',dataSource.url??'', dataSource.params).then(res => {
+                                item.options = res.data;
+                            })
+                        }
+                    }
+                })
+
+            }
+        })
+
+        await this.myApi.get('form/single', {formId: this.formId}).then(res => {
+            if (res.code === 200) {
+                this.formSingleCols = res.data;
+                this.formSingleCols.forEach(async item => {
                     item.defaultValue = this.getDefaultValue(item.defaultValue);
                     if (item.optionModel) {
                         const dataSource:DataSource = JSON.parse(item.optionModel);

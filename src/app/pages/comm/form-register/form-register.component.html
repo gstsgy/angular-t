@@ -5,6 +5,9 @@
           <ng-template appSmartTemplate="_editGrid" let-row>
             <a nz-button nzType="link" (click)="openModel('表格',col,row)">编辑表格</a>
           </ng-template>
+          <ng-template appSmartTemplate="_editSingle" let-row>
+            <a nz-button nzType="link" (click)="openModel('单表',col,row)" >编辑单表</a>
+          </ng-template>
           <ng-template appSmartTemplate="_delete" let-row>
             <a nz-button nzType="link" (click)="delete(row)" nzDanger>删除</a>
           </ng-template>

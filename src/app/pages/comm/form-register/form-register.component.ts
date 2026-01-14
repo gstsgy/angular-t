@@ -155,26 +155,11 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
 
     openModel(title: string, templateRef: TemplateRef<{}>, item: any) {
-        // const modal = this.modal.create<FormRegisterColComponent>({
-        //     nzTitle: title,
-        //     nzWidth: '80%',
-        //     nzContent: FormRegisterColComponent,
-        //     nzClosable: true,
-        //     nzFooter: null,
-        //     nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000)),
-        //   });
-        //   const drawerRef = this.drawerService.create<FormRegisterColComponent, { value: string }, string>({
-        //     nzTitle: title,
-        //     nzWidth: '100%',
-        //     //nzFooter: 'Footer',
-        //     //nzExtra: 'Extra',
-        //     nzContent: FormRegisterColComponent,
-           
-        //   });
         this.jsonTmp = '';
         this.modelTitle = title;
         this.formId = item.id;
-        let url = this.modelTitle === '表格' ? "form/grids" : "form/cols";
+        let url = this.modelTitle === '表格' ? "form/grids" :this.modelTitle === '表单'? "form/cols":'form/single';
+        this.cols = []
         this.myApi.get(url, {formId: item.id}).then(res => {
             this.cols = res.data;
         })

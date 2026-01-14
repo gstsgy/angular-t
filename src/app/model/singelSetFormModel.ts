@@ -7,6 +7,7 @@ export default class SingelSetFormModel extends BaseForm {
 
     updateObj:any={};
 
+    
 
 
     constructor(public override myApi: MyApiService, public route: ActivatedRoute) {

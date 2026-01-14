@@ -160,7 +160,7 @@
                             @if (isSelected) {
                                 <td [nzChecked]="setOfCheckedId.has(idx)" (nzCheckedChange)="onItemChecked(idx, $event)"></td>
                             }
-                            @for (control of formGrid; track control) {
+                            @for (control of formGrid; track control;let idj = $index) {
                                 @if (control.isShow) {
                                     @if (control.code === '_Index') {
                                         <td (dblclick)="edit(item,control)">{{ (searchQuery.pageNum-1)*searchQuery.pageSize + idx + 1 }}</td>
@@ -170,7 +170,7 @@
                                                 <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
                                             </td>
                                         } @else {
-                                            <td (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
+                                            <td  #tdElement (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])" (mousedown)="mousedown(idx,idj);$event.preventDefault()" (mousemove)="mousemove(idx,idj);$event.preventDefault()" (mouseup)="mouseup(idx,idj);$event.preventDefault()">
                                                 @if (editable && control.editable) {
                                                     @if (control.type === 'input') {
                                                         <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>

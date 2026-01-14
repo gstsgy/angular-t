@@ -1,31 +1,32 @@
 //@import 'node_modules/ng-zorro-antd/resizable/style/entry.less';
-.cdk-drag-preview{
-    display: inline-flex;
-    background-color: #fafafa;
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 5px 5px -3px rgba(0, 0, 0, .14), 0 5px 5px -3px rgba(0, 0, 0, .12);
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
+.cdk-drag-preview {
+  display: inline-flex;
+  background-color: #fafafa;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 5px 5px -3px rgba(0, 0, 0, 0.14), 0 5px 5px -3px rgba(0, 0, 0, 0.12);
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
 }
 .nz-resizable-preview {
-    border-width: 0;
-    border-right-width: 1px;
-  }
-  .formGrid-body{
-    height: 100%; /* 固定高度 */
-    display: flex;
-    flex-direction: column;
-    //nz-table{
-    //  flex: 1; /* 关键属性 - 填充剩余空间 */
-    //}
-    // nz-pagination{
-    //   //margin-right: 0;
-    //   display: flex;
-    //   justify-content: flex-end;
-    // }
-  }
+  border-width: 0;
+  border-right-width: 1px;
+}
+.formGrid-body {
+  height: 100%; /* 固定高度 */
+  display: flex;
+  flex-direction: column;
+  //nz-table{
+  //  flex: 1; /* 关键属性 - 填充剩余空间 */
+  //}
+  // nz-pagination{
+  //   //margin-right: 0;
+  //   display: flex;
+  //   justify-content: flex-end;
+  // }
+}
 
 :host ::ng-deep {
   // 斑马纹
@@ -36,22 +37,21 @@
 :host ::ng-deep .ant-pagination {
   display: flex;
   justify-content: flex-end; /* 整体靠右 */
-  ul{
+  ul {
     display: flex;
     .ant-pagination-total-text {
       order: 1;
       margin-left: 16px; /* 增加右边距 */
     }
   }
-
 }
 
 .drag-handle:hover {
-    opacity: 1; /* 悬停时变明显 */
+  opacity: 1; /* 悬停时变明显 */
 }
-:host ::ng-deep  .cdk-virtual-scroll-viewport {
-    overflow-y: scroll !important;
-    scrollbar-gutter: stable;
+:host ::ng-deep .cdk-virtual-scroll-viewport {
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable;
 }
 
 /* 在你的 component.css 或者 global styles.css 中 */
@@ -65,7 +65,12 @@
   border: 1px solid #d1d7dc; /* 同样设置表头和单元格的边框 */
 }
 .nz-resizable-preview {
-    border-width: 0;
-    border-right-width: 1px;
+  border-width: 0;
+  border-right-width: 1px;
 }
-@import 'node_modules/ng-zorro-antd/resizable/style/entry.less';
+
+// 选择背景框
+.select-copy {
+  background-color: #d7d8fe !important;
+}
+@import "node_modules/ng-zorro-antd/resizable/style/entry.less";

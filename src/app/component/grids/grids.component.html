@@ -113,6 +113,7 @@
                   nzSize="small"
                   [nzScroll]="data.length>0?nzScrollConfig:{}"
                   style="flex: 1;"
+                  [appTableCopyDirective] ="isOpenCopy"
         >
             <thead>
             <tr  cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
@@ -170,7 +171,7 @@
                                                 <ng-container *ngTemplateOutlet="getTemplate(control.code)!; context: { $implicit: item, rowData: item }"></ng-container>
                                             </td>
                                         } @else {
-                                            <td  #tdElement (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])" (mousedown)="mousedown(idx,idj);$event.preventDefault()" (mousemove)="mousemove(idx,idj);$event.preventDefault()" (mouseup)="mouseup(idx,idj);$event.preventDefault()">
+                                            <td  #tdElement (dblclick)="edit(item,control)" [nzEllipsis]="true" [title]="formation(control, item[control.code])">
                                                 @if (editable && control.editable) {
                                                     @if (control.type === 'input') {
                                                         <input width="120px" nz-input [(ngModel)]="item[control.code]" [placeholder]="getPlaceholder(control.label)"/>

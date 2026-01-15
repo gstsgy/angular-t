@@ -14,7 +14,7 @@ import {
   ViewChildren,
   QueryList,
   TemplateRef,
-  Renderer2,
+
 } from "@angular/core";
 import { NzTableModule, NzTableComponent } from "ng-zorro-antd/table";
 import { FormsModel } from "@model/forms";
@@ -37,7 +37,7 @@ import { NzTreeSelectModule } from "ng-zorro-antd/tree-select";
 import { NzPaginationModule } from "ng-zorro-antd/pagination";
 import { NavigationStart, Router } from "@angular/router";
 import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
-
+import { TableCopyDirectiveDirective } from '@app/directive/table-copy-directive.directive'
 @Component({
   selector: "app-grids",
   standalone: true,
@@ -56,6 +56,7 @@ import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
     NzTimePickerComponent,
     NzTreeSelectModule,
     FormsModule,
+    TableCopyDirectiveDirective
   ],
   templateUrl: "./grids.component.html",
   styleUrl: "./grids.component.less",
@@ -124,7 +125,7 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
     private ngZone: NgZone,
     private cd: ChangeDetectorRef,
     private router: Router,
-    private renderer: Renderer2
+   
   ) {}
 
   getTemplate(key: string): TemplateRef<any> | null {
@@ -145,72 +146,10 @@ export class GridsComponent implements OnChanges, AfterViewInit, OnDestroy {
       this.scrollSubscription.unsubscribe();
     }
   }
-  selectCopyData = {
-    startX: 0,
-    startY: 0,
-    endX: 0,
-    endY: 0,
-  };
-  ismousedown:boolean = false;
-  @ViewChildren("tdElement") tdElements!: QueryList<ElementRef>;
-  addClass() {
-    const arr = this.tdElements.toArray();
-    const length=this.formGrid.filter(it=>it.code!=='_Index').length
-    
-    // 先初始化
-    arr.forEach(it=>{
-        this.renderer.removeClass(it.nativeElement, "select-copy");
-    })
-   
-    for (
-        let row = this.selectCopyData.startX;
-        row <= this.selectCopyData.endX;
-        row++
-      ) {
-        for (
-          let col = this.selectCopyData.startY;
-          col <= this.selectCopyData.endY;
-          col++
-        ) {
-          const index = row * length + col;
-          const element = arr[index];
-          if (element) {
-            this.renderer.addClass(element.nativeElement, "select-copy");
-          }
-        }
-      }
-  }
-  mousedown(i: number, y: number) {
-    y = y-1
-    if(i>=this.selectCopyData.startX && i<=this.selectCopyData.endX  && y>=this.selectCopyData.startY&&y<=this.selectCopyData.endY){
-        return
-    }
-    //console.log(i,y)
-   
-    this.selectCopyData = {
-      startX: i,
-      startY: y,
-      endX: i,
-      endY: y,
-    };
-
-    this.addClass();
-    this.ismousedown = true;
-  }
-  mousemove(i: number, y: number) {
-
-    if(this.ismousedown){
-        y = y-1
-        this.selectCopyData.endX = i;
-        this.selectCopyData.endY = y;
-        this.selectCopyData = this.selectCopyData;
-        this.addClass();
-    }
-   
-  }
-  mouseup(i: number, y: number) {
-    this.ismousedown = false;
-  }
+  isOpenCopy = true;
+ 
+  
+  
 
   ngAfterViewInit(): void {
     this.currentUrl = this.router.url;

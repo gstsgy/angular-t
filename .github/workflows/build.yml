@@ -16,7 +16,7 @@ jobs:
     - name: instll
       run: npm install
     - name: build
-      run: npm run build
+      run: npm run build 
 
     - name: depoloy
       uses: peaceiris/actions-gh-pages@v3

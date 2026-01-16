@@ -45,16 +45,20 @@ export class TableCopyDirectiveDirective implements OnInit {
 
   addStyle() {
     const styleId = "table-copy-directive-styles";
-    if (document.getElementById(styleId)) return;
+    if(this.renderer.selectRootElement(styleId))return;
+   // if (document.getElementById(styleId)) return;
 
-    const style = document.createElement("style");
+    //const style = document.createElement("style");
+    const style =this.renderer.createElement("style")
     style.id = styleId;
     style.textContent = `
       .select-copy {
         background-color: #d7d8fe !important;
       }
     `;
-    document.head.appendChild(style);
+   // document.head.appendChild(style);
+   
+    this.renderer.appendChild(document.head,style);
   }
 
   private getAllTdElements(): HTMLElement[] {
@@ -140,12 +144,12 @@ export class TableCopyDirectiveDirective implements OnInit {
         }
       }
     };
-
-    document.addEventListener("mousemove", mouseMoveHandler);
+    //this.renderer.
+    this.el.nativeElement.addEventListener("mousemove", mouseMoveHandler);
 
     // 返回清理函数
     return () => {
-      document.removeEventListener("mousemove", mouseMoveHandler);
+      this.el.nativeElement.removeEventListener("mousemove", mouseMoveHandler);
     };
   }
 
@@ -154,11 +158,11 @@ export class TableCopyDirectiveDirective implements OnInit {
       this.ismousedown = false;
     };
 
-    document.addEventListener("mouseup", mouseUpHandler);
+    this.el.nativeElement.addEventListener("mouseup", mouseUpHandler);
 
     // 返回清理函数
     return () => {
-      document.removeEventListener("mouseup", mouseUpHandler);
+      this.el.nativeElement.removeEventListener("mouseup", mouseUpHandler);
     };
   }
 

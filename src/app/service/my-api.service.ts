@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { ComponentRef, EnvironmentInjector, Injectable, ViewContainerRef, createComponent } from "@angular/core";
 import { MyHttpService } from "@service/my-http.service";
 import { NzMessageService } from "ng-zorro-antd/message";
 import { NonNullableFormBuilder } from "@angular/forms";
@@ -10,11 +10,13 @@ import { NzModalService } from "ng-zorro-antd/modal";
 import { PromptComponent } from "@app/component/prompt/prompt.component"; // 引入自定义内容组件
 import * as XLSX from "xlsx";
 import { UserService } from "./user.service";
+import { ContextmenuComponent, MenuItem } from "@app/component/contextmenu/contextmenu.component";
 
 @Injectable({
   providedIn: "root",
 })
 export class MyApiService {
+  private  contextMenuComp:ComponentRef<ContextmenuComponent>|null  = null;
   public menus: Array<any> = [];
   public tabs: Array<TabModel> = [
     {
@@ -38,8 +40,25 @@ export class MyApiService {
     public fb: NonNullableFormBuilder,
     private readonly router: Router,
     public readonly modal: NzModalService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    private environmentInjector: EnvironmentInjector,
   ) {}
+
+  contextMenu(event:MouseEvent,viewContainerRef: ViewContainerRef,items:Array<MenuItem>,callback:Function){
+    if(this.contextMenuComp===null){
+      this.contextMenuComp  = createComponent(ContextmenuComponent,{
+        environmentInjector: this.environmentInjector
+      });
+      viewContainerRef.insert(this.contextMenuComp.hostView);
+    }
+    const subscription = this.contextMenuComp.instance.callback.subscribe((item: string) => {
+      console.log('菜单项被点击:', item);
+      callback(item);
+      subscription.unsubscribe(); // 如果只需要一次，用完就取消订阅
+    });
+    this.contextMenuComp.instance.items = items;
+    this.contextMenuComp.instance.contextMenu(event);
+  }
 
   navigateById(url: string, id: string): void {
     const menu = this.getMenuByPath(url);
@@ -284,6 +303,7 @@ export class MyApiService {
       });
     });
   }
+
 
   getMenuByPath(path: string): any {
     return this.getMenuByPath1(path, this.menus);

@@ -72,6 +72,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "allowedHosts": ["4200.app.cloudstudio.work"]
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {

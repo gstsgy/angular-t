@@ -6,7 +6,12 @@ import {
   Renderer2,
   OnInit,
   HostListener,
+  createComponent,
+  EnvironmentInjector,
+  ComponentRef,
+  ViewContainerRef,
 } from "@angular/core";
+import { ContextmenuComponent } from "@app/component/contextmenu/contextmenu.component";
 import { MyApiService } from "@service/my-api.service"; //
 @Directive({
   selector: "[appTableCopyDirective]",
@@ -20,10 +25,10 @@ export class TableCopyDirectiveDirective implements OnInit {
   @Input("appTableCopyDirective") isOpenCopy: boolean = false;
 
   selectCopyData = {
-    startX: 0,
-    startY: 0,
-    endX: 0,
-    endY: 0,
+    startX: -1,
+    startY: -1,
+    endX: -1,
+    endY: -1,
   };
 
   ismousedown: boolean = false;
@@ -34,12 +39,55 @@ export class TableCopyDirectiveDirective implements OnInit {
     return this.el.nativeElement.tagName === "NZ-TABLE" && this.isOpenCopy;
   }
 
-  constructor(private renderer: Renderer2, public myApi: MyApiService) {}
+  constructor(
+    private renderer: Renderer2,
+    public myApi: MyApiService,
+    private viewContainerRef: ViewContainerRef
+  ) {}
 
   ngOnInit() {
     this.addStyle();
-    document.addEventListener("contextmenu", function (event) {
+    document.addEventListener("contextmenu", (event) => {
       event.preventDefault();
+      const tdElement: HTMLElement = event.target as HTMLElement;
+      if (tdElement.tagName === "TD") {
+        const x = this.getDataRowIndex(tdElement);
+        const y = (tdElement as HTMLTableCellElement).cellIndex;
+        const startRow = Math.min(
+          this.selectCopyData.startX,
+          this.selectCopyData.endX
+        );
+        const endRow = Math.max(
+          this.selectCopyData.startX,
+          this.selectCopyData.endX
+        );
+        const startCol = Math.min(
+          this.selectCopyData.startY,
+          this.selectCopyData.endY
+        );
+        const endCol = Math.max(
+          this.selectCopyData.startY,
+          this.selectCopyData.endY
+        );
+        if (x >= startRow && x <= endRow && y >= startCol && y <= endCol) {
+          this.myApi.contextMenu(
+            event,
+            this.viewContainerRef,
+            [{ icon: 'copy', label: '复制', shortcut: 'Ctrl+C', value: 'copy' }],
+            (item: string) => {
+              if (item === "copy") {
+                const selectedData = this.getSelectedData();
+                if (selectedData.length > 0) {
+                  const text = selectedData
+                    .map((row) => row.join("\t"))
+                    .join("\n");
+                  this.myApi.copy(text);
+                }
+              }
+            }
+          );
+        }
+      }
     });
   }
 
@@ -122,6 +170,9 @@ export class TableCopyDirectiveDirective implements OnInit {
     const allTds = this.getAllTdElements();
     allTds.forEach((td) => {
       this.renderer.removeClass(td, "select-copy");
+      td.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
     });
   }
 
@@ -170,8 +221,10 @@ export class TableCopyDirectiveDirective implements OnInit {
   handleGlobalKeyDown(event: KeyboardEvent) {
     if (event.ctrlKey && event.key.toLowerCase() === "c") {
       const selectedData = this.getSelectedData();
-      const text = selectedData.map((row) => row.join("\t")).join("\n");
-      this.myApi.copy(text);
+      if (selectedData.length > 0) {
+        const text = selectedData.map((row) => row.join("\t")).join("\n");
+        this.myApi.copy(text);
+      }
     }
 
     // 监听Ctrl+S保存
@@ -217,41 +270,6 @@ export class TableCopyDirectiveDirective implements OnInit {
   }
   mousedown(e: MouseEvent) {
     if (!this.isOpen) return;
-    if (e.button === 2) {
-      // 右键
-      const tdElement: HTMLElement = e.target as HTMLElement;
-      if (tdElement.tagName === "TD") {
-        const x = this.getDataRowIndex(tdElement);
-        const y = (tdElement as HTMLTableCellElement).cellIndex;
-        const startRow = Math.min(
-          this.selectCopyData.startX,
-          this.selectCopyData.endX
-        );
-        const endRow = Math.max(
-          this.selectCopyData.startX,
-          this.selectCopyData.endX
-        );
-        const startCol = Math.min(
-          this.selectCopyData.startY,
-          this.selectCopyData.endY
-        );
-        const endCol = Math.max(
-          this.selectCopyData.startY,
-          this.selectCopyData.endY
-        );
-        if (x >= startRow && x <= endRow && y >= startCol && y <= endCol) {
-          e.preventDefault();
-          e.stopPropagation();
-          // 阻止右键
-          // this.myApi.confirm("是否复制内容", () => {
-          //   const selectedData = this.getSelectedData();
-          //   const text = selectedData.map((row) => row.join("\t")).join("\n");
-          //   this.myApi.copy(text);
-          // });
-        }
-      }
-      return;
-    }
 
     if (e.button !== 0) {
       return;
@@ -284,6 +302,14 @@ export class TableCopyDirectiveDirective implements OnInit {
         // 初始选择单个单元格
         this.addClass();
       }
+    }else{
+      this.selectCopyData = {
+        startX: -1,
+        startY: -1,
+        endX: -1,
+        endY: -1,
+      };
+      this.addClass();
     }
   }
 

@@ -4,7 +4,6 @@ import {ActivatedRoute} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {NzInputDirective, NzInputGroupComponent} from "ng-zorro-antd/input";
 import {NzModalModule, NzModalService} from "ng-zorro-antd/modal";
-import {FormsModel} from "@model/forms";
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {NzTreeComponent} from "ng-zorro-antd/tree";
@@ -24,11 +23,9 @@ import {NzMenuDirective, NzMenuItemComponent} from "ng-zorro-antd/menu";
         NzInputDirective,
         NzInputNumberModule,
         NzInputGroupComponent,
-        NzSpinComponent,
         NzTreeComponent,
         NzButtonComponent,
         NzIconDirective,
-        NzPopconfirmDirective,
         NzFormItemComponent,
         NzFormLabelComponent,
         NzColDirective,

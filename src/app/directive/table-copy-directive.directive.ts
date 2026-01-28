@@ -47,7 +47,7 @@ export class TableCopyDirectiveDirective implements OnInit {
 
   ngOnInit() {
     this.addStyle();
-    document.addEventListener("contextmenu", (event) => {
+    this.el.nativeElement.addEventListener("contextmenu", (event:MouseEvent) => {
       event.preventDefault();
       const tdElement: HTMLElement = event.target as HTMLElement;
       if (tdElement.tagName === "TD") {

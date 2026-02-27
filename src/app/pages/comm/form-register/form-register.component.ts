@@ -131,7 +131,7 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
     delete(item:any){
         this.myApi.confirm("确定删除吗？",()=>{
-            this.myApi.delete('form/form', item).then(res => {
+            this.myApi.delete('form/item', item).then(res => {
                 if (res.code === 200) {
                     this.myApi.success("删除成功")
                     this.refresh()
@@ -220,13 +220,13 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
             // nzFooter: null,
             nzOnOk: () => {
                 if (this.formItem.id - 0 > 0) {
-                    this.myApi.put("form/form", this.formItem).then(res => {
+                    this.myApi.put("form/item", this.formItem).then(res => {
                         if (res.code === 200) {
                             this.myApi.success("保存成功")
                         }
                     })
                 } else {
-                    this.myApi.post("form/form", this.formItem).then(res => {
+                    this.myApi.post("form/item", this.formItem).then(res => {
                         if (res.code === 200) {
                             this.myApi.success("新增成功")
                         }

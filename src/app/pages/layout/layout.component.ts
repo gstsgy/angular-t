@@ -52,7 +52,7 @@ export class LayoutComponent implements OnInit {
         this.myApi.menus = data.data;
       }
     });
-    this.myApi.get("user/self").then((data: any) => {
+    this.myApi.get("operator/self").then((data: any) => {
       if (data.code == 200) {
         this.userService.nickName = data.data.nickName;
         this.userService.userId = data.data.id;
@@ -67,10 +67,16 @@ export class LayoutComponent implements OnInit {
   }
 
   getQrcode() {
-    this.myApi.get("/user/qr").then((res) => {
+    this.myApi.get("/operator/qr").then((res) => {
       if (res.code == 200) {
         this.qrcode = res.data;
-        const urlObj = new URL(this.qrcode);
+        const qrcode = this.qrcode;
+// 替换自定义协议为http协议（让URL构造函数能识别）
+const tempUrl = qrcode.replace('otpauth://', 'http://temp/');
+const urlObj = new URL(tempUrl);
+        // const tempUrl = this.qrcode.replace('otpauth://', 'http://temp/');
+        // const urlObj = new URL(tempUrl);
+       // const urlObj = new URL(this.qrcode);
 
         // 获取secret参数
         const secret = urlObj.searchParams.get("secret");
@@ -122,7 +128,7 @@ export class LayoutComponent implements OnInit {
   }
 
   bindQrcode() {
-    this.myApi.put("/user/qr?secret="+this.totpsecret)
+    this.myApi.put("/operator/qr?secret="+this.totpsecret)
       .then((res) => {
         if (res.code == 200) {
           this.isVisible = false;

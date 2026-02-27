@@ -64,7 +64,7 @@ export class MenuComponent extends SearchFormModel {
         this.myApi.getDict("boolean").subscribe(res => {
             this.boolOptions = res;
         })
-        this.myApi.get('btn/btns', {pageNum: 1, pageSize: 500}).then(res => {
+        this.myApi.get('btn/page', {pageNum: 1, pageSize: 500}).then(res => {
             if (res.code === 200) {
                 this.btnsModel = res.data.records.map((it: { name: any; id: any; })=>({label: it.name, value: it.id}));
             }

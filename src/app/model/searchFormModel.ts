@@ -51,7 +51,7 @@ export default class SearchFormModel extends BaseForm  {
         })
        
     }
-    commonObjs:any={}
+    public commonObjs:any={}
     getInstanceMethods(instance:Object) {
         let methods = [];
         let obj = instance;

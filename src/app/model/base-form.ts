@@ -38,7 +38,7 @@ export default class BaseForm {
 
     async parse() {
         await this.beforeInitialization();
-        await this.myApi.get('form/info', {formId: this.formId}).then(res => {
+        await this.myApi.get('form/item', {id: this.formId}).then(res => {
             if (res.code === 200) {
                 this.serverUrl = res.data.serverUrl;
                 this.path = res.data.path;
@@ -109,7 +109,7 @@ export default class BaseForm {
             }
         })
 
-        await this.myApi.get('form/single', {formId: this.formId}).then(res => {
+        await this.myApi.get('form/singles', {formId: this.formId}).then(res => {
             if (res.code === 200) {
                 this.formSingleCols = res.data;
                 this.formSingleCols.forEach(async item => {

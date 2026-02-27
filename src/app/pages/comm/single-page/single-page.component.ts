@@ -1,24 +1,20 @@
 import {Component} from '@angular/core';
 import {MyApiService} from "@service/my-api.service";
 import {ActivatedRoute} from "@angular/router";
-import {FormsComponent} from "@app/component/forms/forms.component";
-import {BtnsComponent} from "@app/component/btns/btns.component";
-import {GridsComponent} from "@app/component/grids/grids.component";
-import SingelSetFormModel from "@model/singelSetFormModel";
-
+import {FormReportComponent} from "@app/component/form-report/form-report.component";
+import SingelPageModel from "@model/singelPageModel";
+import { FormsVerticalComponent } from "@app/component/forms-vertical/forms-vertical.component";
 @Component({
     selector: 'app-set-form',
     standalone: true,
     imports: [
-        BtnsComponent,
-        FormsComponent,
-        GridsComponent
+        FormReportComponent,
+        FormsVerticalComponent
     ],
-    templateUrl: './set-form.component.html',
-    styleUrl: './set-form.component.less'
+    templateUrl: './single-page.component.html',
+    styleUrl: './single-page.component.less'
 })
-export class SetFormComponent extends SingelSetFormModel {
-
+export class SetFormComponent extends SingelPageModel {
 
     constructor(public override myApi: MyApiService, public override route: ActivatedRoute) {
         super(myApi,route);

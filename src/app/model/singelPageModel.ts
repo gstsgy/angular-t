@@ -1,25 +1,19 @@
-import BaseForm from "@model/base-form";
+import SearchFormModel from "@model/searchFormModel";
 import {MyApiService} from "@service/my-api.service";
 import {ActivatedRoute} from "@angular/router";
 
-export default class SingelSetFormModel extends BaseForm {
+export default class SingelPageModel extends SearchFormModel {
     id: string = "";
 
     updateObj:any={};
 
     constructor(public override myApi: MyApiService, public route: ActivatedRoute) {
-        super(myApi);
+        super(myApi,route);
         this.route.queryParams.subscribe(async res => {
             this.id = res['id'];
-            this.menuCode = res['menuCode'];
-            this.menuName = res['menuName'];
-            await this.getBtns(); 
             this.undo();
-            
         });
         this.route.params.subscribe(async (res) => {
-            this.formId = res['formId'];
-            await this.parse();
             this.disabled = true;
         })
 

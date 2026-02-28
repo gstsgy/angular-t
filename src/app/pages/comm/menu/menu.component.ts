@@ -101,7 +101,7 @@ export class MenuComponent extends SearchFormModel {
             nzContent: this.menuModel,
             nzClosable: true,
             nzOnOk: () => {
-                this.myApi.post('menu/menu', this.menuItem).then(res => {
+                this.myApi.post('menu/item', this.menuItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                     }
@@ -121,7 +121,7 @@ export class MenuComponent extends SearchFormModel {
             nzClosable: true,
             // nzFooter: null,
             nzOnOk: () => {
-                this.myApi.put('menu/menu', this.menuItem).then(res => {
+                this.myApi.put('menu/item', this.menuItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                     }
@@ -137,7 +137,7 @@ export class MenuComponent extends SearchFormModel {
             return;
         }
         this.myApi.confirm("您是否确认删除？",()=>{
-            this.myApi.delete('menu/menu', this.selectData).then(res => {
+            this.myApi.delete('menu/items?ids='+ this.selectData.map(i=>i.id)).then(res => {
                 if (res.code === 200) {
                     this.myApi.success("删除成功");
                     this.refresh();

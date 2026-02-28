@@ -9,8 +9,8 @@ import { UserService } from "./user.service";
 })
 export class MyHttpService {
   constructor(private myHttp: HttpClient, private userService: UserService) {}
-   private baseUrl = 'https://gstsgy.com/api/';
- // private baseUrl = "https://9d56ff65f1cf4109bd7d93986a0cdb54--8080.ap-shanghai2.cloudstudio.club/";
+   // private baseUrl = 'https://gstsgy.com/api/';
+      private baseUrl = "https://9d56ff65f1cf4109bd7d93986a0cdb54--8080.ap-shanghai2.cloudstudio.club/";
   //private baseUrl = 'http://localhost:8080/';
 
   get(

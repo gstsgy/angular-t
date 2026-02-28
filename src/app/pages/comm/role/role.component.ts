@@ -30,7 +30,6 @@ import {NzDatePickerModule} from "ng-zorro-antd/date-picker";
         NzFormLabelComponent,
         NzInputDirective,
         NzRowDirective,
-        NzSelectComponent,
         NzTreeSelectModule,
         NzDatePickerModule,
         NzInputNumberModule, NzCheckboxGroupComponent, NzButtonComponent],
@@ -54,7 +53,7 @@ export class RoleComponent extends SearchFormModel {
     usersModel: Array<{ label: null | string, checked: undefined | boolean, value: any }> = [];
 
     override afterInitialization() {
-        this.myApi.get('userrole/allusers').then(res => {
+        this.myApi.get('operator/list').then(res => {
             if (res.code === 200) {
                 this.usersModel = res.data.map((it: { nickName: any; id: any; }) => ({label: it.nickName, value: it.id}));
             }
@@ -85,9 +84,10 @@ export class RoleComponent extends SearchFormModel {
             nzClosable: true,
             nzOnOk: () => {
                 //this.userItem.birthday = this.myApi.dateFormat(this.userItem.birthday);
-                this.myApi.post('role/role', this.userItem).then(res => {
+                this.myApi.post('role/item', this.userItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
+                        this.refresh();
                     }
                 })
             },
@@ -105,9 +105,10 @@ export class RoleComponent extends SearchFormModel {
             // nzFooter: null,
             nzOnOk: () => {
 
-                this.myApi.put('role/role', this.userItem).then(res => {
+                this.myApi.put('role/item', this.userItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
+                        this.refresh();
                     }
                 })
             },
@@ -121,7 +122,7 @@ export class RoleComponent extends SearchFormModel {
             return;
         }
         this.myApi.confirm("您是否确认删除？", () => {
-            this.myApi.delete('role/role', this.selectData).then(res => {
+            this.myApi.delete('role/items?ids='+ this.selectData.map(it=>it.id)).then(res => {
                 if (res.code === 200) {
                     this.myApi.success("删除成功");
                     this.refresh();
@@ -138,7 +139,7 @@ export class RoleComponent extends SearchFormModel {
         }
         this.usersModel.forEach(it => it.checked = false)
         //this.formId = this.menuItem.id;
-        this.myApi.get(`userrole/users?roleId=${this.userItem.id}`).then(res => {
+        this.myApi.get(`user-role/list?roleId=${this.userItem.id}`).then(res => {
             if (res.code === 200) {
                 res.data.forEach((it: any) => {
                     const item = this.usersModel.find(i => i.value === it.userId);
@@ -155,11 +156,8 @@ export class RoleComponent extends SearchFormModel {
             nzClosable: true,
             // nzFooter: null,
             nzOnOk: () => {
-                const arr = this.usersModel.filter(it => it.checked).map(it => ({
-                    id: it.value
-
-                }));
-                this.myApi.post(`userrole/userrole?roleId=${this.userItem.id}`, arr).then(res => {
+                const arr = this.usersModel.filter(it => it.checked).map(it =>it.value);
+                this.myApi.post(`user-role/role?roleId=${this.userItem.id}`, arr).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                     }

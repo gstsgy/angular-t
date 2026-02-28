@@ -131,7 +131,7 @@ export class FormRegisterComponent extends SearchFormModel implements OnInit {
     }
     delete(item:any){
         this.myApi.confirm("确定删除吗？",()=>{
-            this.myApi.delete('form/item', item).then(res => {
+            this.myApi.delete('form/item?id='+ item.id).then(res => {
                 if (res.code === 200) {
                     this.myApi.success("删除成功")
                     this.refresh()

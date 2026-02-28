@@ -20,22 +20,12 @@ import { NzTreeModule, NzTreeNodeOptions} from 'ng-zorro-antd/tree';
     selector: 'app-user',
     standalone: true,
     imports: [NzModalModule,
-        BtnsComponent,
-        FormsComponent,
-        GridsComponent,
         FormsModule,
-        NzColDirective,
-        NzFormControlComponent,
-        NzFormDirective,
-        NzFormItemComponent,
-        NzFormLabelComponent,
-        NzInputDirective,
-        NzRowDirective,
         NzSelectComponent,
         NzTreeSelectModule,
         NzTreeModule,
         NzDatePickerModule,
-        NzInputNumberModule, NzCheckboxGroupComponent, NzButtonComponent],
+        NzInputNumberModule, NzButtonComponent],
     templateUrl: './permission.component.html',
     styleUrl: './permission.component.less'
 })
@@ -57,29 +47,29 @@ export class PermissionComponent implements OnInit {
     rolesModel: Array<{ label: null | string, checked: undefined | boolean, value: any }> = [];
 
     ngOnInit(): void {
-        this.myApi.get('userrole/allroles').then(res => {
+        this.myApi.get('role/list').then(res => {
             if (res.code === 200) {
                 this.rolesModel = res.data.map((it: { name: any; id: any; }) => ({label: it.name, value: it.id}));
             }
         });
-        this.myApi.get('rolemenu/menutree?type=1').then(res => {
+        this.myApi.get('role-menu/menu-tree?type=1').then(res => {
             if (res.code === 200) {
                 this.menusNode = res.data;
             }
         });
 
-        this.myApi.get('rolemenu/interfacetree').then(res => {
-            if (res.code === 200) {
-                this.interfaceNode = res.data;
-            }
-        });
+        // this.myApi.get('role-menu/interface-tree').then(res => {
+        //     if (res.code === 200) {
+        //         this.interfaceNode = res.data;
+        //     }
+        // });
     }
 
     onRoleChange() {
         this.defaultCheckedKeys=[];
         if (this.currentRoleId) {
 
-            this.myApi.get(`rolemenu/menus?roleId=${this.currentRoleId}`).then(res => {
+            this.myApi.get(`role-menu/list?roleId=${this.currentRoleId}`).then(res => {
                 if (res.code === 200) {
                     const btnIds: string[] = res.data.map((item: { menuId: string; }) => item.menuId);
                     this.setChecked(this.menusNode,btnIds);
@@ -88,11 +78,11 @@ export class PermissionComponent implements OnInit {
                 }
             })
 
-            this.myApi.get(`rolemenu/interfaces?roleId=${this.currentRoleId}`).then(res => {
-                if (res.code === 200) {
-                   this.defaultCheckedKeysInterface= this.setCheckedInterface(this.interfaceNode,res.data);
-                }
-            })
+            // this.myApi.get(`role-interface/list?roleId=${this.currentRoleId}`).then(res => {
+            //     if (res.code === 200) {
+            //        this.defaultCheckedKeysInterface= this.setCheckedInterface(this.interfaceNode,res.data);
+            //     }
+            // })
         }
     }
 
@@ -101,18 +91,18 @@ export class PermissionComponent implements OnInit {
             this.myApi.warning("请先选择角色");
             return;
         }
-        this.myApi.post(`rolemenu/rolemenu?roleId=${this.currentRoleId}`, this.getCheckBtn(this.menusNode)).then(res => {
+        this.myApi.post(`role-menu/items?roleId=${this.currentRoleId}`, this.getCheckBtn(this.menusNode)).then(res => {
             if (res.code === 200) {
-                //this.myApi.success("保存成功");
-                //this.currentRoleId = null;
+                this.myApi.success("保存成功");
+                this.currentRoleId = null;
                 this.defaultCheckedKeys = [];
-                this.myApi.post(`rolemenu/roleinterface?roleId=${this.currentRoleId}`, this.getCheckInterface(this.interfaceNode)).then(res => {
-                    if (res.code === 200) {
-                        this.myApi.success("保存成功");
-                        this.currentRoleId = null;
-                        this.defaultCheckedKeysInterface = [];
-                    }
-                })
+                // this.myApi.post(`role-menu/roleinterface?roleId=${this.currentRoleId}`, this.getCheckInterface(this.interfaceNode)).then(res => {
+                //     if (res.code === 200) {
+                //         this.myApi.success("保存成功");
+                //         this.currentRoleId = null;
+                //         this.defaultCheckedKeysInterface = [];
+                //     }
+                // })
             }
         })
     }

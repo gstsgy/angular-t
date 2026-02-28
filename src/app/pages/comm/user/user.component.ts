@@ -62,7 +62,7 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
         this.myApi.getDict("operatorGender").subscribe(res => {
             this.operatorGenders = res;
         })
-        this.myApi.get('userrole/allroles').then(res => {
+        this.myApi.get('role/list').then(res => {
             if (res.code === 200) {
                 this.rolesModel = res.data.map((it: { name: any; id: any; })=>({label: it.name, value: it.id}));
             }
@@ -97,9 +97,10 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
             nzClosable: true,
             nzOnOk: () => {
                 //this.userItem.birthday = this.myApi.dateFormat(this.userItem.birthday);
-                this.myApi.post('user/user', this.userItem).then(res => {
+                this.myApi.post('operator/item', this.userItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
+                        this.refresh();
                     }
                 })
             },
@@ -118,9 +119,10 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
             // nzFooter: null,
             nzOnOk: () => {
                 this.userItem.birthday = this.myApi.dateFormat(this.userItem.birthday);
-                this.myApi.put('user/user', this.userItem).then(res => {
+                this.myApi.put('operator/item', this.userItem).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
+                        this.refresh();
                     }
                 })
             },
@@ -134,7 +136,7 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
             return;
         }
         this.myApi.confirm("您是否确认删除？",()=>{
-            this.myApi.delete('user/user', this.selectData).then(res => {
+            this.myApi.delete('operator/items?ids=',+this.selectData.map(it=>it.id)).then(res => {
                 if (res.code === 200) {
                     this.myApi.success("删除成功");
                     this.refresh();
@@ -151,7 +153,7 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
         }
         this.rolesModel.forEach(it => it.checked = false)
         //this.formId = this.menuItem.id;
-        this.myApi.get(`userrole/roles?userId=${this.userItem.id}`).then(res => {
+        this.myApi.get(`user-role/list?userId=${this.userItem.id}`).then(res => {
             if (res.code === 200) {
                 res.data.forEach((it: any) => {
                     const item = this.rolesModel.find(i => i.value === it.roleId);
@@ -168,11 +170,8 @@ export class UserComponent extends SearchFormModel implements AfterViewInit {
             nzClosable: true,
             // nzFooter: null,
             nzOnOk: () => {
-                const arr = this.rolesModel.filter(it => it.checked).map(it => ({
-                    id: it.value
-
-                }));
-                this.myApi.post(`userrole/roleuser?userId=${this.userItem.id}`, arr).then(res => {
+                const arr = this.rolesModel.filter(it => it.checked).map(it =>it.value);
+                this.myApi.post(`user-role/user?userId=${this.userItem.id}`, arr).then(res => {
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                     }

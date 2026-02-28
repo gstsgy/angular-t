@@ -55,6 +55,7 @@ export class DictComponent  implements OnInit{
 
     convertToTreeNodes(data: any[]): any[] {
         return data.map((node: any) => ({
+            rawParentId:node.rawParentId,
             key: node.id,
             title: node.label,
             value: node.value,
@@ -84,7 +85,6 @@ export class DictComponent  implements OnInit{
         this.myApi.get('dictionary/tree').then(res=>{
             if(res.code===200){
                 this.nodes = this.convertToTreeNodes(res.data)
-                console.log(this.nodes)
             }
         })
     }
@@ -104,7 +104,7 @@ export class DictComponent  implements OnInit{
             nzContent: this.dictForm,
             nzClosable: true,
             nzOnOk: () => {
-                this.myApi.post('dictionary/dict',this.dictItem).then(res=>{
+                this.myApi.post('dictionary/item',this.dictItem).then(res=>{
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                         this.myApi.resetDict(this.dictItem.modelCode??"");
@@ -119,7 +119,7 @@ export class DictComponent  implements OnInit{
     edit(node:any){
         this.dictItem = {
             id: node.key,
-            parentId: null,
+            parentId: node.origin.rawParentId,
             modelCode: node.origin.model,
             dictKey: node.origin.value,
             dictValue: node.origin.title,
@@ -132,7 +132,7 @@ export class DictComponent  implements OnInit{
             nzClosable: true,
             // nzFooter: null,
             nzOnOk: () => {
-                this.myApi.put('dictionary/dict',this.dictItem).then(res=>{
+                this.myApi.put('dictionary/item',this.dictItem).then(res=>{
                     if (res.code === 200) {
                         this.myApi.success("保存成功")
                         this.myApi.resetDict(this.dictItem.modelCode??"")
@@ -147,7 +147,7 @@ export class DictComponent  implements OnInit{
 
     delete(node :any){
         this.myApi.confirm("确定删除吗？",()=>{
-            this.myApi.delete('dictionary/dict?id='+node.key,).then(res=>{
+            this.myApi.delete('dictionary/item?id='+node.key,).then(res=>{
                 if(res.code === 200){
                     this.myApi.success("删除成功");
                     this.refresh();
